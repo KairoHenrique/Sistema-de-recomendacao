@@ -1,0 +1,8 @@
+# Ignorar a pasta de build (ajustar conforme o nome da sua pasta de build)
+build/
+
+# Ignorar o diretório .vscode
+.vscode/
+
+# Ignorar arquivos .csv
+*.csv

@@ -83,8 +83,8 @@ void gerarExplore(const std::string& inputDat, const std::string& exploreDat, in
     }
     in.close();
 
-    std::shuffle(usuarios.begin(), usuarios.end(), std::mt19937{std::random_device{}()});
-    if (quantidade > usuarios.size()) quantidade = usuarios.size();
+    if (quantidade > static_cast<int>(usuarios.size())) 
+    quantidade = usuarios.size(); // Caso quantidade seja maior que o número de usuários
 
     std::ofstream out(exploreDat);
     for (int i = 0; i < quantidade; ++i)

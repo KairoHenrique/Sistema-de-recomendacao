@@ -1,6 +1,6 @@
 #include "recomendador.hpp"
 #include "utilitarios.hpp"
-#include "config.hpp" // Constantes K e N – Kairo
+#include "config.hpp"
 #include <fstream>
 #include <unordered_set>
 #include <vector>
@@ -15,7 +15,7 @@ void recomendarParaUsuarios(const std::string& arquivoExploracao, const std::str
     std::ofstream out(arquivoSaida);
 
     if (!in.is_open() || !out.is_open()) {
-        std::cerr << "Erro ao abrir arquivos de entrada/saida – Kairo" << std::endl;
+        std::cerr << "Erro ao abrir arquivos de entrada/saida" << std::endl;
         return;
     }
 

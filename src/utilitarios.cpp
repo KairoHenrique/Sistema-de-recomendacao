@@ -1,10 +1,11 @@
 #include "utilitarios.hpp"
 #include <fstream>
 #include <sstream>
-#include <iostream>
 #include <cmath>
-// Função para dividir uma string por um delimitador e retornar um vetor de strings - Kairo
+#include <iostream>
+
 std::vector<std::string> dividir(const std::string& linha, char delimitador) {
+    // Divide uma linha por delimitador (ex: espaco ou :) – Kairo
     std::vector<std::string> tokens;
     std::stringstream ss(linha);
     std::string item;
@@ -13,43 +14,39 @@ std::vector<std::string> dividir(const std::string& linha, char delimitador) {
     }
     return tokens;
 }
-// Função para verificar se um arquivo existe - Kairo
+
 bool arquivoExiste(const std::string& caminho) {
+    // Verifica existencia de arquivo – Kairo
     std::ifstream file(caminho);
     return file.good();
 }
-// Função para ler um arquivo CSV e armazenar os dados em uma estrutura de dados - Kairo
+
 void leituraRapidaCSV(const std::string& caminho,
     std::unordered_map<int, std::unordered_map<int, float>>& dadosUsuarios)
 {
+    // Le input.dat no formato usuario item:nota – Kairo
     std::ifstream arquivo(caminho);
-    if (!arquivo.is_open()) {
-        std::cerr << "Erro ao abrir o arquivo: " << caminho << std::endl;
-        return;
-    }
-
     std::string linha;
-    std::getline(arquivo, linha); // Pular cabecalho
+    std::getline(arquivo, linha); // cabecalho (pode ignorar se nao houver)
 
     while (std::getline(arquivo, linha)) {
-        auto partes = dividir(linha, ',');
-        if (partes.size() < 3) continue;
+        auto partes = dividir(linha, ' ');
+        if (partes.size() < 2) continue;
 
         int usuario = std::stoi(partes[0]);
-        int item = std::stoi(partes[1]);
-        float nota = std::stof(partes[2]);
-
-        dadosUsuarios[usuario][item] = nota;
+        for (size_t i = 1; i < partes.size(); ++i) {
+            auto par = dividir(partes[i], ':');
+            if (par.size() == 2)
+                dadosUsuarios[usuario][std::stoi(par[0])] = std::stof(par[1]);
+        }
     }
-
     arquivo.close();
 }
 
-
-// Confere a similaridade entre dois perfis de usuarios e retorna um valor entre 0 e 1 - Kairo
 float similaridadeUsuarios(const std::unordered_map<int, float>& u1,
                            const std::unordered_map<int, float>& u2)
 {
+    // Calcula a similaridade do cosseno entre dois perfis de usuario – Kairo
     float numerador = 0.0f, mag1 = 0.0f, mag2 = 0.0f;
 
     for (const auto& [item, nota1] : u1) {

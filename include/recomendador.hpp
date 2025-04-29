@@ -2,7 +2,8 @@
 #define RECOMENDADOR_HPP
 
 #include <string>
-// Função para recomendar filmes para usuários - Kairo
+
+// Gera recomendacoes para cada usuario do explore.dat – Kairo
 void recomendarParaUsuarios(const std::string& arquivoExploracao, const std::string& arquivoSaida);
 
 #endif

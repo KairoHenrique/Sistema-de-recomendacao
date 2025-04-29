@@ -3,7 +3,7 @@
 #include <sstream>
 #include <iostream>
 #include <cmath>
-
+// Função para dividir uma string por um delimitador e retornar um vetor de strings - Kairo
 std::vector<std::string> dividir(const std::string& linha, char delimitador) {
     std::vector<std::string> tokens;
     std::stringstream ss(linha);
@@ -13,12 +13,12 @@ std::vector<std::string> dividir(const std::string& linha, char delimitador) {
     }
     return tokens;
 }
-
+// Função para verificar se um arquivo existe - Kairo
 bool arquivoExiste(const std::string& caminho) {
     std::ifstream file(caminho);
     return file.good();
 }
-
+// Função para ler um arquivo CSV e armazenar os dados em uma estrutura de dados - Kairo
 void leituraRapidaCSV(const std::string& caminho,
     std::unordered_map<int, std::unordered_map<int, float>>& dadosUsuarios)
 {
@@ -45,6 +45,8 @@ void leituraRapidaCSV(const std::string& caminho,
     arquivo.close();
 }
 
+
+// Confere a similaridade entre dois perfis de usuarios e retorna um valor entre 0 e 1 - Kairo
 float similaridadeUsuarios(const std::unordered_map<int, float>& u1,
                            const std::unordered_map<int, float>& u2)
 {

@@ -7,8 +7,11 @@
 #include <iostream>
 #include <algorithm>
 
+
+// Função externa para armazenar os dados dos usuários - Kairo
 extern std::unordered_map<int, std::unordered_map<int, float>> dadosUsuarios;
 
+// Função para recomendar filmes para usuários - Kairo
 void recomendarParaUsuarios(const std::string& arquivoExploracao, const std::string& arquivoSaida) {
     std::ifstream in(arquivoExploracao);
     std::ofstream out(arquivoSaida);
@@ -31,7 +34,7 @@ void recomendarParaUsuarios(const std::string& arquivoExploracao, const std::str
         std::sort(similares.begin(), similares.end(),
                   [](const auto& a, const auto& b) { return a.second > b.second; });
 
-        // Por enquanto só mostra os 5 mais similares
+        // Por enquanto so mostra os 5 mais similares ao usuario - Kairo
         out << usuarioId;
         for (int i = 0; i < std::min(5, (int)similares.size()); ++i) {
             out << " " << similares[i].first;

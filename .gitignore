@@ -9,3 +9,8 @@ build/
 
 # Ignorar arquivos .dat
 *.dat
+
+# Ignorar arquivos .dat
+*.dat
+# Ignorar arquivos .out
+*.out

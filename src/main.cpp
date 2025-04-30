@@ -33,7 +33,7 @@ int main() {
                 recomendarParaUsuarios("dados/explore.dat", "resultados/output.dat");
                 break;
             case 0:
-                std::cout << "Saindo...\n";
+                std::cout << "Saindo\n";
                 break;
             default:
                 std::cout << "Opcao invalida!\n";

@@ -6,6 +6,3 @@ build/
 
 # Ignorar arquivos .csv
 *.csv
-
-# Ignorar arquivos .dat
-*.dat

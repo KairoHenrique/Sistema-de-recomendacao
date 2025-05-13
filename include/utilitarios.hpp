@@ -19,4 +19,8 @@ void leituraRapidaCSV(const std::string& caminho,
 float similaridadeUsuarios(const std::unordered_map<int, float>& u1,
                            const std::unordered_map<int, float>& u2);
 
+// Le movies.csv e carrega os nomes dos filmes – Kairo
+void carregarNomesFilmes(const std::string& caminhoCSV,
+    std::unordered_map<int, std::string>& nomesFilmes);
+
 #endif

@@ -5,8 +5,8 @@
 #include <unordered_set>
 #include <vector>
 #include <algorithm>
-#include <iostream>
 #include <map>
+#include <iostream>
 
 extern std::unordered_map<int, std::unordered_map<int, float>> dadosUsuarios;
 
@@ -18,6 +18,9 @@ void recomendarParaUsuarios(const std::string& arquivoExploracao, const std::str
         std::cerr << "Erro ao abrir arquivos de entrada/saida" << std::endl;
         return;
     }
+
+    std::unordered_map<int, std::string> nomesFilmes;
+    carregarNomesFilmes("dados/movies.csv", nomesFilmes); // Le os nomes dos filmes – Kairo
 
     int usuarioId;
     while (in >> usuarioId) {
@@ -37,15 +40,15 @@ void recomendarParaUsuarios(const std::string& arquivoExploracao, const std::str
         std::sort(similares.begin(), similares.end(),
                   [](const auto& a, const auto& b) { return a.second > b.second; });
 
-        std::map<int, float> somaNotas; // filme -> soma das notas dos vizinhos
-        std::map<int, int> contagem;    // filme -> qtd de vizinhos que avaliaram
+        std::map<int, float> somaNotas; // filme -> soma das notas dos vizinhos – Kairo
+        std::map<int, int> contagem;    // filme -> qtd de vizinhos que avaliaram – Kairo
 
         for (int i = 0; i < std::min(K_VIZINHOS, (int)similares.size()); ++i) {
             int vizinhoId = similares[i].first;
             const auto& filmesVizinho = dadosUsuarios[vizinhoId];
 
             for (const auto& [filme, nota] : filmesVizinho) {
-                if (filmesVistos.count(filme) == 0) { // se o usuario atual nao viu – Kairo
+                if (filmesVistos.count(filme) == 0) {
                     somaNotas[filme] += nota;
                     contagem[filme]++;
                 }
@@ -62,8 +65,11 @@ void recomendarParaUsuarios(const std::string& arquivoExploracao, const std::str
                   [](const auto& a, const auto& b) { return a.second > b.second; });
 
         out << usuarioId;
-        for (int i = 0; i < std::min(N_RECOMENDACOES, (int)candidatos.size()); ++i)
-            out << " " << candidatos[i].first;
+        for (int i = 0; i < std::min(N_RECOMENDACOES, (int)candidatos.size()); ++i) {
+            int filmeId = candidatos[i].first;
+            if (nomesFilmes.count(filmeId))
+                out << " " << nomesFilmes[filmeId]; // Apenas o nome – Kairo
+        }
         out << "\n";
     }
 

@@ -27,7 +27,6 @@ void leituraRapidaCSV(const std::string& caminho,
     // Le input.dat no formato usuario item:nota – Kairo
     std::ifstream arquivo(caminho);
     std::string linha;
-    std::getline(arquivo, linha); // cabecalho (pode ignorar se nao houver)
 
     while (std::getline(arquivo, linha)) {
         auto partes = dividir(linha, ' ');
@@ -63,4 +62,34 @@ float similaridadeUsuarios(const std::unordered_map<int, float>& u1,
 
     if (mag1 == 0 || mag2 == 0) return 0.0f;
     return numerador / (std::sqrt(mag1) * std::sqrt(mag2));
+}
+
+void carregarNomesFilmes(const std::string& caminhoCSV,
+    std::unordered_map<int, std::string>& nomesFilmes)
+{
+    // Le movies.csv e armazena os nomes dos filmes – Kairo
+    std::ifstream arquivo(caminhoCSV);
+    std::string linha;
+    std::getline(arquivo, linha); // cabecalho
+
+    while (std::getline(arquivo, linha)) {
+        std::stringstream ss(linha);
+        std::string campo;
+
+        std::getline(ss, campo, ',');
+        int filmeId = std::stoi(campo);
+
+        std::getline(ss, campo, ',');
+        std::string nome = campo;
+
+        if (nome.front() == '"') {
+            std::string resto;
+            std::getline(ss, resto, '"');
+            nome += "," + resto;
+        }
+
+        nomesFilmes[filmeId] = nome;
+    }
+
+    arquivo.close();
 }

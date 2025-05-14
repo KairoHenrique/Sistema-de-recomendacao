@@ -10,5 +10,7 @@ int main() {
     carregarDados("dados/input.dat");
     recomendarParaUsuarios("dados/explore.dat", "resultados/output.dat");
     
+
+    printf("Execucao concluida com sucesso!\n");
     return 0;
 }

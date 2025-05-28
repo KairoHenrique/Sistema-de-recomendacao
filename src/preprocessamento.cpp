@@ -53,7 +53,7 @@ void gerarInput(const std::string& arquivoCSV, const std::string& arquivoSaida) 
 
         std::ostringstream linha;
         linha << usuario;
-
+ 
         int filmesValidos = 0;
         for (const auto& [filme, nota] : filmes) {
             if (contagemFilmes[filme] >= 50) {
@@ -67,10 +67,8 @@ void gerarInput(const std::string& arquivoCSV, const std::string& arquivoSaida) 
     }
     out.close();
 }
- // Seleciona N usuarios aleatorios de input.dat e grava em explore.dat – Kairo
+// Seleciona N usuarios aleatorios de input.dat e grava em explore.dat – Kairo
 void gerarExplore(const std::string& inputDat, const std::string& exploreDat, int quantidade) {
-
-
     std::ifstream in(inputDat);
     std::vector<int> usuarios;
     std::string linha;
@@ -83,11 +81,18 @@ void gerarExplore(const std::string& inputDat, const std::string& exploreDat, in
     }
     in.close();
 
+    // Garante que não vai tentar pegar mais usuários do que existe
     if (quantidade > static_cast<int>(usuarios.size())) 
-    quantidade = usuarios.size(); // Caso quantidade seja maior que o número de usuários
+        quantidade = usuarios.size();
+
+    // Embaralha os usuários – Kairo
+    std::random_device rd;
+    std::mt19937 rng(rd());
+    std::shuffle(usuarios.begin(), usuarios.end(), rng);
 
     std::ofstream out(exploreDat);
     for (int i = 0; i < quantidade; ++i)
         out << usuarios[i] << "\n";
     out.close();
 }
+

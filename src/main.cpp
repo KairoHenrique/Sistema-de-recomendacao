@@ -1,26 +1,40 @@
 #include <iostream>
-#include <chrono> // Para medir tempo
-#include "preprocessamento.hpp"
-#include "recomendador.hpp"
-#include "config.hpp"
+#include <chrono>
+#include "Preprocessador.hpp"
+#include "Recomendador.hpp"
+#include "Configuracao.hpp"
+#include "GerenciadorDeDados.hpp"
+#include "utilitarios.hpp"
 
 int main() {
-    // Início da contagem de tempo
     auto inicio = std::chrono::high_resolution_clock::now();
 
-    // Executa todas as etapas automaticamente – Kairo
-    gerarInput("dados/ratings.csv", "dados/input.dat");
-    gerarExplore("dados/input.dat", "dados/explore.dat", N_USUARIOS_EXPLORAR);
-    carregarDados("dados/input.dat");
-    recomendarParaUsuarios("dados/explore.dat", "resultados/output.dat");
+    // Instancia as classes
+    Configuracao config;
+    GerenciadorDeDados gerenciador;
+    Preprocessador preprocessador;
+    Recomendador recomendador(gerenciador, config);
 
-    // Fim da contagem de tempo
+    // Garante que o diretório 'dados' e 'resultados' existam
+    // Isso pode ser feito com comandos de sistema ou verificações mais robustas
+    // Por simplicidade, assumimos que eles existem ou serão criados manualmente
+    // ou adicionamos a criação aqui.
+    // Exemplo de criação de diretório (Linux/macOS):
+    // system("mkdir -p dados");
+    // system("mkdir -p resultados");
+
+    // Etapas do processo
+    preprocessador.gerarInput("dados/ratings.csv", "dados/input.dat");
+    preprocessador.gerarExplore("dados/input.dat", "dados/explore.dat", config.N_USUARIOS_EXPLORAR);
+    gerenciador.carregarDados("dados/input.dat");
+    recomendador.recomendarParaUsuarios("dados/explore.dat", "resultados/output.dat");
+
     auto fim = std::chrono::high_resolution_clock::now();
-
-    // Calcula duração
     std::chrono::duration<double> duracao = fim - inicio;
 
     std::cout << "Tempo total de execucao: " << duracao.count() << " segundos" << std::endl;
 
     return 0;
 }
+
+

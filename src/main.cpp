@@ -15,13 +15,6 @@ int main() {
     Preprocessador preprocessador;
     Recomendador recomendador(gerenciador, config);
 
-    // Garante que o diretório 'dados' e 'resultados' existam
-    // Isso pode ser feito com comandos de sistema ou verificações mais robustas
-    // Por simplicidade, assumimos que eles existem ou serão criados manualmente
-    // ou adicionamos a criação aqui.
-    // Exemplo de criação de diretório (Linux/macOS):
-    // system("mkdir -p dados");
-    // system("mkdir -p resultados");
 
     // Etapas do processo
     preprocessador.gerarInput("dados/ratings.csv", "dados/input.dat");

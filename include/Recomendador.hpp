@@ -20,7 +20,7 @@ private:
 public:
     Recomendador(GerenciadorDeDados& gerenciador, const Configuracao& config);
     void recomendarParaUsuarios(const std::string& arquivoExploracao, const std::string& arquivoSaida, int numThreads);
-    void recomendarParaUsuario(int usuarioId, std::ostream& outFile); // Alterado para std::ostream&
+    void recomendarParaUsuario(int usuarioId, std::ostream& outFile); // CORREÇÃO CRÍTICA
 };
 
 #endif // RECOMENDADOR_HPP

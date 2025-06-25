@@ -22,11 +22,11 @@ void Recomendador::recomendarParaUsuario(int usuarioId, std::ostream& outFile) {
 
     std::vector<std::pair<int, float>> similares;
     similares.reserve(gerenciador.getTodosUsuarios().size());
-
+    
     for (const auto& [outroId, outroUsuario] : gerenciador.getTodosUsuarios()) {
         if (outroId == usuarioId) continue;
         float sim = CalculadorDeSimilaridade::calcularSimilaridadeCosseno(
-            perfilAtual.getAvaliacoes(),
+            perfilAtual.getAvaliacoes(), 
             outroUsuario.getAvaliacoes()
         );
         similares.push_back({outroId, sim});
@@ -38,7 +38,9 @@ void Recomendador::recomendarParaUsuario(int usuarioId, std::ostream& outFile) {
     std::unordered_map<int, float> somaNotas;
     std::unordered_map<int, int> contagem;
 
-    for (int i = 0; i < std::min(config.K_VIZINHOS, (int)similares.size()); ++i) {
+    // Correção de signed/unsigned comparison
+    int k_count = std::min(config.K_VIZINHOS, static_cast<int>(similares.size()));
+    for (int i = 0; i < k_count; ++i) {
         int vizinhoId = similares[i].first;
         const Usuario& vizinhoUsuario = gerenciador.getUsuario(vizinhoId);
         for (const auto& [filme, nota] : vizinhoUsuario.getAvaliacoes()) {
@@ -62,8 +64,19 @@ void Recomendador::recomendarParaUsuario(int usuarioId, std::ostream& outFile) {
     {
         std::lock_guard<std::mutex> lock(mtx);
         outFile << usuarioId;
-        for (int i = 0; i < std::min(config.N_RECOMENDACOES, (int)candidatos.size()); ++i) {
-            outFile << " " << candidatos[i].first; // Usa ID do filme, não o nome
+        
+        // Correção de signed/unsigned comparison
+        int n_count = std::min(config.N_RECOMENDACOES, static_cast<int>(candidatos.size()));
+        for (int i = 0; i < n_count; ++i) {
+            int filmeId = candidatos[i].first;
+            try {
+                // NOVO FORMATO: ID:Nome conforme requisitos do professor
+                const std::string& nomeFilme = gerenciador.getNomeFilme(filmeId);
+                outFile << " " << filmeId << ":" << nomeFilme;
+            } catch (const std::out_of_range&) {
+                // Fallback se nome não encontrado
+                outFile << " " << filmeId << ":Filme_" << filmeId;
+            }
         }
         outFile << "\n";
     }
@@ -72,7 +85,13 @@ void Recomendador::recomendarParaUsuario(int usuarioId, std::ostream& outFile) {
 void Recomendador::recomendarParaUsuarios(const std::string& arquivoExploracao, const std::string& arquivoSaida, int numThreads) {
     std::ifstream in(arquivoExploracao);
     std::ofstream out(arquivoSaida);
-    if (!in.is_open() || !out.is_open()) return;
+    if (!in.is_open() || !out.is_open()) {
+        std::cerr << "Erro ao abrir arquivos de entrada/saida" << std::endl;
+        return;
+    }
+
+    // CRÍTICO: Carregar nomes de filmes antes das recomendações
+    gerenciador.carregarNomesFilmes("dados/movies.csv");
 
     std::vector<int> usuariosParaExplorar;
     int usuarioId;

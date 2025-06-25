@@ -1,8 +1,8 @@
 #ifndef GERENCIADOR_DE_DADOS_HPP
 #define GERENCIADOR_DE_DADOS_HPP
 
-#include <string>
 #include <unordered_map>
+#include <string>
 #include "Usuario.hpp"
 #include "Filme.hpp"
 
@@ -21,4 +21,3 @@ public:
 };
 
 #endif // GERENCIADOR_DE_DADOS_HPP
-

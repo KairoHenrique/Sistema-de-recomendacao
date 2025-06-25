@@ -1,6 +1,6 @@
 CXX := g++
-CXXFLAGS := -Wall -Wextra -Werror -std=c++17
-LDFLAGS := -lm
+CXXFLAGS := -Wall -Wextra -Werror -std=c++17 -O3 -march=native -flto -ffast-math
+LDFLAGS := -lm -pthread -flto
 SRC_DIR := src
 INC_DIR := include
 BUILD := build
@@ -12,7 +12,7 @@ SRC := $(wildcard $(SRC_DIR)/*.cpp)
 OBJECTS := $(patsubst $(SRC_DIR)/%.cpp, $(OBJ_DIR)/%.o, $(SRC))
 INCLUDE := -I$(INC_DIR)
 
-.PHONY: all clean build run debug release massif
+.PHONY: all clean build run release
 
 all: clean run
 
@@ -27,17 +27,11 @@ $(BIN_DIR)/$(TARGET): $(OBJECTS)
 build: $(BIN_DIR)/$(TARGET)
 
 run: build
+	@mkdir -p dados resultados
 	./$(BIN_DIR)/$(TARGET)
 
-debug: CXXFLAGS += -g -DDEBUG
-debug: all
-
-release: CXXFLAGS += -O3 -g
+release: CXXFLAGS += -DNDEBUG
 release: all
-
-massif: release
-	valgrind --tool=massif --massif-out-file=massif.out ./$(BIN_DIR)/$(TARGET)
-	@echo "Arquivo gerado: massif.out (use ms_print para analisar)"
 
 clean:
 	@rm -rf $(BUILD)

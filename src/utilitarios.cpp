@@ -1,6 +1,7 @@
+// utilitarios.cpp
 #include "utilitarios.hpp"
-#include <fstream>
 #include <sstream>
+#include <fstream>
 
 std::vector<std::string> dividir(const std::string& linha, char delimitador) {
     std::vector<std::string> tokens;
@@ -16,5 +17,3 @@ bool arquivoExiste(const std::string& caminho) {
     std::ifstream file(caminho);
     return file.good();
 }
-
-

@@ -15,4 +15,3 @@ public:
 };
 
 #endif // CONFIGURACAO_HPP
-

@@ -8,5 +8,3 @@ Configuracao::Configuracao(
     N_RECOMENDACOES(nRecomendacoes),
     N_USUARIOS_EXPLORAR(nUsuariosExplorar)
 {}
-
-

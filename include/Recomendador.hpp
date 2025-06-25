@@ -1,10 +1,13 @@
 #ifndef RECOMENDADOR_HPP
 #define RECOMENDADOR_HPP
 
+#include <fstream>
 #include <string>
+#include <unordered_map>
+#include <unordered_set>
 #include <vector>
-#include <thread>
 #include <mutex>
+#include <thread>
 #include "GerenciadorDeDados.hpp"
 #include "Configuracao.hpp"
 
@@ -17,9 +20,7 @@ private:
 public:
     Recomendador(GerenciadorDeDados& gerenciador, const Configuracao& config);
     void recomendarParaUsuarios(const std::string& arquivoExploracao, const std::string& arquivoSaida, int numThreads);
-    void recomendarParaUsuario(int usuarioId, std::ofstream& outFile);
+    void recomendarParaUsuario(int usuarioId, std::ostream& outFile); // Alterado para std::ostream&
 };
 
 #endif // RECOMENDADOR_HPP
-
-

@@ -1,66 +1,90 @@
 #include "GerenciadorDeDados.hpp"
+#include <iostream>
 #include <fstream>
 #include <sstream>
-#include <iostream>
-#include "utilitarios.hpp" // Para a função dividir
+#include <string>
+#include "utilitarios.hpp"
 
-GerenciadorDeDados::GerenciadorDeDados() {}
+GerenciadorDeDados::GerenciadorDeDados() {
+    dadosUsuarios.reserve(100000); // Pré-alocação estimada
+    nomesFilmes.reserve(50000);
+}
 
 void GerenciadorDeDados::carregarDados(const std::string& caminhoArquivo) {
     std::ifstream arquivo(caminhoArquivo);
     std::string linha;
-
+    
     if (!arquivo.is_open()) {
-        std::cerr << "Erro ao abrir o arquivo de dados: " << caminhoArquivo << std::endl;
         return;
     }
 
     while (std::getline(arquivo, linha)) {
-        auto partes = dividir(linha, ' ');
-        if (partes.size() < 2) continue;
-
-        int usuarioId = std::stoi(partes[0]);
+        if (linha.empty()) continue;
+        
+        // Parsing manual otimizado
+        size_t pos = linha.find(' ');
+        if (pos == std::string::npos) continue;
+        
+        int usuarioId = std::stoi(linha.substr(0, pos));
         Usuario usuario(usuarioId);
-
-        for (size_t i = 1; i < partes.size(); ++i) {
-            auto par = dividir(partes[i], ':');
-            if (par.size() == 2)
-                usuario.adicionarAvaliacao(std::stoi(par[0]), std::stof(par[1]));
+        
+        size_t start = pos + 1;
+        while (start < linha.length()) {
+            size_t end = linha.find(' ', start);
+            if (end == std::string::npos) end = linha.length();
+            
+            std::string par = linha.substr(start, end - start);
+            size_t colonPos = par.find(':');
+            
+            if (colonPos != std::string::npos) {
+                int filmeId = std::stoi(par.substr(0, colonPos));
+                float nota = std::stof(par.substr(colonPos + 1));
+                usuario.adicionarAvaliacao(filmeId, nota);
+            }
+            
+            start = end + 1;
         }
-        dadosUsuarios.emplace(usuarioId, usuario);
+        
+        dadosUsuarios.emplace(usuarioId, std::move(usuario));
     }
+    
     arquivo.close();
 }
 
 void GerenciadorDeDados::carregarNomesFilmes(const std::string& caminhoCSV) {
     std::ifstream arquivo(caminhoCSV);
     std::string linha;
-
+    
     if (!arquivo.is_open()) {
-        std::cerr << "Erro ao abrir o arquivo de filmes: " << caminhoCSV << std::endl;
         return;
     }
 
-    std::getline(arquivo, linha); // cabecalho
-
+    std::getline(arquivo, linha); // Pular cabeçalho
+    
     while (std::getline(arquivo, linha)) {
-        std::stringstream ss(linha);
-        std::string campo;
-
-        std::getline(ss, campo, ',');
-        int filmeId = std::stoi(campo);
-
-        std::getline(ss, campo, ',');
-        std::string nome = campo;
-
-        if (nome.front() == '"') {
-            std::string resto;
-            std::getline(ss, resto, '"');
-            nome += "," + resto;
+        if (linha.empty()) continue;
+        
+        size_t pos1 = linha.find(',');
+        if (pos1 == std::string::npos) continue;
+        
+        int filmeId = std::stoi(linha.substr(0, pos1));
+        
+        size_t pos2 = linha.find(',', pos1 + 1);
+        if (pos2 == std::string::npos) pos2 = linha.length();
+        
+        std::string nome = linha.substr(pos1 + 1, pos2 - pos1 - 1);
+        
+        // Remover aspas se existirem
+        if (!nome.empty() && nome.front() == '"') {
+            nome = nome.substr(1);
         }
-
-        nomesFilmes[filmeId] = nome;
+        if (!nome.empty() && nome.back() == '"') {
+            nome = nome.substr(0, nome.length() - 1);
+        }
+        
+        nomesFilmes[filmeId] = std::move(nome);
     }
+    
     arquivo.close();
 }
 
@@ -75,5 +99,3 @@ const std::string& GerenciadorDeDados::getNomeFilme(int filmeId) const {
 const std::unordered_map<int, Usuario>& GerenciadorDeDados::getTodosUsuarios() const {
     return dadosUsuarios;
 }
-
-

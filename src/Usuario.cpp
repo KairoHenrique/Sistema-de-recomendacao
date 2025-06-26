@@ -13,5 +13,3 @@ const std::unordered_map<int, float>& Usuario::getAvaliacoes() const {
 int Usuario::getId() const {
     return id;
 }
-
-

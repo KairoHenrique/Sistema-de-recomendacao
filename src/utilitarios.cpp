@@ -1,7 +1,6 @@
-// utilitarios.cpp
 #include "utilitarios.hpp"
-#include <sstream>
 #include <fstream>
+#include <sstream>
 
 std::vector<std::string> dividir(const std::string& linha, char delimitador) {
     std::vector<std::string> tokens;

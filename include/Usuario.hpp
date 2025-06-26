@@ -7,7 +7,6 @@ class Usuario {
 private:
     int id;
     std::unordered_map<int, float> avaliacoes;
-
 public:
     Usuario(int id);
     void adicionarAvaliacao(int filmeId, float nota);
@@ -16,4 +15,3 @@ public:
 };
 
 #endif // USUARIO_HPP
-

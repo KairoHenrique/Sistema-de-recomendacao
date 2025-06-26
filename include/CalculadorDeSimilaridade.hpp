@@ -5,9 +5,9 @@
 
 class CalculadorDeSimilaridade {
 public:
-    static float calcularSimilaridadeCosseno(const std::unordered_map<int, float>& u1,
-                                            const std::unordered_map<int, float>& u2);
+    static float calcularSimilaridadeCosseno(
+        const std::unordered_map<int, float>& u1, float mag1,
+        const std::unordered_map<int, float>& u2, float mag2);
 };
 
 #endif // CALCULADOR_DE_SIMILARIDADE_HPP
-

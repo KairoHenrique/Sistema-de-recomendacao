@@ -9,5 +9,3 @@ const std::string& Filme::getNome() const {
 int Filme::getId() const {
     return id;
 }
-
-

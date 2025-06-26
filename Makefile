@@ -7,14 +7,13 @@ BUILD := build
 OBJ_DIR := $(BUILD)/objects
 BIN_DIR := $(BUILD)
 TARGET := app
-
 SRC := $(wildcard $(SRC_DIR)/*.cpp)
 OBJECTS := $(patsubst $(SRC_DIR)/%.cpp, $(OBJ_DIR)/%.o, $(SRC))
 INCLUDE := -I$(INC_DIR)
 
-.PHONY: all clean build run release
+.PHONY: all clean build run
 
-all: clean run
+all: clean build run
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
 	@mkdir -p $(@D)
@@ -29,9 +28,6 @@ build: $(BIN_DIR)/$(TARGET)
 run: build
 	@mkdir -p dados resultados
 	./$(BIN_DIR)/$(TARGET)
-
-release: CXXFLAGS += -DNDEBUG
-release: all
 
 clean:
 	@rm -rf $(BUILD)

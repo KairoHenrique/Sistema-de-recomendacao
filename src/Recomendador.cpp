@@ -1,48 +1,73 @@
 #include "Recomendador.hpp"
 #include "CalculadorDeSimilaridade.hpp"
 #include "utilitarios.hpp"
-#include <iostream>
-#include <fstream>
 #include <algorithm>
-#include <vector>
-#include <unordered_map>
-#include <unordered_set>
+#include <cmath>
+#include <fstream>
+#include <iostream>
 #include <mutex>
+#include <random>
 #include <thread>
+#include <unordered_set>
+#include <vector>
 
 Recomendador::Recomendador(GerenciadorDeDados& gerenciador, const Configuracao& config)
     : gerenciador(gerenciador), config(config) {}
 
 void Recomendador::recomendarParaUsuario(int usuarioId, std::ostream& outFile) {
     const Usuario& perfilAtual = gerenciador.getUsuario(usuarioId);
+    float mag1 = gerenciador.getMagnitude(usuarioId);
     std::unordered_set<int> filmesVistos;
+    filmesVistos.reserve(perfilAtual.getAvaliacoes().size());
+    
     for (const auto& [filme, _] : perfilAtual.getAvaliacoes()) {
         filmesVistos.insert(filme);
     }
 
-    std::vector<std::pair<int, float>> similares;
-    similares.reserve(gerenciador.getTodosUsuarios().size());
+    // Amostragem de vizinhos (5000 usuários aleatórios)
+    const auto& todosUsuarios = gerenciador.getTodosUsuarios();
+    std::vector<int> candidatosIds;
+    candidatosIds.reserve(todosUsuarios.size());
     
-    for (const auto& [outroId, outroUsuario] : gerenciador.getTodosUsuarios()) {
-        if (outroId == usuarioId) continue;
+    for (const auto& [id, _] : todosUsuarios) {
+        if (id != usuarioId) candidatosIds.push_back(id);
+    }
+
+    std::random_device rd;
+    std::mt19937 g(rd());
+    std::shuffle(candidatosIds.begin(), candidatosIds.end(), g);
+    
+    int amostra = std::min(5000, static_cast<int>(candidatosIds.size()));
+    std::vector<std::pair<int, float>> similares;
+    similares.reserve(amostra);
+
+    for (int i = 0; i < amostra; ++i) {
+        int outroId = candidatosIds[i];
+        const Usuario& outroUsuario = gerenciador.getUsuario(outroId);
+        float mag2 = gerenciador.getMagnitude(outroId);
+        
         float sim = CalculadorDeSimilaridade::calcularSimilaridadeCosseno(
-            perfilAtual.getAvaliacoes(), 
-            outroUsuario.getAvaliacoes()
+            perfilAtual.getAvaliacoes(), mag1,
+            outroUsuario.getAvaliacoes(), mag2
         );
         similares.push_back({outroId, sim});
     }
 
-    std::sort(similares.begin(), similares.end(),
+    // Ordenação parcial (apenas top K)
+    int k_count = std::min(config.K_VIZINHOS, static_cast<int>(similares.size()));
+    std::partial_sort(similares.begin(), similares.begin() + k_count, similares.end(),
         [](const auto& a, const auto& b) { return a.second > b.second; });
 
+    // Estruturas pré-alocadas
     std::unordered_map<int, float> somaNotas;
     std::unordered_map<int, int> contagem;
+    somaNotas.reserve(1000);
+    contagem.reserve(1000);
 
-    // Correção de signed/unsigned comparison
-    int k_count = std::min(config.K_VIZINHOS, static_cast<int>(similares.size()));
     for (int i = 0; i < k_count; ++i) {
         int vizinhoId = similares[i].first;
         const Usuario& vizinhoUsuario = gerenciador.getUsuario(vizinhoId);
+        
         for (const auto& [filme, nota] : vizinhoUsuario.getAvaliacoes()) {
             if (filmesVistos.count(filme) == 0) {
                 somaNotas[filme] += nota;
@@ -51,35 +76,34 @@ void Recomendador::recomendarParaUsuario(int usuarioId, std::ostream& outFile) {
         }
     }
 
-    std::vector<std::pair<int, float>> candidatos;
+    // Vector reutilizado
+    thread_local std::vector<std::pair<int, float>> candidatos;
+    candidatos.clear();
     candidatos.reserve(somaNotas.size());
+    
     for (const auto& [filme, soma] : somaNotas) {
         float media = soma / contagem[filme];
         candidatos.push_back({filme, media});
     }
 
-    std::sort(candidatos.begin(), candidatos.end(),
+    // Ordenação parcial (apenas top N)
+    int n_count = std::min(config.N_RECOMENDACOES, static_cast<int>(candidatos.size()));
+    std::partial_sort(candidatos.begin(), candidatos.begin() + n_count, candidatos.end(),
         [](const auto& a, const auto& b) { return a.second > b.second; });
 
-    {
-        std::lock_guard<std::mutex> lock(mtx);
-        outFile << usuarioId;
-        
-        // Correção de signed/unsigned comparison
-        int n_count = std::min(config.N_RECOMENDACOES, static_cast<int>(candidatos.size()));
-        for (int i = 0; i < n_count; ++i) {
-            int filmeId = candidatos[i].first;
-            try {
-                // NOVO FORMATO: ID:Nome conforme requisitos do professor
-                const std::string& nomeFilme = gerenciador.getNomeFilme(filmeId);
-                outFile << " " << filmeId << ":" << nomeFilme;
-            } catch (const std::out_of_range&) {
-                // Fallback se nome não encontrado
-                outFile << " " << filmeId << ":Filme_" << filmeId;
-            }
+    std::lock_guard<std::mutex> lock(mtx);
+    outFile << usuarioId;
+
+    for (int i = 0; i < n_count; ++i) {
+        int filmeId = candidatos[i].first;
+        try {
+            const std::string& nomeFilme = gerenciador.getNomeFilme(filmeId);
+            outFile << " " << filmeId << ":" << nomeFilme;
+        } catch (...) {
+            outFile << " " << filmeId << ":Filme_" << filmeId;
         }
-        outFile << "\n";
     }
+    outFile << "\n";
 }
 
 void Recomendador::recomendarParaUsuarios(const std::string& arquivoExploracao, const std::string& arquivoSaida, int numThreads) {
@@ -89,9 +113,6 @@ void Recomendador::recomendarParaUsuarios(const std::string& arquivoExploracao, 
         std::cerr << "Erro ao abrir arquivos de entrada/saida" << std::endl;
         return;
     }
-
-    // CRÍTICO: Carregar nomes de filmes antes das recomendações
-    gerenciador.carregarNomesFilmes("dados/movies.csv");
 
     std::vector<int> usuariosParaExplorar;
     int usuarioId;

@@ -3,11 +3,10 @@
 
 class Configuracao {
 public:
-    const int K_VIZINHOS;
-    const int N_RECOMENDACOES;
-    const int N_USUARIOS_EXPLORAR;
+    int K_VIZINHOS;
+    int N_RECOMENDACOES;
+    int N_USUARIOS_EXPLORAR;
 
-    // Apenas declaração
     Configuracao(
         int kVizinhos = 5,
         int nRecomendacoes = 10,

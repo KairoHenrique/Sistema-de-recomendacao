@@ -4,13 +4,13 @@
 #include <unordered_map>
 #include <string>
 #include "Usuario.hpp"
-#include "Filme.hpp"
 
 class GerenciadorDeDados {
 private:
     std::unordered_map<int, Usuario> dadosUsuarios;
     std::unordered_map<int, std::string> nomesFilmes;
-
+    std::unordered_map<int, float> magnitudes; // Magnitudes pré-calculadas
+    
 public:
     GerenciadorDeDados();
     void carregarDados(const std::string& caminhoArquivo);
@@ -18,6 +18,7 @@ public:
     const Usuario& getUsuario(int usuarioId) const;
     const std::string& getNomeFilme(int filmeId) const;
     const std::unordered_map<int, Usuario>& getTodosUsuarios() const;
+    float getMagnitude(int usuarioId) const; // Nova função para magnitudes
 };
 
 #endif // GERENCIADOR_DE_DADOS_HPP

@@ -6,5 +6,4 @@ Configuracao::Configuracao(
     int nUsuariosExplorar
 ) : K_VIZINHOS(kVizinhos),
     N_RECOMENDACOES(nRecomendacoes),
-    N_USUARIOS_EXPLORAR(nUsuariosExplorar)
-{}
+    N_USUARIOS_EXPLORAR(nUsuariosExplorar) {}

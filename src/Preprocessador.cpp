@@ -1,52 +1,51 @@
 #include "Preprocessador.hpp"
+#include <algorithm>
+#include <cstring>
 #include <fstream>
-#include <sstream>
+#include <iostream>
+#include <memory>
+#include <unordered_set>  // CABEÇALHO ADICIONADO
 #include <unordered_map>
 #include <vector>
-#include <algorithm>
 #include <random>
-// Remover #include <execution> se não for usado em outros lugares
 #include "utilitarios.hpp"
 
 void Preprocessador::gerarInput(const std::string& arquivoCSV, const std::string& arquivoSaida) {
-    // Implementação dos filtros obrigatórios mantida
-    constexpr size_t BUFFER_SIZE = 65536;
-    char* buffer = new char[BUFFER_SIZE];
+    constexpr size_t BUFFER_SIZE = 1048576;  // 1MB
+    auto buffer = std::make_unique<char[]>(BUFFER_SIZE);
     
     std::ifstream in(arquivoCSV);
-    std::ofstream out(arquivoSaida);
-    in.rdbuf()->pubsetbuf(buffer, BUFFER_SIZE);
+    in.rdbuf()->pubsetbuf(buffer.get(), BUFFER_SIZE);
     
-    if (!in.is_open() || !out.is_open()) {
-        delete[] buffer;
-        return;
-    }
+    auto out_buffer = std::make_unique<char[]>(BUFFER_SIZE);
+    std::ofstream out(arquivoSaida);
+    out.rdbuf()->pubsetbuf(out_buffer.get(), BUFFER_SIZE);
+    
+    if (!in.is_open() || !out.is_open()) return;
 
     std::string linha;
     std::getline(in, linha); // Ignorar cabeçalho
-
+    
+    // Estruturas otimizadas
+    std::unordered_map<int, int> filmesCounts;
     std::unordered_map<int, std::unordered_map<int, float>> usuarioFilmes;
-    std::unordered_map<int, std::vector<int>> filmesUsuarios;
-    usuarioFilmes.reserve(300000);
-    filmesUsuarios.reserve(100000);
+    filmesCounts.reserve(70000);
+    usuarioFilmes.reserve(170000);
 
     while (std::getline(in, linha)) {
         const char* ptr = linha.c_str();
-        
         int userId = 0;
         while (*ptr >= '0' && *ptr <= '9') {
             userId = userId * 10 + (*ptr - '0');
             ptr++;
         }
         ptr++; // skip comma
-        
         int movieId = 0;
         while (*ptr >= '0' && *ptr <= '9') {
             movieId = movieId * 10 + (*ptr - '0');
             ptr++;
         }
         ptr++; // skip comma
-        
         float rating = 0.0f;
         float decimal = 1.0f;
         bool after_dot = false;
@@ -63,56 +62,47 @@ void Preprocessador::gerarInput(const std::string& arquivoCSV, const std::string
             }
             ptr++;
         }
-
+        
+        // Atualizar estruturas
+        filmesCounts[movieId]++;
         usuarioFilmes[userId][movieId] = rating;
-        filmesUsuarios[movieId].push_back(userId);
     }
-    in.close();
 
-    // FILTRO 1: Filmes com pelo menos 50 usuários
-    std::vector<int> filmesValidos;
-    filmesValidos.reserve(filmesUsuarios.size() / 2);
-    
-    for (const auto& [filmeId, usuarios] : filmesUsuarios) {
-        if (usuarios.size() >= 50) {
-            filmesValidos.push_back(filmeId);
+    // Filtro 1: Filmes com >=50 avaliações
+    std::unordered_set<int> validMovies;
+    for (const auto& [filmeId, count] : filmesCounts) {
+        if (count >= 50) {
+            validMovies.insert(filmeId);
         }
     }
-    std::sort(filmesValidos.begin(), filmesValidos.end());
 
-    // FILTRO 2: Usuários com pelo menos 50 avaliações de filmes válidos
+    // Filtro 2: Usuários com >=50 avaliações válidas
     std::unordered_map<int, std::unordered_map<int, float>> usuariosValidos;
-    usuariosValidos.reserve(usuarioFilmes.size() / 3);
-
-    for (const auto& [userId, avaliacoes] : usuarioFilmes) {
+    for (auto& [userId, avaliacoes] : usuarioFilmes) {
         int validCount = 0;
-        for (const auto& [filmeId, _] : avaliacoes) {
-            if (std::binary_search(filmesValidos.begin(), filmesValidos.end(), filmeId)) {
+        std::unordered_map<int, float> validRatings;
+        
+        for (const auto& [filmeId, nota] : avaliacoes) {
+            if (validMovies.find(filmeId) != validMovies.end()) {
                 validCount++;
+                validRatings[filmeId] = nota;
             }
         }
+        
         if (validCount >= 50) {
-            usuariosValidos[userId] = avaliacoes;
+            usuariosValidos[userId] = std::move(validRatings);
         }
     }
 
     // Escrita otimizada
-    char* write_buffer = new char[BUFFER_SIZE];
-    out.rdbuf()->pubsetbuf(write_buffer, BUFFER_SIZE);
-
     for (const auto& [userId, avaliacoes] : usuariosValidos) {
         out << userId;
         for (const auto& [filmeId, nota] : avaliacoes) {
-            if (std::binary_search(filmesValidos.begin(), filmesValidos.end(), filmeId)) {
-                out << " " << filmeId << ":" << nota;
-            }
+            out << " " << filmeId << ":" << nota;
         }
         out << "\n";
     }
-
     out.close();
-    delete[] buffer;
-    delete[] write_buffer;
 }
 
 void Preprocessador::gerarExplore(const std::string& inputDat, const std::string& exploreDat, int quantidade) {
@@ -122,7 +112,6 @@ void Preprocessador::gerarExplore(const std::string& inputDat, const std::string
 
     std::vector<int> userIds;
     userIds.reserve(100000);
-    
     std::string linha;
     while (std::getline(in, linha)) {
         auto partes = dividir(linha, ' ');
@@ -134,16 +123,13 @@ void Preprocessador::gerarExplore(const std::string& inputDat, const std::string
 
     if (userIds.empty()) return;
 
-    // CORREÇÃO: Remover política de execução paralela
     std::random_device rd;
     std::mt19937 g(rd());
     std::shuffle(userIds.begin(), userIds.end(), g);
 
-    // Usar vector ordenado ao invés de set
     std::vector<int> selectedUsers;
     int limite = std::min(quantidade, static_cast<int>(userIds.size()));
     selectedUsers.reserve(limite);
-    
     for (int i = 0; i < limite; ++i) {
         selectedUsers.push_back(userIds[i]);
     }

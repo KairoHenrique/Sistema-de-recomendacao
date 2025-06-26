@@ -9,7 +9,7 @@ class GerenciadorDeDados {
 private:
     std::unordered_map<int, Usuario> dadosUsuarios;
     std::unordered_map<int, std::string> nomesFilmes;
-    std::unordered_map<int, float> magnitudes; // Magnitudes pré-calculadas
+    std::unordered_map<int, float> magnitudes;
     
 public:
     GerenciadorDeDados();
@@ -18,7 +18,12 @@ public:
     const Usuario& getUsuario(int usuarioId) const;
     const std::string& getNomeFilme(int filmeId) const;
     const std::unordered_map<int, Usuario>& getTodosUsuarios() const;
-    float getMagnitude(int usuarioId) const; // Nova função para magnitudes
+    float getMagnitude(int usuarioId) const;
+    
+    // Adicione este método
+    const std::unordered_map<int, std::string>& getNomesFilmesMap() const {
+        return nomesFilmes;
+    }
 };
 
-#endif // GERENCIADOR_DE_DADOS_HPP
+#endif

@@ -1,40 +1,36 @@
 #include <chrono>
+#include <fstream>
 #include <iostream>
+#include <string>
 #include <thread>
-#include <sys/resource.h>     // Para medir uso de memória
-#include <functional>         // NECESSÁRIO para std::function
+#include <unistd.h>
 #include "Preprocessador.hpp"
 #include "Recomendador.hpp"
 #include "Configuracao.hpp"
 #include "GerenciadorDeDados.hpp"
 #include "utilitarios.hpp"
+#include <sstream>
 
-
+// Função para pegar memória atual usada pelo processo em MB
 double memoriaMB() {
-    struct rusage uso;
-    getrusage(RUSAGE_SELF, &uso);
-    return uso.ru_maxrss / 1024.0; // Em MB (Linux: ru_maxrss é em KB)
-}
-
-void medirAcao(const std::string& nome, const std::function<void()>& acao) {
-    std::cout << "\nIniciando: " << nome << std::endl;
-    auto inicio = std::chrono::high_resolution_clock::now();
-    double memoriaAntes = memoriaMB();
-
-    acao(); // Executa a ação
-
-    auto fim = std::chrono::high_resolution_clock::now();
-    double memoriaDepois = memoriaMB();
-    std::chrono::duration<double> duracao = fim - inicio;
-
-    std::cout << "Finalizado: " << nome << std::endl;
-    std::cout << "Tempo: " << duracao.count() << " segundos" << std::endl;
-    std::cout << "Memória: " << (memoriaDepois - memoriaAntes) << " MB usada\n";
+    std::ifstream arquivo("/proc/self/status");
+    std::string linha;
+    while (std::getline(arquivo, linha)) {
+        if (linha.find("VmRSS:") == 0) {
+            std::istringstream iss(linha);
+            std::string key;
+            double memKB;
+            std::string unidade;
+            iss >> key >> memKB >> unidade;
+            return memKB / 1024.0;  // Convertendo para MB
+        }
+    }
+    return 0.0;
 }
 
 int main() {
     std::cout << "Iniciando sistema de recomendacao..." << std::endl;
-    auto inicioGeral = std::chrono::high_resolution_clock::now();
+    auto total_inicio = std::chrono::high_resolution_clock::now();
 
     Configuracao config;
     GerenciadorDeDados gerenciador;
@@ -45,30 +41,45 @@ int main() {
     if (numThreads == 0) numThreads = 4;
     std::cout << "Usando " << numThreads << " threads para recomendacao." << std::endl;
 
-    medirAcao("Gerar input.dat", [&]() {
-        preprocessador.gerarInput("dados/ratings.csv", "dados/input.dat");
-    });
+    // --- Gerar input.dat ---
+    auto ini_input = std::chrono::high_resolution_clock::now();
+    preprocessador.gerarInput("dados/ratings.csv", "dados/input.dat");
+    auto fim_input = std::chrono::high_resolution_clock::now();
+    double tempo_input = std::chrono::duration<double>(fim_input - ini_input).count();
+    double mem_input = memoriaMB();
+    std::cout << "Tempo para gerar input: " << tempo_input << "s | Memória: " << mem_input << " MB" << std::endl;
 
-    medirAcao("Gerar explore.dat", [&]() {
-        preprocessador.gerarExplore("dados/input.dat", "dados/explore.dat", config.N_USUARIOS_EXPLORAR);
-    });
+    // --- Gerar explore.dat ---
+    auto ini_explore = std::chrono::high_resolution_clock::now();
+    preprocessador.gerarExplore("dados/input.dat", "dados/explore.dat", config.N_USUARIOS_EXPLORAR);
+    auto fim_explore = std::chrono::high_resolution_clock::now();
+    double tempo_explore = std::chrono::duration<double>(fim_explore - ini_explore).count();
+    double mem_explore = memoriaMB();
+    std::cout << "Tempo para gerar explore: " << tempo_explore << "s | Memória: " << mem_explore << " MB" << std::endl;
 
-    medirAcao("Carregar input.dat", [&]() {
-        gerenciador.carregarDados("dados/input.dat");
-    });
+    // --- Carregar dados ---
+    auto ini_carregar = std::chrono::high_resolution_clock::now();
+    gerenciador.carregarDados("dados/input.dat");
+    gerenciador.carregarNomesFilmes("dados/movies.csv");
+    auto fim_carregar = std::chrono::high_resolution_clock::now();
+    double tempo_carregar = std::chrono::duration<double>(fim_carregar - ini_carregar).count();
+    double mem_carregar = memoriaMB();
+    std::cout << "Tempo para carregar dados: " << tempo_carregar << "s | Memória: " << mem_carregar << " MB" << std::endl;
 
-    medirAcao("Carregar movies.csv", [&]() {
-        gerenciador.carregarNomesFilmes("dados/movies.csv");
-    });
+    // --- Recomendação ---
+    auto ini_recomendar = std::chrono::high_resolution_clock::now();
+    recomendador.recomendarParaUsuarios("dados/explore.dat", "resultados/output.dat", numThreads);
+    auto fim_recomendar = std::chrono::high_resolution_clock::now();
+    double tempo_recomendar = std::chrono::duration<double>(fim_recomendar - ini_recomendar).count();
+    double mem_recomendar = memoriaMB();
+    std::cout << "Tempo para recomendar: " << tempo_recomendar << "s | Memória: " << mem_recomendar << " MB" << std::endl;
 
-    medirAcao("Recomendar para usuarios", [&]() {
-        recomendador.recomendarParaUsuarios("dados/explore.dat", "resultados/output.dat", numThreads);
-    });
-
-    auto fimGeral = std::chrono::high_resolution_clock::now();
-    std::chrono::duration<double> duracaoGeral = fimGeral - inicioGeral;
-    std::cout << "\nFinalizando sistema de recomendacao." << std::endl;
-    std::cout << "Tempo total de execucao: " << duracaoGeral.count() << " segundos" << std::endl;
+    // --- Tempo total ---
+    auto total_fim = std::chrono::high_resolution_clock::now();
+    double tempo_total = std::chrono::duration<double>(total_fim - total_inicio).count();
+    std::cout << "Finalizando sistema de recomendacao." << std::endl;
+    std::cout << "Tempo total de execucao: " << tempo_total << " segundos" << std::endl;
+    std::cout << "Uso total de memoria aproximado: " << mem_recomendar << " MB" << std::endl;
 
     return 0;
 }

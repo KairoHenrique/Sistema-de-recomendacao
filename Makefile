@@ -1,5 +1,5 @@
 CXX := g++
-CXXFLAGS := -Wall -Wextra -Werror -std=c++17 -O3 -march=native -flto -ffast-math
+CXXFLAGS := -Wall -Wextra -Werror -std=c++20 -O3 -march=native -flto -ffast-math -fno-exceptions -fno-rtti
 LDFLAGS := -lm -pthread -flto
 SRC_DIR := src
 INC_DIR := include
@@ -7,6 +7,7 @@ BUILD := build
 OBJ_DIR := $(BUILD)/objects
 BIN_DIR := $(BUILD)
 TARGET := app
+
 SRC := $(wildcard $(SRC_DIR)/*.cpp)
 OBJECTS := $(patsubst $(SRC_DIR)/%.cpp, $(OBJ_DIR)/%.o, $(SRC))
 INCLUDE := -I$(INC_DIR)

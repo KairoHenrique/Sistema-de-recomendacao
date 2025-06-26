@@ -9,4 +9,4 @@ public:
     static void gerarExplore(const std::string& inputDat, const std::string& exploreDat, int quantidade);
 };
 
-#endif // PREPROCESSADOR_HPP
+#endif

@@ -1,23 +1,21 @@
 #include "Preprocessador.hpp"
 #include <algorithm>
-#include <cstring>
 #include <fstream>
-#include <iostream>
 #include <memory>
-#include <unordered_set>  // CABEÇALHO ADICIONADO
-#include <unordered_map>
-#include <vector>
 #include <random>
+#include <unordered_map>
+#include <unordered_set>
+#include <vector>
 #include "utilitarios.hpp"
 
 void Preprocessador::gerarInput(const std::string& arquivoCSV, const std::string& arquivoSaida) {
-    constexpr size_t BUFFER_SIZE = 1048576;  // 1MB
-    auto buffer = std::make_unique<char[]>(BUFFER_SIZE);
+    constexpr size_t BUFFER_SIZE = 1048576;
+    auto in_buffer = std::make_unique<char[]>(BUFFER_SIZE);
+    auto out_buffer = std::make_unique<char[]>(BUFFER_SIZE);
     
     std::ifstream in(arquivoCSV);
-    in.rdbuf()->pubsetbuf(buffer.get(), BUFFER_SIZE);
+    in.rdbuf()->pubsetbuf(in_buffer.get(), BUFFER_SIZE);
     
-    auto out_buffer = std::make_unique<char[]>(BUFFER_SIZE);
     std::ofstream out(arquivoSaida);
     out.rdbuf()->pubsetbuf(out_buffer.get(), BUFFER_SIZE);
     
@@ -26,7 +24,6 @@ void Preprocessador::gerarInput(const std::string& arquivoCSV, const std::string
     std::string linha;
     std::getline(in, linha); // Ignorar cabeçalho
     
-    // Estruturas otimizadas
     std::unordered_map<int, int> filmesCounts;
     std::unordered_map<int, std::unordered_map<int, float>> usuarioFilmes;
     filmesCounts.reserve(70000);
@@ -63,12 +60,10 @@ void Preprocessador::gerarInput(const std::string& arquivoCSV, const std::string
             ptr++;
         }
         
-        // Atualizar estruturas
         filmesCounts[movieId]++;
         usuarioFilmes[userId][movieId] = rating;
     }
 
-    // Filtro 1: Filmes com >=50 avaliações
     std::unordered_set<int> validMovies;
     for (const auto& [filmeId, count] : filmesCounts) {
         if (count >= 50) {
@@ -76,31 +71,23 @@ void Preprocessador::gerarInput(const std::string& arquivoCSV, const std::string
         }
     }
 
-    // Filtro 2: Usuários com >=50 avaliações válidas
-    std::unordered_map<int, std::unordered_map<int, float>> usuariosValidos;
-    for (auto& [userId, avaliacoes] : usuarioFilmes) {
+    for (const auto& [userId, avaliacoes] : usuarioFilmes) {
         int validCount = 0;
-        std::unordered_map<int, float> validRatings;
-        
-        for (const auto& [filmeId, nota] : avaliacoes) {
+        for (const auto& [filmeId, _] : avaliacoes) {
             if (validMovies.find(filmeId) != validMovies.end()) {
                 validCount++;
-                validRatings[filmeId] = nota;
             }
         }
         
         if (validCount >= 50) {
-            usuariosValidos[userId] = std::move(validRatings);
+            out << userId;
+            for (const auto& [filmeId, nota] : avaliacoes) {
+                if (validMovies.find(filmeId) != validMovies.end()) {
+                    out << " " << filmeId << ":" << nota;
+                }
+            }
+            out << "\n";
         }
-    }
-
-    // Escrita otimizada
-    for (const auto& [userId, avaliacoes] : usuariosValidos) {
-        out << userId;
-        for (const auto& [filmeId, nota] : avaliacoes) {
-            out << " " << filmeId << ":" << nota;
-        }
-        out << "\n";
     }
     out.close();
 }

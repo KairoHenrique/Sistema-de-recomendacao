@@ -3,6 +3,7 @@
 #include <fstream>
 #include <memory>
 #include <sstream>
+#include <utility>
 #include "utilitarios.hpp"
 
 GerenciadorDeDados::GerenciadorDeDados() {
@@ -11,7 +12,7 @@ GerenciadorDeDados::GerenciadorDeDados() {
 }
 
 void GerenciadorDeDados::carregarDados(const std::string& caminhoArquivo) {
-    constexpr size_t BUFFER_SIZE = 1048576;  // 1MB
+    constexpr size_t BUFFER_SIZE = 1048576;
     auto buffer = std::make_unique<char[]>(BUFFER_SIZE);
     
     std::ifstream arquivo(caminhoArquivo);

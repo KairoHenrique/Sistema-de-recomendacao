@@ -2,6 +2,7 @@
 #include "CalculadorDeSimilaridade.hpp"
 #include "utilitarios.hpp"
 #include <algorithm>
+#include <atomic>
 #include <cmath>
 #include <fstream>
 #include <iostream>
@@ -24,7 +25,6 @@ void Recomendador::recomendarParaUsuario(int usuarioId, std::ostream& outFile) {
         filmesVistos.insert(filme);
     }
 
-    // Amostragem de vizinhos (5000 usuários aleatórios)
     const auto& todosUsuarios = gerenciador.getTodosUsuarios();
     std::vector<int> candidatosIds;
     candidatosIds.reserve(todosUsuarios.size());
@@ -53,53 +53,55 @@ void Recomendador::recomendarParaUsuario(int usuarioId, std::ostream& outFile) {
         similares.push_back({outroId, sim});
     }
 
-    // Ordenação parcial (apenas top K)
     int k_count = std::min(config.K_VIZINHOS, static_cast<int>(similares.size()));
     std::partial_sort(similares.begin(), similares.begin() + k_count, similares.end(),
         [](const auto& a, const auto& b) { return a.second > b.second; });
 
-    // Estruturas pré-alocadas
     std::unordered_map<int, float> somaNotas;
-    std::unordered_map<int, int> contagem;
+    std::unordered_map<int, float> somaPesos;
     somaNotas.reserve(1000);
-    contagem.reserve(1000);
+    somaPesos.reserve(1000);
 
     for (int i = 0; i < k_count; ++i) {
         int vizinhoId = similares[i].first;
+        float sim = similares[i].second;
         const Usuario& vizinhoUsuario = gerenciador.getUsuario(vizinhoId);
         
         for (const auto& [filme, nota] : vizinhoUsuario.getAvaliacoes()) {
             if (filmesVistos.count(filme) == 0) {
-                somaNotas[filme] += nota;
-                contagem[filme]++;
+                somaNotas[filme] += sim * nota;
+                somaPesos[filme] += sim;
             }
         }
     }
 
-    // Vector reutilizado
     thread_local std::vector<std::pair<int, float>> candidatos;
     candidatos.clear();
     candidatos.reserve(somaNotas.size());
     
     for (const auto& [filme, soma] : somaNotas) {
-        float media = soma / contagem[filme];
-        candidatos.push_back({filme, media});
+        if (somaPesos[filme] != 0) {
+            float media = soma / somaPesos[filme];
+            candidatos.push_back({filme, media});
+        }
     }
 
-    // Ordenação parcial (apenas top N)
     int n_count = std::min(config.N_RECOMENDACOES, static_cast<int>(candidatos.size()));
-    std::partial_sort(candidatos.begin(), candidatos.begin() + n_count, candidatos.end(),
-        [](const auto& a, const auto& b) { return a.second > b.second; });
+    if (n_count > 0) {
+        std::partial_sort(candidatos.begin(), candidatos.begin() + n_count, candidatos.end(),
+            [](const auto& a, const auto& b) { return a.second > b.second; });
+    }
 
     std::lock_guard<std::mutex> lock(mtx);
     outFile << usuarioId;
 
     for (int i = 0; i < n_count; ++i) {
         int filmeId = candidatos[i].first;
-        try {
-            const std::string& nomeFilme = gerenciador.getNomeFilme(filmeId);
-            outFile << " " << filmeId << ":" << nomeFilme;
-        } catch (...) {
+        const auto& nomesMap = gerenciador.getNomesFilmesMap();
+        auto it = nomesMap.find(filmeId);
+        if (it != nomesMap.end()) {
+            outFile << " " << filmeId << ":" << it->second;
+        } else {
             outFile << " " << filmeId << ":Filme_" << filmeId;
         }
     }
@@ -114,6 +116,7 @@ void Recomendador::recomendarParaUsuarios(const std::string& arquivoExploracao, 
         return;
     }
 
+    gerenciador.carregarNomesFilmes("dados/movies.csv");
     std::vector<int> usuariosParaExplorar;
     int usuarioId;
     while (in >> usuarioId) {
@@ -121,11 +124,15 @@ void Recomendador::recomendarParaUsuarios(const std::string& arquivoExploracao, 
     }
     in.close();
 
+    std::atomic<size_t> next_index(0);
     std::vector<std::thread> threads;
+    
     for (int i = 0; i < numThreads; ++i) {
-        threads.emplace_back([&, i]() {
-            for (size_t j = i; j < usuariosParaExplorar.size(); j += numThreads) {
+        threads.emplace_back([&]() {
+            size_t j = next_index.fetch_add(1, std::memory_order_relaxed);
+            while (j < usuariosParaExplorar.size()) {
                 recomendarParaUsuario(usuariosParaExplorar[j], out);
+                j = next_index.fetch_add(1, std::memory_order_relaxed);
             }
         });
     }

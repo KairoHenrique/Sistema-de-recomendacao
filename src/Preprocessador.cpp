@@ -1,4 +1,6 @@
 #include "Preprocessador.hpp"
+#include "utilitarios.hpp"
+#include "GerenciadorDeDados.hpp" // Adicionado para acessar a classe
 #include <fstream>
 #include <unordered_map>
 #include <unordered_set>
@@ -10,21 +12,16 @@
 #include <random>
 #include <algorithm>
 #include <thread>
-#include <future> // Para std::async e std::future
+#include <future>
 
-// Estrutura para manter os resultados de cada thread
 struct ContagemParcial {
     std::unordered_map<int, int> filmesCounts;
     std::unordered_map<int, int> usuariosCounts;
 };
 
-// Função externa definida em GerenciadorDeDados.cpp
-extern std::string lerArquivoInteiro(const std::string& caminho);
-
-// Função que cada thread executará para processar seu pedaço do arquivo
 ContagemParcial processarChunk(std::string_view chunk) {
     ContagemParcial contagem;
-    contagem.filmesCounts.reserve(20000); // Estimativas
+    contagem.filmesCounts.reserve(20000);
     contagem.usuariosCounts.reserve(40000);
 
     while (!chunk.empty()) {
@@ -48,6 +45,26 @@ ContagemParcial processarChunk(std::string_view chunk) {
     return contagem;
 }
 
+void escreverCacheBinario(const std::string& arquivoCache, const std::unordered_map<int, std::vector<std::pair<int, float>>>& dados) {
+    std::cout << "  - Escrevendo cache binario em " << arquivoCache << "..." << std::endl;
+    std::ofstream out(arquivoCache, std::ios::binary);
+    if (!out) {
+        std::cerr << "Erro: Nao foi possivel criar o arquivo de cache binario." << std::endl;
+        return;
+    }
+
+    size_t numUsuarios = dados.size();
+    out.write(reinterpret_cast<const char*>(&numUsuarios), sizeof(numUsuarios));
+
+    for (const auto& [userId, avaliacoes] : dados) {
+        out.write(reinterpret_cast<const char*>(&userId), sizeof(userId));
+        
+        size_t numAvaliacoes = avaliacoes.size();
+        out.write(reinterpret_cast<const char*>(&numAvaliacoes), sizeof(numAvaliacoes));
+        
+        out.write(reinterpret_cast<const char*>(avaliacoes.data()), numAvaliacoes * sizeof(std::pair<int, float>));
+    }
+}
 
 void Preprocessador::gerarInput(const std::string& arquivoCSV, const std::string& arquivoSaida) {
     std::cout << "Iniciando pre-processamento PARALELO (gerarInput)..." << std::endl;
@@ -61,31 +78,20 @@ void Preprocessador::gerarInput(const std::string& arquivoCSV, const std::string
     size_t chunkSize = conteudo.size() / numThreads;
     size_t inicio = 0;
 
-    // Ignora cabeçalho
     inicio = conteudo.find('\n') + 1;
 
-    // --- Lançamento dos Threads ---
     for (unsigned int i = 0; i < numThreads; ++i) {
         size_t fim = (i == numThreads - 1) ? conteudo.size() : inicio + chunkSize;
-        
-        // Ajusta 'fim' para a próxima quebra de linha para não cortar uma linha ao meio
         if (fim < conteudo.size()) {
             fim = conteudo.find('\n', fim);
-            if (fim == std::string::npos) {
-                fim = conteudo.size();
-            }
+            if (fim == std::string::npos) fim = conteudo.size();
         }
-
         std::string_view chunk(conteudo.data() + inicio, fim - inicio);
         futuros.push_back(std::async(std::launch::async, processarChunk, chunk));
-        
         inicio = fim + 1;
-        if (inicio >= conteudo.size()) {
-            break;
-        }
+        if (inicio >= conteudo.size()) break;
     }
 
-    // --- Agregação (Reduce) ---
     std::cout << "  - Agregando resultados dos threads..." << std::endl;
     std::unordered_map<int, int> filmesCounts;
     std::unordered_map<int, int> usuariosCounts;
@@ -94,17 +100,10 @@ void Preprocessador::gerarInput(const std::string& arquivoCSV, const std::string
 
     for (auto& f : futuros) {
         ContagemParcial parcial = f.get();
-        for (const auto& [filmeId, count] : parcial.filmesCounts) {
-            filmesCounts[filmeId] += count;
-        }
-        for (const auto& [userId, count] : parcial.usuariosCounts) {
-            usuariosCounts[userId] += count;
-        }
+        for (const auto& [filmeId, count] : parcial.filmesCounts) filmesCounts[filmeId] += count;
+        for (const auto& [userId, count] : parcial.usuariosCounts) usuariosCounts[userId] += count;
     }
 
-    // --- O restante do processo é o mesmo, mas agora muito mais rápido ---
-    // pois opera em dados já agregados.
-    
     std::cout << "  - Criando filtros de filmes e usuarios validos..." << std::endl;
     std::unordered_set<int> validMovies;
     validMovies.reserve(filmesCounts.size());
@@ -121,12 +120,12 @@ void Preprocessador::gerarInput(const std::string& arquivoCSV, const std::string
     filmesCounts.clear();
     usuariosCounts.clear();
 
-    std::cout << "  - Passagem final: agrupando e escrevendo dados validos..." << std::endl;
+    std::cout << "  - Passagem final: agrupando dados validos..." << std::endl;
     std::unordered_map<int, std::vector<std::pair<int, float>>> finalData;
     finalData.reserve(validUsers.size());
     
     std::string_view sv_final(conteudo);
-    sv_final.remove_prefix(sv_final.find('\n') + 1); // Pula cabeçalho
+    sv_final.remove_prefix(sv_final.find('\n') + 1);
 
     while (!sv_final.empty()) {
         int userId, movieId;
@@ -156,39 +155,40 @@ void Preprocessador::gerarInput(const std::string& arquivoCSV, const std::string
     }
     out.exceptions(std::ofstream::failbit | std::ofstream::badbit);
 
-    for (const auto& [userId, avaliacoes] : finalData) {
+    std::unordered_map<int, std::vector<std::pair<int, float>>> dadosParaCache;
+
+    for (auto& [userId, avaliacoes] : finalData) {
         if (avaliacoes.size() >= 50) {
             out << userId;
             for (const auto& [filmeId, nota] : avaliacoes) {
                 out << " " << filmeId << ":" << nota;
             }
             out << "\n";
+            dadosParaCache.emplace(userId, std::move(avaliacoes));
         }
     }
-    std::cout << "Pre-processamento PARALELO (gerarInput) finalizado." << std::endl;
+    std::cout << "Pre-processamento (gerarInput) finalizado." << std::endl;
+
+    escreverCacheBinario("dados/input.bin", dadosParaCache);
 }
 
-// A função gerarExplore permanece a mesma, pois é rápida o suficiente.
-void Preprocessador::gerarExplore(const std::string& inputDat, const std::string& exploreDat, int quantidade) {
-    std::cout << "Gerando arquivo de exploracao..." << std::endl;
-    std::ifstream in(inputDat);
-    if (!in.is_open()) {
-        std::cerr << "Erro fatal: nao foi possivel abrir " << inputDat << std::endl;
-        exit(1);
+// --- CORREÇÃO APLICADA AQUI ---
+// A assinatura da função e sua implementação foram atualizadas para
+// corresponder à declaração no arquivo .hpp.
+void Preprocessador::gerarExplore(GerenciadorDeDados& gerenciador, const std::string& exploreDat, int quantidade) {
+    std::cout << "Gerando arquivo de exploracao a partir dos dados em memoria..." << std::endl;
+    
+    const auto& todosUsuarios = gerenciador.getTodosUsuarios();
+    if (todosUsuarios.empty()) {
+        std::cerr << "Nenhum usuario carregado para gerar o arquivo de exploracao." << std::endl;
+        return;
     }
 
     std::vector<int> userIds;
-    userIds.reserve(170000);
-    std::string linha;
-    while (std::getline(in, linha)) {
-        if (linha.empty()) continue;
-        int userId;
-        auto pos_espaco = linha.find(' ');
-        std::from_chars(linha.data(), linha.data() + pos_espaco, userId);
-        userIds.push_back(userId);
+    userIds.reserve(todosUsuarios.size());
+    for(const auto& [id, _] : todosUsuarios) {
+        userIds.push_back(id);
     }
-
-    if (userIds.empty()) return;
 
     std::mt19937 g(std::random_device{}());
     std::shuffle(userIds.begin(), userIds.end(), g);

@@ -10,7 +10,7 @@ public:
     Configuracao(
         int kVizinhos = 20,
         int nRecomendacoes = 10,
-        int nUsuariosExplorar = 100
+        int nUsuariosExplorar = 5
     );
 };
 

@@ -6,6 +6,7 @@
 #include <random>
 #include <unordered_set>
 #include <iostream>
+#include <string_view>
 
 Recomendador::Recomendador(GerenciadorDeDados& gerenciador, const Configuracao& config)
     : gerenciador(gerenciador), config(config) {}
@@ -89,10 +90,19 @@ void Recomendador::recomendarParaUsuario(int usuarioId, std::ostream& outFile) {
             [](const auto& a, const auto& b) { return a.second > b.second; });
     }
 
+    // --- MODIFICAÇÃO APLICADA AQUI ---
     std::lock_guard<std::mutex> lock(mtx);
     outFile << usuarioId;
     for (int i = 0; i < n_count; ++i) {
-        outFile << " " << candidatos[i].first;
+        int filmeId = candidatos[i].first;
+        // Busca o nome do filme usando o gerenciador de dados
+        std::string_view nomeFilme = gerenciador.getNomeFilme(filmeId);
+        outFile << " " << filmeId << ":";
+        if (!nomeFilme.empty()) {
+            outFile << nomeFilme;
+        } else {
+            outFile << "NomeNaoEncontrado";
+        }
     }
     outFile << "\n";
 }

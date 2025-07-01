@@ -7,21 +7,9 @@
 #include <iostream>
 #include <utility>
 
-std::string lerArquivoInteiro(const std::string& caminho) {
-    std::ifstream arquivo(caminho, std::ios::binary | std::ios::ate);
-    if (!arquivo) {
-        std::cerr << "Erro fatal: nao foi possivel abrir o arquivo: " << caminho << std::endl;
-        exit(1);
-    }
-    std::streamsize tamanho = arquivo.tellg();
-    arquivo.seekg(0, std::ios::beg);
-    std::string buffer(tamanho, '\0');
-    if (!arquivo.read(buffer.data(), tamanho)) {
-        std::cerr << "Erro fatal: nao foi possivel ler o arquivo: " << caminho << std::endl;
-        exit(1);
-    }
-    return buffer;
-}
+// Função externa para ler um arquivo inteiro para a memória.
+// A definição real está em outro arquivo, mas precisamos da declaração.
+extern std::string lerArquivoInteiro(const std::string& caminho);
 
 GerenciadorDeDados::GerenciadorDeDados() {
     dadosUsuarios.reserve(170000);
@@ -29,7 +17,7 @@ GerenciadorDeDados::GerenciadorDeDados() {
     nomesFilmes.reserve(70000);
 }
 
-void GerenciadorDeDados::carregarDados(const std::string& caminhoInput, const std::string& caminhoMovies) {
+void GerenciadorDeDados::carregarNomesFilmes(const std::string& caminhoMovies) {
     arenaNomesFilmes = lerArquivoInteiro(caminhoMovies);
     std::string_view sv_filmes(arenaNomesFilmes);
 
@@ -62,7 +50,48 @@ void GerenciadorDeDados::carregarDados(const std::string& caminhoInput, const st
         }
         nomesFilmes[filmeId] = nome;
     }
+}
 
+bool GerenciadorDeDados::carregarDadosDeCacheBinario(const std::string& caminhoCache) {
+    std::ifstream in(caminhoCache, std::ios::binary);
+    if (!in) {
+        return false; // Cache não encontrado ou não pôde ser aberto
+    }
+
+    std::cout << "  - Lendo cache binario de " << caminhoCache << "..." << std::endl;
+
+    size_t numUsuarios;
+    in.read(reinterpret_cast<char*>(&numUsuarios), sizeof(numUsuarios));
+    dadosUsuarios.reserve(numUsuarios);
+
+    for (size_t i = 0; i < numUsuarios; ++i) {
+        int userId;
+        in.read(reinterpret_cast<char*>(&userId), sizeof(userId));
+
+        Usuario usuario(userId);
+        float mag_quadrada = 0.0f;
+
+        size_t numAvaliacoes;
+        in.read(reinterpret_cast<char*>(&numAvaliacoes), sizeof(numAvaliacoes));
+        
+        std::vector<std::pair<int, float>> avaliacoes(numAvaliacoes);
+        in.read(reinterpret_cast<char*>(avaliacoes.data()), numAvaliacoes * sizeof(std::pair<int, float>));
+
+        for (const auto& [filmeId, nota] : avaliacoes) {
+            usuario.adicionarAvaliacao(filmeId, nota);
+            mag_quadrada += nota * nota;
+        }
+
+        usuario.finalizarEOrdenarAvaliacoes();
+        magnitudes[userId] = std::sqrt(mag_quadrada);
+        dadosUsuarios.emplace(userId, std::move(usuario));
+    }
+    
+    return true;
+}
+
+void GerenciadorDeDados::carregarDadosDeTexto(const std::string& caminhoInput) {
+    std::cout << "  - Lendo dados do arquivo de texto " << caminhoInput << "..." << std::endl;
     std::string conteudoInput = lerArquivoInteiro(caminhoInput);
     std::string_view sv_input(conteudoInput);
 
@@ -72,7 +101,7 @@ void GerenciadorDeDados::carregarDados(const std::string& caminhoInput, const st
         sv_input.remove_prefix(fim_linha != std::string_view::npos ? fim_linha + 1 : sv_input.size());
         if (linha.empty()) continue;
 
-        int usuarioId;
+        int usuarioId; // Variável declarada como 'usuarioId'
         auto pos_espaco = linha.find(' ');
         std::from_chars(linha.data(), linha.data() + pos_espaco, usuarioId);
         linha.remove_prefix(pos_espaco != std::string_view::npos ? pos_espaco + 1 : linha.size());
@@ -97,6 +126,9 @@ void GerenciadorDeDados::carregarDados(const std::string& caminhoInput, const st
         }
         
         usuario.finalizarEOrdenarAvaliacoes();
+        
+        // --- CORREÇÃO APLICADA AQUI ---
+        // O nome da variável foi corrigido de 'userId' para 'usuarioId'.
         magnitudes[usuarioId] = std::sqrt(mag_quadrada);
         dadosUsuarios.emplace(usuarioId, std::move(usuario));
     }

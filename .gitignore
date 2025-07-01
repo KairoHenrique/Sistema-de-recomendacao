@@ -12,3 +12,6 @@ build/
 
 # Ignorar arquivos .out
 *.out
+
+*.bin
+

@@ -3,10 +3,15 @@
 
 #include <string>
 
+// Forward declaration para evitar include circular
+class GerenciadorDeDados;
+
 class Preprocessador {
 public:
     static void gerarInput(const std::string& arquivoCSV, const std::string& arquivoSaida);
-    static void gerarExplore(const std::string& inputDat, const std::string& exploreDat, int quantidade);
+    // --- MODIFICAÇÃO APLICADA AQUI ---
+    // Agora recebe uma referência ao gerenciador em vez de ler um arquivo .dat
+    static void gerarExplore(GerenciadorDeDados& gerenciador, const std::string& exploreDat, int quantidade);
 };
 
 #endif

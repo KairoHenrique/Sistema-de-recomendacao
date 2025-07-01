@@ -1,106 +1,117 @@
 #include "GerenciadorDeDados.hpp"
 #include <cmath>
 #include <fstream>
-#include <memory>
-#include <sstream>
+#include <vector>
+#include <string_view>
+#include <charconv>
+#include <iostream>
 #include <utility>
-#include "utilitarios.hpp"
+
+std::string lerArquivoInteiro(const std::string& caminho) {
+    std::ifstream arquivo(caminho, std::ios::binary | std::ios::ate);
+    if (!arquivo) {
+        std::cerr << "Erro fatal: nao foi possivel abrir o arquivo: " << caminho << std::endl;
+        exit(1);
+    }
+    std::streamsize tamanho = arquivo.tellg();
+    arquivo.seekg(0, std::ios::beg);
+    std::string buffer(tamanho, '\0');
+    if (!arquivo.read(buffer.data(), tamanho)) {
+        std::cerr << "Erro fatal: nao foi possivel ler o arquivo: " << caminho << std::endl;
+        exit(1);
+    }
+    return buffer;
+}
 
 GerenciadorDeDados::GerenciadorDeDados() {
     dadosUsuarios.reserve(170000);
     magnitudes.reserve(170000);
+    nomesFilmes.reserve(70000);
 }
 
-void GerenciadorDeDados::carregarDados(const std::string& caminhoArquivo) {
-    constexpr size_t BUFFER_SIZE = 1048576;
-    auto buffer = std::make_unique<char[]>(BUFFER_SIZE);
-    
-    std::ifstream arquivo(caminhoArquivo);
-    arquivo.rdbuf()->pubsetbuf(buffer.get(), BUFFER_SIZE);
-    
-    if (!arquivo.is_open()) return;
+void GerenciadorDeDados::carregarDados(const std::string& caminhoInput, const std::string& caminhoMovies) {
+    arenaNomesFilmes = lerArquivoInteiro(caminhoMovies);
+    std::string_view sv_filmes(arenaNomesFilmes);
 
-    std::string linha;
-    while (std::getline(arquivo, linha)) {
-        const char* ptr = linha.c_str();
-        int usuarioId = 0;
-        while (*ptr >= '0' && *ptr <= '9') {
-            usuarioId = usuarioId * 10 + (*ptr - '0');
-            ptr++;
+    size_t pos_filmes = sv_filmes.find('\n');
+    if (pos_filmes != std::string_view::npos) {
+        sv_filmes.remove_prefix(pos_filmes + 1);
+    }
+
+    while (!sv_filmes.empty()) {
+        int filmeId;
+        auto fim_linha = sv_filmes.find('\n');
+        std::string_view linha = sv_filmes.substr(0, fim_linha);
+        sv_filmes.remove_prefix(fim_linha != std::string_view::npos ? fim_linha + 1 : sv_filmes.size());
+
+        auto virgula1 = linha.find(',');
+        if (virgula1 == std::string_view::npos) continue;
+        
+        std::from_chars(linha.data(), linha.data() + virgula1, filmeId);
+        linha.remove_prefix(virgula1 + 1);
+
+        std::string_view nome;
+        if (!linha.empty() && linha.front() == '"') {
+            linha.remove_prefix(1);
+            auto aspas_finais = linha.find_last_of('"');
+            if (aspas_finais == std::string_view::npos) continue;
+            nome = linha.substr(0, aspas_finais);
+        } else {
+            auto virgula2 = linha.find(',');
+            nome = linha.substr(0, virgula2);
         }
+        nomesFilmes[filmeId] = nome;
+    }
 
+    std::string conteudoInput = lerArquivoInteiro(caminhoInput);
+    std::string_view sv_input(conteudoInput);
+
+    while (!sv_input.empty()) {
+        size_t fim_linha = sv_input.find('\n');
+        std::string_view linha = sv_input.substr(0, fim_linha);
+        sv_input.remove_prefix(fim_linha != std::string_view::npos ? fim_linha + 1 : sv_input.size());
+        if (linha.empty()) continue;
+
+        int usuarioId;
+        auto pos_espaco = linha.find(' ');
+        std::from_chars(linha.data(), linha.data() + pos_espaco, usuarioId);
+        linha.remove_prefix(pos_espaco != std::string_view::npos ? pos_espaco + 1 : linha.size());
+        
         Usuario usuario(usuarioId);
-        float mag = 0.0f;
-        
-        while (*ptr != '\0' && *ptr != '\n') {
-            if (*ptr == ' ') {
-                ptr++;
-                int movieId = 0;
-                while (*ptr >= '0' && *ptr <= '9') {
-                    movieId = movieId * 10 + (*ptr - '0');
-                    ptr++;
-                }
-                if (*ptr == ':') {
-                    ptr++;
-                    float rating = 0.0f;
-                    float decimal = 1.0f;
-                    bool after_dot = false;
-                    while ((*ptr >= '0' && *ptr <= '9') || *ptr == '.') {
-                        if (*ptr == '.') {
-                            after_dot = true;
-                        } else {
-                            if (after_dot) {
-                                decimal *= 0.1f;
-                                rating += (*ptr - '0') * decimal;
-                            } else {
-                                rating = rating * 10 + (*ptr - '0');
-                            }
-                        }
-                        ptr++;
-                    }
-                    usuario.adicionarAvaliacao(movieId, rating);
-                    mag += rating * rating;
-                }
-            } else {
-                ptr++;
-            }
+        float mag_quadrada = 0.0f;
+
+        while (!linha.empty()) {
+            int filmeId;
+            float nota;
+
+            auto pos_dois_pontos = linha.find(':');
+            std::from_chars(linha.data(), linha.data() + pos_dois_pontos, filmeId);
+            linha.remove_prefix(pos_dois_pontos + 1);
+
+            auto pos_proximo_espaco = linha.find(' ');
+            std::from_chars(linha.data(), linha.data() + pos_proximo_espaco, nota);
+            linha.remove_prefix(pos_proximo_espaco != std::string_view::npos ? pos_proximo_espaco + 1 : linha.size());
+
+            usuario.adicionarAvaliacao(filmeId, nota);
+            mag_quadrada += nota * nota;
         }
         
-        magnitudes[usuarioId] = std::sqrt(mag);
+        usuario.finalizarEOrdenarAvaliacoes();
+        magnitudes[usuarioId] = std::sqrt(mag_quadrada);
         dadosUsuarios.emplace(usuarioId, std::move(usuario));
     }
-    arquivo.close();
-}
-
-void GerenciadorDeDados::carregarNomesFilmes(const std::string& caminhoCSV) {
-    std::ifstream arquivo(caminhoCSV);
-    if (!arquivo.is_open()) return;
-    
-    std::string linha;
-    std::getline(arquivo, linha); // cabeçalho
-    while (std::getline(arquivo, linha)) {
-        std::stringstream ss(linha);
-        std::string campo;
-        std::getline(ss, campo, ',');
-        int filmeId = std::stoi(campo);
-        std::getline(ss, campo, ',');
-        std::string nome = campo;
-        if (nome.front() == '"') {
-            std::string resto;
-            std::getline(ss, resto, '"');
-            nome += "," + resto;
-        }
-        nomesFilmes[filmeId] = std::move(nome);
-    }
-    arquivo.close();
 }
 
 const Usuario& GerenciadorDeDados::getUsuario(int usuarioId) const {
     return dadosUsuarios.at(usuarioId);
 }
 
-const std::string& GerenciadorDeDados::getNomeFilme(int filmeId) const {
-    return nomesFilmes.at(filmeId);
+std::string_view GerenciadorDeDados::getNomeFilme(int filmeId) const {
+    auto it = nomesFilmes.find(filmeId);
+    if (it != nomesFilmes.end()) {
+        return it->second;
+    }
+    return {};
 }
 
 const std::unordered_map<int, Usuario>& GerenciadorDeDados::getTodosUsuarios() const {

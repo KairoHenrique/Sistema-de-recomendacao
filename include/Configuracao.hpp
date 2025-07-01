@@ -8,10 +8,10 @@ public:
     int N_USUARIOS_EXPLORAR;
 
     Configuracao(
-        int kVizinhos = 5,
+        int kVizinhos = 20,
         int nRecomendacoes = 10,
-        int nUsuariosExplorar = 5
+        int nUsuariosExplorar = 100
     );
 };
 
-#endif // CONFIGURACAO_HPP
+#endif

@@ -6,8 +6,7 @@
 #include <mutex>
 #include <string>
 #include <thread>
-#include <unordered_map>
-#include <unordered_set>
+#include <vector>
 #include "GerenciadorDeDados.hpp"
 #include "Configuracao.hpp"
 
@@ -23,4 +22,4 @@ public:
     void recomendarParaUsuario(int usuarioId, std::ostream& outFile);
 };
 
-#endif // RECOMENDADOR_HPP
+#endif

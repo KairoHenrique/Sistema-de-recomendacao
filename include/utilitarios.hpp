@@ -7,4 +7,4 @@
 std::vector<std::string> dividir(const std::string& linha, char delimitador);
 bool arquivoExiste(const std::string& caminho);
 
-#endif // UTILITARIOS_HPP
+#endif

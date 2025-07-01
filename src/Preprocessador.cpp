@@ -17,6 +17,7 @@
 struct ContagemParcial {
     std::unordered_map<int, int> filmesCounts;
     std::unordered_map<int, int> usuariosCounts;
+    std::vector<std::tuple<int, int, float>> avaliacoesBrutas;
 };
 
 ContagemParcial processarChunk(std::string_view chunk) {
@@ -26,21 +27,25 @@ ContagemParcial processarChunk(std::string_view chunk) {
 
     while (!chunk.empty()) {
         int userId, movieId;
+        float rating;
         
-        auto p1 = chunk.find(',');
+        auto p1 = chunk.find(",");
         if (p1 == std::string_view::npos) break;
         std::from_chars(chunk.data(), chunk.data() + p1, userId);
         chunk.remove_prefix(p1 + 1);
 
-        auto p2 = chunk.find(',');
+        auto p2 = chunk.find(",");
         if (p2 == std::string_view::npos) break;
         std::from_chars(chunk.data(), chunk.data() + p2, movieId);
-        
-        auto p3 = chunk.find('\n');
+        chunk.remove_prefix(p2 + 1);
+
+        auto p3 = chunk.find("\n");
+        std::from_chars(chunk.data(), chunk.data() + p3, rating);
         chunk.remove_prefix(p3 != std::string_view::npos ? p3 + 1 : chunk.size());
 
         contagem.filmesCounts[movieId]++;
         contagem.usuariosCounts[userId]++;
+        contagem.avaliacoesBrutas.emplace_back(userId, movieId, rating);
     }
     return contagem;
 }
@@ -78,12 +83,12 @@ void Preprocessador::gerarInput(const std::string& arquivoCSV, const std::string
     size_t chunkSize = conteudo.size() / numThreads;
     size_t inicio = 0;
 
-    inicio = conteudo.find('\n') + 1;
+    inicio = conteudo.find("\n") + 1;
 
     for (unsigned int i = 0; i < numThreads; ++i) {
         size_t fim = (i == numThreads - 1) ? conteudo.size() : inicio + chunkSize;
         if (fim < conteudo.size()) {
-            fim = conteudo.find('\n', fim);
+            fim = conteudo.find("\n", fim);
             if (fim == std::string::npos) fim = conteudo.size();
         }
         std::string_view chunk(conteudo.data() + inicio, fim - inicio);
@@ -95,6 +100,7 @@ void Preprocessador::gerarInput(const std::string& arquivoCSV, const std::string
     std::cout << "  - Agregando resultados dos threads..." << std::endl;
     std::unordered_map<int, int> filmesCounts;
     std::unordered_map<int, int> usuariosCounts;
+    std::vector<std::tuple<int, int, float>> todasAvaliacoesBrutas;
     filmesCounts.reserve(70000);
     usuariosCounts.reserve(170000);
 
@@ -102,6 +108,9 @@ void Preprocessador::gerarInput(const std::string& arquivoCSV, const std::string
         ContagemParcial parcial = f.get();
         for (const auto& [filmeId, count] : parcial.filmesCounts) filmesCounts[filmeId] += count;
         for (const auto& [userId, count] : parcial.usuariosCounts) usuariosCounts[userId] += count;
+        todasAvaliacoesBrutas.insert(todasAvaliacoesBrutas.end(),
+                                     std::make_move_iterator(parcial.avaliacoesBrutas.begin()),
+                                     std::make_move_iterator(parcial.avaliacoesBrutas.end()));
     }
 
     std::cout << "  - Criando filtros de filmes e usuarios validos..." << std::endl;
@@ -120,29 +129,15 @@ void Preprocessador::gerarInput(const std::string& arquivoCSV, const std::string
     filmesCounts.clear();
     usuariosCounts.clear();
 
-    std::cout << "  - Passagem final: agrupando dados validos..." << std::endl;
+    std::cout << "  - Agrupando dados validos a partir das avaliacoes brutas..." << std::endl;
     std::unordered_map<int, std::vector<std::pair<int, float>>> finalData;
     finalData.reserve(validUsers.size());
     
-    std::string_view sv_final(conteudo);
-    sv_final.remove_prefix(sv_final.find('\n') + 1);
+    for (const auto& avaliacao : todasAvaliacoesBrutas) {
+        int userId = std::get<0>(avaliacao);
+        int movieId = std::get<1>(avaliacao);
+        float rating = std::get<2>(avaliacao);
 
-    while (!sv_final.empty()) {
-        int userId, movieId;
-        float rating;
-
-        auto p1 = sv_final.find(','); if (p1 == std::string_view::npos) break;
-        std::from_chars(sv_final.data(), sv_final.data() + p1, userId);
-        sv_final.remove_prefix(p1 + 1);
-
-        auto p2 = sv_final.find(','); if (p2 == std::string_view::npos) break;
-        std::from_chars(sv_final.data(), sv_final.data() + p2, movieId);
-        sv_final.remove_prefix(p2 + 1);
-
-        auto p3 = sv_final.find('\n');
-        std::from_chars(sv_final.data(), sv_final.data() + p3, rating);
-        sv_final.remove_prefix(p3 != std::string_view::npos ? p3 + 1 : sv_final.size());
-        
         if (validUsers.count(userId) && validMovies.count(movieId)) {
             finalData[userId].emplace_back(movieId, rating);
         }
@@ -205,3 +200,5 @@ void Preprocessador::gerarExplore(GerenciadorDeDados& gerenciador, const std::st
     }
     std::cout << "Arquivo de exploracao gerado." << std::endl;
 }
+
+

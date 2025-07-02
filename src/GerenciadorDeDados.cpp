@@ -7,149 +7,140 @@
 #include <iostream>
 #include <utility>
 
-// Função externa para ler um arquivo inteiro para a memória.
-// A definição real está em outro arquivo, mas precisamos da declaração.
+// Declaração de função externa para ler um arquivo inteiro para a memória.
+// Esta função é definida em outro arquivo (utilitarios.cpp).
 extern std::string lerArquivoInteiro(const std::string& caminho);
 
+// Construtor da classe GerenciadorDeDados.
+// Inicializa os vetores e mapas internos com reservas de capacidade para otimização.
 GerenciadorDeDados::GerenciadorDeDados() {
-    dadosUsuarios.reserve(170000);
-    magnitudes.reserve(170000);
-    nomesFilmes.reserve(70000);
+    dadosUsuarios.reserve(170000); // Reserva espaço para dados de usuários.
+    magnitudes.reserve(170000);   // Reserva espaço para magnitudes de usuários.
+    nomesFilmes.reserve(70000);   // Reserva espaço para nomes de filmes.
 }
 
+// Carrega os nomes dos filmes a partir de um arquivo CSV.
+// caminhoMovies: Caminho para o arquivo CSV contendo IDs e nomes de filmes.
 void GerenciadorDeDados::carregarNomesFilmes(const std::string& caminhoMovies) {
+    // Lê o conteúdo completo do arquivo de filmes para uma string.
     arenaNomesFilmes = lerArquivoInteiro(caminhoMovies);
     std::string_view sv_filmes(arenaNomesFilmes);
 
+    // Ignora a primeira linha (cabeçalho) do arquivo.
     size_t pos_filmes = sv_filmes.find('\n');
     if (pos_filmes != std::string_view::npos) {
         sv_filmes.remove_prefix(pos_filmes + 1);
     }
 
+    // Processa cada linha do arquivo para extrair ID e nome do filme.
     while (!sv_filmes.empty()) {
-        int filmeId;
+        int filmeId; // ID do filme.
+        // Encontra o final da linha atual.
         auto fim_linha = sv_filmes.find('\n');
         std::string_view linha = sv_filmes.substr(0, fim_linha);
+        // Remove a linha processada da string_view principal.
         sv_filmes.remove_prefix(fim_linha != std::string_view::npos ? fim_linha + 1 : sv_filmes.size());
 
+        // Encontra a primeira vírgula para separar o ID do filme.
         auto virgula1 = linha.find(',');
-        if (virgula1 == std::string_view::npos) continue;
+        if (virgula1 == std::string_view::npos) continue; // Pula linhas mal formatadas.
         
+        // Converte a string do ID do filme para inteiro.
         std::from_chars(linha.data(), linha.data() + virgula1, filmeId);
         linha.remove_prefix(virgula1 + 1);
 
-        std::string_view nome;
+        std::string_view nome; // Nome do filme.
+        // Verifica se o nome do filme está entre aspas (para nomes com vírgulas).
         if (!linha.empty() && linha.front() == '"') {
             linha.remove_prefix(1);
             auto aspas_finais = linha.find_last_of('"');
-            if (aspas_finais == std::string_view::npos) continue;
+            if (aspas_finais == std::string_view::npos) continue; // Pula linhas mal formatadas.
             nome = linha.substr(0, aspas_finais);
         } else {
+            // Se não houver aspas, o nome vai até a próxima vírgula.
             auto virgula2 = linha.find(',');
             nome = linha.substr(0, virgula2);
         }
+        // Armazena o nome do filme associado ao seu ID.
         nomesFilmes[filmeId] = nome;
     }
 }
 
+// Carrega dados de usuários e avaliações a partir de um arquivo de cache binário.
+// caminhoCache: Caminho para o arquivo de cache binário.
+// Retorna true se o cache foi carregado com sucesso, false caso contrário.
 bool GerenciadorDeDados::carregarDadosDeCacheBinario(const std::string& caminhoCache) {
-    std::ifstream in(caminhoCache, std::ios::binary);
+    std::ifstream in(caminhoCache, std::ios::binary); // Abre o arquivo em modo binário.
     if (!in) {
-        return false; // Cache não encontrado ou não pôde ser aberto
+        return false; // Cache não encontrado ou não pôde ser aberto.
     }
 
     std::cout << "  - Lendo cache binario de " << caminhoCache << "..." << std::endl;
 
-    size_t numUsuarios;
+    size_t numUsuarios; // Número total de usuários no cache.
+    // Lê o número de usuários do arquivo.
     in.read(reinterpret_cast<char*>(&numUsuarios), sizeof(numUsuarios));
-    dadosUsuarios.reserve(numUsuarios);
+    dadosUsuarios.reserve(numUsuarios); // Reserva espaço para os dados dos usuários.
 
+    // Loop para ler os dados de cada usuário.
     for (size_t i = 0; i < numUsuarios; ++i) {
-        int userId;
+        int userId; // ID do usuário.
+        // Lê o ID do usuário.
         in.read(reinterpret_cast<char*>(&userId), sizeof(userId));
 
-        Usuario usuario(userId);
-        float mag_quadrada = 0.0f;
+        Usuario usuario(userId); // Cria um objeto Usuario.
+        float mag_quadrada = 0.0f; // Variável para calcular a magnitude ao quadrado.
 
-        size_t numAvaliacoes;
+        size_t numAvaliacoes; // Número de avaliações para o usuário atual.
+        // Lê o número de avaliações.
         in.read(reinterpret_cast<char*>(&numAvaliacoes), sizeof(numAvaliacoes));
         
+        // Lê todas as avaliações do usuário de uma vez.
         std::vector<std::pair<int, float>> avaliacoes(numAvaliacoes);
         in.read(reinterpret_cast<char*>(avaliacoes.data()), numAvaliacoes * sizeof(std::pair<int, float>));
 
+        // Adiciona as avaliações ao objeto Usuario e calcula a magnitude.
         for (const auto& [filmeId, nota] : avaliacoes) {
             usuario.adicionarAvaliacao(filmeId, nota);
             mag_quadrada += nota * nota;
         }
 
-        usuario.finalizarEOrdenarAvaliacoes();
-        magnitudes[userId] = std::sqrt(mag_quadrada);
-        dadosUsuarios.emplace(userId, std::move(usuario));
+        usuario.finalizarEOrdenarAvaliacoes(); // Finaliza e ordena as avaliações do usuário.
+        magnitudes[userId] = std::sqrt(mag_quadrada); // Calcula e armazena a magnitude.
+        dadosUsuarios.emplace(userId, std::move(usuario)); // Adiciona o usuário ao mapa de dados.
     }
     
     return true;
 }
 
-void GerenciadorDeDados::carregarDadosDeTexto(const std::string& caminhoInput) {
-    std::cout << "  - Lendo dados do arquivo de texto " << caminhoInput << "..." << std::endl;
-    std::string conteudoInput = lerArquivoInteiro(caminhoInput);
-    std::string_view sv_input(conteudoInput);
-
-    while (!sv_input.empty()) {
-        size_t fim_linha = sv_input.find('\n');
-        std::string_view linha = sv_input.substr(0, fim_linha);
-        sv_input.remove_prefix(fim_linha != std::string_view::npos ? fim_linha + 1 : sv_input.size());
-        if (linha.empty()) continue;
-
-        int usuarioId; // Variável declarada como 'usuarioId'
-        auto pos_espaco = linha.find(' ');
-        std::from_chars(linha.data(), linha.data() + pos_espaco, usuarioId);
-        linha.remove_prefix(pos_espaco != std::string_view::npos ? pos_espaco + 1 : linha.size());
-        
-        Usuario usuario(usuarioId);
-        float mag_quadrada = 0.0f;
-
-        while (!linha.empty()) {
-            int filmeId;
-            float nota;
-
-            auto pos_dois_pontos = linha.find(':');
-            std::from_chars(linha.data(), linha.data() + pos_dois_pontos, filmeId);
-            linha.remove_prefix(pos_dois_pontos + 1);
-
-            auto pos_proximo_espaco = linha.find(' ');
-            std::from_chars(linha.data(), linha.data() + pos_proximo_espaco, nota);
-            linha.remove_prefix(pos_proximo_espaco != std::string_view::npos ? pos_proximo_espaco + 1 : linha.size());
-
-            usuario.adicionarAvaliacao(filmeId, nota);
-            mag_quadrada += nota * nota;
-        }
-        
-        usuario.finalizarEOrdenarAvaliacoes();
-        
-        // --- CORREÇÃO APLICADA AQUI ---
-        // O nome da variável foi corrigido de 'userId' para 'usuarioId'.
-        magnitudes[usuarioId] = std::sqrt(mag_quadrada);
-        dadosUsuarios.emplace(usuarioId, std::move(usuario));
-    }
-}
-
+// Retorna uma referência constante ao objeto Usuario com o ID especificado.
+// usuarioId: ID do usuário a ser recuperado.
+// Lança uma exceção se o usuário não for encontrado.
 const Usuario& GerenciadorDeDados::getUsuario(int usuarioId) const {
     return dadosUsuarios.at(usuarioId);
 }
 
+// Retorna o nome de um filme dado seu ID.
+// filmeId: ID do filme.
+// Retorna um string_view vazio se o filme não for encontrado.
 std::string_view GerenciadorDeDados::getNomeFilme(int filmeId) const {
     auto it = nomesFilmes.find(filmeId);
     if (it != nomesFilmes.end()) {
         return it->second;
     }
-    return {};
+    return {}; // Retorna um string_view vazio se o filme não for encontrado.
 }
 
+// Retorna uma referência constante ao mapa de todos os usuários.
 const std::unordered_map<int, Usuario>& GerenciadorDeDados::getTodosUsuarios() const {
     return dadosUsuarios;
 }
 
+// Retorna a magnitude de um usuário dado seu ID.
+// usuarioId: ID do usuário.
+// Lança uma exceção se o usuário não for encontrado.
 float GerenciadorDeDados::getMagnitude(int usuarioId) const {
     return magnitudes.at(usuarioId);
 }
+
+

@@ -1,11 +1,8 @@
 #ifndef USUARIO_HPP
 #define USUARIO_HPP
-
 #include <vector>
 #include <utility>
-#include <algorithm> // Para std::sort
-
-// Classe Usuario
+#include <algorithm>
 // Representa um usuário e suas avaliações de filmes.
 class Usuario {
 private:
@@ -13,14 +10,12 @@ private:
     std::vector<std::pair<int, float>> avaliacoes; // Vetor de pares: {ID do filme, nota da avaliação}.
 
 public:
-    // Construtor da classe Usuario.
-    // id: O ID único do usuário.
+
     inline Usuario(int id) : id(id) {
         avaliacoes.reserve(160); // Pré-aloca espaço para otimização.
     }
     
     // Adiciona uma avaliação de filme para o usuário.
-    // filmeId: O ID do filme avaliado.
     // nota: A nota atribuída ao filme.
     inline void adicionarAvaliacao(int filmeId, float nota) {
         avaliacoes.emplace_back(filmeId, nota);
@@ -46,6 +41,5 @@ public:
     }
 };
 
-#endif // USUARIO_HPP
-
+#endif
 

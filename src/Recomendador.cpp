@@ -8,7 +8,6 @@
 #include <iostream>
 #include <string_view>
 
-// Construtor da classe Recomendador.
 // Inicializa o recomendador com o gerenciador de dados e as configurações.
 // gerenciador: Referência ao objeto GerenciadorDeDados para acesso aos dados de usuários e filmes.
 // config: Referência ao objeto Configuracao com os parâmetros do sistema.
@@ -17,7 +16,7 @@ Recomendador::Recomendador(GerenciadorDeDados& gerenciador, const Configuracao& 
 
 // Realiza a recomendação de filmes para um usuário específico.
 // usuarioId: ID do usuário para o qual as recomendações serão geradas.
-// outFile: Stream de saída para escrever as recomendações (e.g., para um arquivo).
+// outFile: Stream de saída para escrever as recomendações
 void Recomendador::recomendarParaUsuario(int usuarioId, std::ostream& outFile) {
     // Obtém o perfil do usuário atual e sua magnitude (norma do vetor de avaliações).
     const Usuario& perfilAtual = gerenciador.getUsuario(usuarioId);

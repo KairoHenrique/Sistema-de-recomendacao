@@ -32,7 +32,7 @@ ContagemParcial processarChunk(std::string_view chunk) {
 
     // Itera sobre as linhas do chunk.
     while (!chunk.empty()) {
-        int userId, movieId; // ID do usuário e do filme.
+        int userId, movieId;
         float rating;        // Nota da avaliação.
         
         // Extrai o userId.
@@ -90,10 +90,10 @@ void escreverCacheBinario(const std::string& arquivoCache, const std::unordered_
 }
 
 // Gera o arquivo de entrada processado a partir do CSV de avaliações.
-// arquivoCSV: Caminho para o arquivo CSV de avaliações (e.g., ratings.csv).
-// arquivoSaida: Caminho para o arquivo de saída (e.g., input.dat).
+// arquivoCSV: Caminho para o arquivo CSV de avaliações
+// arquivoSaida: Caminho para o arquivo de saída
 void Preprocessador::gerarInput(const std::string& arquivoCSV, const std::string& arquivoSaida) {
-    std::cout << "Iniciando pre-processamento PARALELO (gerarInput)..." << std::endl;
+    std::cout << "Iniciando pre-processamento (gerarInput)" << std::endl;
     
     std::string conteudo = lerArquivoInteiro(arquivoCSV); // Lê o conteúdo completo do CSV.
     
@@ -139,7 +139,7 @@ void Preprocessador::gerarInput(const std::string& arquivoCSV, const std::string
                                      std::make_move_iterator(parcial.avaliacoesBrutas.end()));
     }
 
-    std::cout << "  - Criando filtros de filmes e usuarios validos..." << std::endl;
+    std::cout << "Criando filtros de filmes e usuarios validos" << std::endl;
     std::unordered_set<int> validMovies; // Conjunto de filmes válidos (com >= 50 avaliações).
     validMovies.reserve(filmesCounts.size());
     for (const auto& [filmeId, count] : filmesCounts) {
@@ -152,10 +152,9 @@ void Preprocessador::gerarInput(const std::string& arquivoCSV, const std::string
         if (count >= 50) validUsers.insert(userId);
     }
     
-    filmesCounts.clear();   // Libera memória.
-    usuariosCounts.clear(); // Libera memória.
+    filmesCounts.clear();  
+    usuariosCounts.clear(); 
 
-    std::cout << "  - Agrupando dados validos a partir das avaliacoes brutas..." << std::endl;
     std::unordered_map<int, std::vector<std::pair<int, float>>> finalData; // Dados finais agrupados por usuário.
     finalData.reserve(validUsers.size());
     
@@ -170,7 +169,7 @@ void Preprocessador::gerarInput(const std::string& arquivoCSV, const std::string
         }
     }
 
-    // Abre o arquivo de saída para escrita. Agora, este é o arquivo binário.
+    // Abre o arquivo de saída para escrita.
     std::ofstream out(arquivoSaida, std::ios::binary); 
     if (!out.is_open()) {
         std::cerr << "Erro fatal: nao foi possivel criar " << arquivoSaida << std::endl;
@@ -196,10 +195,10 @@ void Preprocessador::gerarInput(const std::string& arquivoCSV, const std::string
 
 // Gera o arquivo de usuários para exploração (explore.bin) em formato binário.
 // gerenciador: Referência ao GerenciadorDeDados para acessar os usuários.
-// exploreDat: Caminho para o arquivo de saída explore.bin.
+// exploreDat: Caminho para o arquivo de saída explore.bin. (mudar nome da funcao)
 // quantidade: Número de usuários a serem incluídos no arquivo explore.bin.
 void Preprocessador::gerarExplore(GerenciadorDeDados& gerenciador, const std::string& exploreDat, int quantidade) {
-    std::cout << "Gerando arquivo de exploracao a partir dos dados em memoria..." << std::endl;
+    std::cout << "Gerando arquivo de exploracao a partir dos dados carregados" << std::endl;
     
     const auto& todosUsuarios = gerenciador.getTodosUsuarios(); // Obtém todos os usuários carregados.
     if (todosUsuarios.empty()) {
@@ -232,7 +231,7 @@ void Preprocessador::gerarExplore(GerenciadorDeDados& gerenciador, const std::st
     for (int i = 0; i < limite; ++i) {
         out.write(reinterpret_cast<const char*>(&userIds[i]), sizeof(userIds[i]));
     }
-    std::cout << "Arquivo de exploracao gerado." << std::endl;
+    std::cout << "Arquivo de explore gerado." << std::endl;
 }
 
 

@@ -4,13 +4,12 @@
 #include <string>
 #include <filesystem>
 #include <system_error>
-#include <sys/resource.h> // Para medir memória
-
+#include <sys/resource.h> // Para medir memória usada (tirar dps)
 #include "Preprocessador.hpp"
 #include "Recomendador.hpp"
 #include "Configuracao.hpp"
 #include "GerenciadorDeDados.hpp"
-#include "utilitarios.hpp" // Para arquivoExiste
+#include "utilitarios.hpp"
 
 // Função para criar os diretórios 'dados' e 'resultados' se não existirem.
 void criarDiretorios() {
@@ -37,10 +36,10 @@ void criarDiretorios() {
 double obterUsoMaximoMemoriaMB() {
     struct rusage uso; // Estrutura para armazenar informações de uso de recursos.
     getrusage(RUSAGE_SELF, &uso); // Obtém o uso de recursos para o processo atual.
-    return uso.ru_maxrss / 1024.0; // Converte de KB (Linux) para MB.
+    return uso.ru_maxrss / 1024.0; 
 }
 
-// Função principal do programa.
+
 int main() {
     // Desabilita a sincronização de C++ streams com C stdio e desvincula cin de cout para otimização de I/O.
     std::ios_base::sync_with_stdio(false);
@@ -54,7 +53,7 @@ int main() {
     Configuracao config; // Cria um objeto de configuração com parâmetros padrão.
     GerenciadorDeDados gerenciador; // Cria um objeto para gerenciar o carregamento e acesso aos dados.
 
-    const std::string arquivoCache = "dados/input.bin"; // Define o caminho para o arquivo de cache binário.
+    const std::string arquivoCache = "dados/input.bin";
 
     // Tenta carregar os dados de um cache binário.
     if (!gerenciador.carregarDadosDeCacheBinario(arquivoCache)) {

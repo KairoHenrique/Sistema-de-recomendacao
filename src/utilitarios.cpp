@@ -30,7 +30,6 @@ std::string lerArquivoInteiro(const std::string& caminho) {
 
 // Função para dividir uma string em tokens com base em um delimitador.
 // linha: A string a ser dividida.
-// delimitador: O caractere usado como delimitador.
 // Retorna um vetor de strings contendo os tokens.
 std::vector<std::string> dividir(const std::string& linha, char delimitador) {
     std::vector<std::string> tokens;

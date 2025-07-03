@@ -11,7 +11,6 @@
 // Esta função é definida em outro arquivo (utilitarios.cpp).
 extern std::string lerArquivoInteiro(const std::string& caminho);
 
-// Construtor da classe GerenciadorDeDados.
 // Inicializa os vetores e mapas internos com reservas de capacidade para otimização.
 GerenciadorDeDados::GerenciadorDeDados() {
     dadosUsuarios.reserve(170000); // Reserva espaço para dados de usuários.
@@ -34,7 +33,7 @@ void GerenciadorDeDados::carregarNomesFilmes(const std::string& caminhoMovies) {
 
     // Processa cada linha do arquivo para extrair ID e nome do filme.
     while (!sv_filmes.empty()) {
-        int filmeId; // ID do filme.
+        int filmeId;
         // Encontra o final da linha atual.
         auto fim_linha = sv_filmes.find('\n');
         std::string_view linha = sv_filmes.substr(0, fim_linha);
@@ -84,7 +83,7 @@ bool GerenciadorDeDados::carregarDadosDeCacheBinario(const std::string& caminhoC
 
     // Loop para ler os dados de cada usuário.
     for (size_t i = 0; i < numUsuarios; ++i) {
-        int userId; // ID do usuário.
+        int userId;
         // Lê o ID do usuário.
         in.read(reinterpret_cast<char*>(&userId), sizeof(userId));
 
@@ -121,7 +120,6 @@ const Usuario& GerenciadorDeDados::getUsuario(int usuarioId) const {
 }
 
 // Retorna o nome de um filme dado seu ID.
-// filmeId: ID do filme.
 // Retorna um string_view vazio se o filme não for encontrado.
 std::string_view GerenciadorDeDados::getNomeFilme(int filmeId) const {
     auto it = nomesFilmes.find(filmeId);
@@ -137,7 +135,6 @@ const std::unordered_map<int, Usuario>& GerenciadorDeDados::getTodosUsuarios() c
 }
 
 // Retorna a magnitude de um usuário dado seu ID.
-// usuarioId: ID do usuário.
 // Lança uma exceção se o usuário não for encontrado.
 float GerenciadorDeDados::getMagnitude(int usuarioId) const {
     return magnitudes.at(usuarioId);

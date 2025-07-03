@@ -1,6 +1,5 @@
 #ifndef UTILITARIOS_HPP
 #define UTILITARIOS_HPP
-
 #include <string>
 #include <vector>
 
@@ -11,15 +10,13 @@ std::string lerArquivoInteiro(const std::string& caminho);
 
 // Função utilitária para dividir uma string em tokens com base em um delimitador.
 // linha: A string a ser dividida.
-// delimitador: O caractere usado como delimitador.
 // Retorna um vetor de strings contendo os tokens.
 std::vector<std::string> dividir(const std::string& linha, char delimitador);
 
 // Função utilitária para verificar se um arquivo existe no caminho especificado.
-// caminho: O caminho completo do arquivo.
 // Retorna true se o arquivo existe e pode ser aberto, false caso contrário.
 bool arquivoExiste(const std::string& caminho);
 
-#endif // UTILITARIOS_HPP
+#endif
 
 

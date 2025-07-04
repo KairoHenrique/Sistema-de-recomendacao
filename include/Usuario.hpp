@@ -15,37 +15,24 @@ private:
 public:
     // Construtor da classe Usuario.
     // id: O ID único do usuário.
-    inline Usuario(int id) : id(id) {
-        avaliacoes.reserve(160); // Pré-aloca espaço para otimização.
-    }
+    Usuario(int id);
     
     // Adiciona uma avaliação de filme para o usuário.
     // filmeId: O ID do filme avaliado.
     // nota: A nota atribuída ao filme.
-    inline void adicionarAvaliacao(int filmeId, float nota) {
-        avaliacoes.emplace_back(filmeId, nota);
-    }
+    void adicionarAvaliacao(int filmeId, float nota);
     
     // Finaliza a adição de avaliações e as ordena por ID do filme.
     // Essencial para o cálculo eficiente da similaridade de cosseno.
-    inline void finalizarEOrdenarAvaliacoes() {
-        std::sort(avaliacoes.begin(), avaliacoes.end(), 
-                  [](const auto& a, const auto& b) {
-                      return a.first < b.first;
-                  });
-    }
+    void finalizarEOrdenarAvaliacoes();
     
     // Retorna uma referência constante ao vetor de avaliações do usuário.
-    const std::vector<std::pair<int, float>>& getAvaliacoes() const {
-        return avaliacoes;
-    }
+    const std::vector<std::pair<int, float>>& getAvaliacoes() const;
     
     // Retorna o ID do usuário.
-    inline int getId() const {
-        return id;
-    }
+    int getId() const;
 };
 
-#endif // USUARIO_HPP
+#endif
 
 

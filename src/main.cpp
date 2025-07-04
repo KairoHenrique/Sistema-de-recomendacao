@@ -26,11 +26,7 @@ int main() {
 
     const std::string arquivoCache = "dados/input.bin"; // Define o caminho para o arquivo de cache binário.
 
-    // Tenta carregar os dados de um cache binário.
-    if (!gerenciador.carregarDadosDeCacheBinario(arquivoCache)) {
-        std::cout << "Cache binario nao encontrado ou invalido." << std::endl;
-        
-        // Se o cache binário não existir ou for inválido, realiza o pré-processamento.
+        // Realiza o pré-processamento.
         auto inicio_pre = std::chrono::high_resolution_clock::now();
         // Gera o arquivo input.bin a partir de ratings.csv.
         Preprocessador::gerarInput("dados/ratings.csv", "dados/input.bin");
@@ -40,7 +36,6 @@ int main() {
 
         // Carrega os dados do arquivo binário gerado.
         gerenciador.carregarDadosDeCacheBinario("dados/input.bin");
-    }
 
     // Carrega os nomes dos filmes.
     auto inicio_load_nomes = std::chrono::high_resolution_clock::now();

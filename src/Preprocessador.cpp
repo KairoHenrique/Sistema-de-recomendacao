@@ -86,7 +86,6 @@ void Preprocessador::escreverCacheBinario(const std::string& arquivoCache, const
 void Preprocessador::gerarInput(const std::string& arquivoCSV, const std::string& arquivoSaida) {
     std::cout << "Iniciando pre-processamento PARALELO (gerarInput)..." << std::endl;
     
-    // Agora GerenciadorDeDados::lerArquivoInteiro
     std::string conteudo = GerenciadorDeDados().lerArquivoInteiro(arquivoCSV); // Lê o conteúdo completo do CSV.
     
     const unsigned int numThreads = std::thread::hardware_concurrency(); // Obtém o número de threads.
@@ -162,7 +161,7 @@ void Preprocessador::gerarInput(const std::string& arquivoCSV, const std::string
         }
     }
 
-    // Agora Preprocessador::escreverCacheBinario
+    // Escreve o cache binário final.
     Preprocessador::escreverCacheBinario(arquivoSaida, finalData);
     std::cout << "Pre-processamento (gerarInput) finalizado." << std::endl;
 }

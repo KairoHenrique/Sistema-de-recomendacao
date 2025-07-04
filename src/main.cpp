@@ -3,8 +3,6 @@
 #include <thread>
 #include <string>
 #include <filesystem>
-#include <system_error>
-#include <sys/resource.h> // Para medir memória
 
 #include "Preprocessador.hpp"
 #include "Recomendador.hpp"
@@ -12,7 +10,6 @@
 #include "GerenciadorDeDados.hpp"
 #include "utilitarios.hpp" // Para arquivoExiste
 
-// Função principal do programa.
 int main() {
     // Desabilita a sincronização de C++ streams com C stdio e desvincula cin de cout para otimização de I/O.
     std::ios_base::sync_with_stdio(false);
@@ -24,18 +21,16 @@ int main() {
     Configuracao config; // Cria um objeto de configuração com parâmetros padrão.
     GerenciadorDeDados gerenciador; // Cria um objeto para gerenciar o carregamento e acesso aos dados.
 
-    const std::string arquivoCache = "dados/input.bin"; // Define o caminho para o arquivo de cache binário.
+    // Realiza o pré-processamento.
+    auto inicio_pre = std::chrono::high_resolution_clock::now();
+    // Gera o arquivo input.bin a partir de ratings.csv.
+    Preprocessador::gerarInput("dados/ratings.csv", "dados/input.bin");
+    auto fim_pre = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double> duracao_pre = fim_pre - inicio_pre;
+    std::cout << "Tempo de Pre-processamento: " << duracao_pre.count() << " segundos" << std::endl;
 
-        // Realiza o pré-processamento.
-        auto inicio_pre = std::chrono::high_resolution_clock::now();
-        // Gera o arquivo input.bin a partir de ratings.csv.
-        Preprocessador::gerarInput("dados/ratings.csv", "dados/input.bin");
-        auto fim_pre = std::chrono::high_resolution_clock::now();
-        std::chrono::duration<double> duracao_pre = fim_pre - inicio_pre;
-        std::cout << "Tempo de Pre-processamento: " << duracao_pre.count() << " segundos" << std::endl;
-
-        // Carrega os dados do arquivo binário gerado.
-        gerenciador.carregarDadosDeCacheBinario("dados/input.bin");
+    // Carrega os dados do arquivo binário gerado.
+    gerenciador.carregarDadosDeCacheBinario("dados/input.bin");
 
     // Carrega os nomes dos filmes.
     auto inicio_load_nomes = std::chrono::high_resolution_clock::now();

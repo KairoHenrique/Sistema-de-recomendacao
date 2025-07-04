@@ -38,7 +38,7 @@ public:
     // gerenciador: Referência ao objeto GerenciadorDeDados, que contém os usuários carregados.
     // exploreDat: Caminho para o arquivo de saída explore.dat.
     // quantidade: Número de usuários a serem incluídos no arquivo explore.dat.
-    static void gerarExplore(GerenciadorDeDados& gerenciador, const std::string& exploreDat, int quantidade);
+    static void gerarExplore(GerenciadorDeDados& gerenciador, const std::string& exploreBin, int quantidade);
 };
 
 #endif

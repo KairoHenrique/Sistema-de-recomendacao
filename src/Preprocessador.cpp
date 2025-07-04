@@ -171,7 +171,7 @@ void Preprocessador::gerarInput(const std::string& arquivoCSV, const std::string
 // gerenciador: Referência ao GerenciadorDeDados para acessar os usuários.
 // exploreDat: Caminho para o arquivo de saída explore.bin.
 // quantidade: Número de usuários a serem incluídos no arquivo explore.bin.
-void Preprocessador::gerarExplore(GerenciadorDeDados& gerenciador, const std::string& exploreDat, int quantidade) {
+void Preprocessador::gerarExplore(GerenciadorDeDados& gerenciador, const std::string& exploreBin, int quantidade) {
     std::cout << "Gerando arquivo de exploracao a partir dos dados em memoria..." << std::endl;
     
     const auto& todosUsuarios = gerenciador.getTodosUsuarios(); // Obtém todos os usuários carregados.
@@ -191,9 +191,9 @@ void Preprocessador::gerarExplore(GerenciadorDeDados& gerenciador, const std::st
     std::shuffle(userIds.begin(), userIds.end(), g);
 
     // Abre o arquivo explore.bin para escrita em modo binário.
-    std::ofstream out(exploreDat, std::ios::binary); 
+    std::ofstream out(exploreBin, std::ios::binary); 
     if (!out.is_open()) {
-        std::cerr << "Erro fatal: nao foi possivel criar " << exploreDat << std::endl;
+        std::cerr << "Erro fatal: nao foi possivel criar " << exploreBin << std::endl;
         exit(1);
     }
     

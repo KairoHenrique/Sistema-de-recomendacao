@@ -2,7 +2,6 @@
 #include <iostream>
 #include <thread>
 #include <string>
-#include <filesystem>
 
 #include "Preprocessador.hpp"
 #include "Recomendador.hpp"

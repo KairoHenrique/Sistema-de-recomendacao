@@ -1,11 +1,7 @@
 #include "Preprocessador.hpp"
 #include "GerenciadorDeDados.hpp" 
 #include <fstream>
-#include <unordered_map>
 #include <unordered_set>
-#include <vector>
-#include <string>
-#include <string_view>
 #include <charconv>
 #include <iostream>
 #include <random>

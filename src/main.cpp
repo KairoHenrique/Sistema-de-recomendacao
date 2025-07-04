@@ -8,7 +8,6 @@
 #include "Recomendador.hpp"
 #include "Configuracao.hpp"
 #include "GerenciadorDeDados.hpp"
-#include "utilitarios.hpp" // Para arquivoExiste
 
 int main() {
     // Desabilita a sincronização de C++ streams com C stdio e desvincula cin de cout para otimização de I/O.

@@ -16,8 +16,7 @@ SRC_FILES := \
 	GerenciadorDeDados.cpp \
 	main.cpp \
 	Preprocessador.cpp \
-	Recomendador.cpp \
-	utilitarios.cpp
+	Recomendador.cpp 
 
 SRC := $(addprefix $(SRC_DIR)/, $(SRC_FILES))
 

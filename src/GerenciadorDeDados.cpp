@@ -7,10 +7,32 @@
 #include <iostream>
 #include <utility>
 
-// Declaração de função externa para ler um arquivo inteiro para a memória.
-// Esta função é definida em outro arquivo (utilitarios.cpp).
-extern std::string lerArquivoInteiro(const std::string& caminho);
+// Função para ler o conteúdo completo de um arquivo para uma string.
+// caminho: Caminho para o arquivo a ser lido.
+// Retorna uma string contendo todo o conteúdo do arquivo.
+// Em caso de erro na abertura ou leitura, imprime uma mensagem de erro fatal e encerra o programa.
+std::string GerenciadorDeDados::lerArquivoInteiro(const std::string& caminho) {
+    // Abre o arquivo em modo binário e posiciona o ponteiro no final para obter o tamanho.
+    std::ifstream arquivo(caminho, std::ios::binary | std::ios::ate);
+    if (!arquivo) {
+        std::cerr << "Erro fatal: nao foi possivel abrir o arquivo: " << caminho << std::endl;
+        exit(1);
+    }
+    // Obtém o tamanho do arquivo.
+    std::streamsize tamanho = arquivo.tellg();
+    // Retorna o ponteiro para o início do arquivo.
+    arquivo.seekg(0, std::ios::beg);
+    // Cria um buffer (string) com o tamanho do arquivo.
+    std::string buffer(tamanho, '\0');
+    // Lê o conteúdo do arquivo para o buffer.
+    if (!arquivo.read(buffer.data(), tamanho)) {
+        std::cerr << "Erro fatal: nao foi possivel ler o arquivo: " << caminho << std::endl;
+        exit(1);
+    }
+    return buffer;
+}
 
+// Construtor da classe GerenciadorDeDados.
 // Inicializa os vetores e mapas internos com reservas de capacidade para otimização.
 GerenciadorDeDados::GerenciadorDeDados() {
     dadosUsuarios.reserve(170000); // Reserva espaço para dados de usuários.
@@ -33,7 +55,7 @@ void GerenciadorDeDados::carregarNomesFilmes(const std::string& caminhoMovies) {
 
     // Processa cada linha do arquivo para extrair ID e nome do filme.
     while (!sv_filmes.empty()) {
-        int filmeId;
+        int filmeId; // ID do filme.
         // Encontra o final da linha atual.
         auto fim_linha = sv_filmes.find('\n');
         std::string_view linha = sv_filmes.substr(0, fim_linha);
@@ -83,7 +105,7 @@ bool GerenciadorDeDados::carregarDadosDeCacheBinario(const std::string& caminhoC
 
     // Loop para ler os dados de cada usuário.
     for (size_t i = 0; i < numUsuarios; ++i) {
-        int userId;
+        int userId; // ID do usuário.
         // Lê o ID do usuário.
         in.read(reinterpret_cast<char*>(&userId), sizeof(userId));
 
@@ -120,6 +142,7 @@ const Usuario& GerenciadorDeDados::getUsuario(int usuarioId) const {
 }
 
 // Retorna o nome de um filme dado seu ID.
+// filmeId: ID do filme.
 // Retorna um string_view vazio se o filme não for encontrado.
 std::string_view GerenciadorDeDados::getNomeFilme(int filmeId) const {
     auto it = nomesFilmes.find(filmeId);
@@ -135,6 +158,7 @@ const std::unordered_map<int, Usuario>& GerenciadorDeDados::getTodosUsuarios() c
 }
 
 // Retorna a magnitude de um usuário dado seu ID.
+// usuarioId: ID do usuário.
 // Lança uma exceção se o usuário não for encontrado.
 float GerenciadorDeDados::getMagnitude(int usuarioId) const {
     return magnitudes.at(usuarioId);

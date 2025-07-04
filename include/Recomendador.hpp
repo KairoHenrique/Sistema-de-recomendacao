@@ -1,5 +1,6 @@
 #ifndef RECOMENDADOR_HPP
 #define RECOMENDADOR_HPP
+
 #include <fstream>
 #include <iostream>
 #include <mutex>
@@ -9,14 +10,18 @@
 #include "GerenciadorDeDados.hpp"
 #include "Configuracao.hpp"
 
+// Classe Recomendador
 // Responsável por gerar recomendações de filmes para usuários.
 class Recomendador {
 private:
     GerenciadorDeDados& gerenciador; // Referência ao gerenciador de dados para acesso aos usuários e filmes.
     const Configuracao& config;      // Referência às configurações do sistema.
-    std::mutex mtx;                 // Mutex para proteger a escrita no arquivo de saída.
+    std::mutex mtx;                 // Mutex para proteger a escrita no arquivo de saída em ambientes multi-thread.
     
 public:
+    // Construtor da classe Recomendador.
+    // gerenciador: Referência ao objeto GerenciadorDeDados.
+    // config: Referência ao objeto Configuracao.
     Recomendador(GerenciadorDeDados& gerenciador, const Configuracao& config);
 
     // Realiza o processo de recomendação para múltiplos usuários em paralelo.

@@ -4,48 +4,19 @@
 #include <string>
 #include <filesystem>
 #include <system_error>
-#include <sys/resource.h> // Para medir memória usada (tirar dps)
+#include <sys/resource.h> // Para medir memória
+
 #include "Preprocessador.hpp"
 #include "Recomendador.hpp"
 #include "Configuracao.hpp"
 #include "GerenciadorDeDados.hpp"
-#include "utilitarios.hpp"
+#include "utilitarios.hpp" // Para arquivoExiste
 
-// Função para criar os diretórios 'dados' e 'resultados' se não existirem.
-void criarDiretorios() {
-    std::error_code ec;
-    // Tenta criar o diretório 'dados'.
-    std::filesystem::create_directory("dados", ec);
-    // Se houver erro e não for porque o diretório já existe, imprime o erro.
-    if (ec && ec.value() != static_cast<int>(std::errc::file_exists)) {
-        std::cerr << "Erro ao criar diretorio 'dados': " << ec.message() << std::endl;
-    }
-    
-    ec.clear(); // Limpa o código de erro para a próxima operação.
-    
-    // Tenta criar o diretório 'resultados'.
-    std::filesystem::create_directory("resultados", ec);
-    // Se houver erro e não for porque o diretório já existe, imprime o erro.
-    if (ec && ec.value() != static_cast<int>(std::errc::file_exists)) {
-        std::cerr << "Erro ao criar diretorio 'resultados': " << ec.message() << std::endl;
-    }
-}
-
-// Função para obter o uso máximo de memória em MB.
-// Retorna o uso máximo de memória em megabytes.
-double obterUsoMaximoMemoriaMB() {
-    struct rusage uso; // Estrutura para armazenar informações de uso de recursos.
-    getrusage(RUSAGE_SELF, &uso); // Obtém o uso de recursos para o processo atual.
-    return uso.ru_maxrss / 1024.0; 
-}
-
-
+// Função principal do programa.
 int main() {
     // Desabilita a sincronização de C++ streams com C stdio e desvincula cin de cout para otimização de I/O.
     std::ios_base::sync_with_stdio(false);
     std::cin.tie(NULL);
-    
-    criarDiretorios(); // Garante que os diretórios necessários existam.
 
     // Registra o tempo de início total da execução do programa.
     auto inicio_total = std::chrono::high_resolution_clock::now();
@@ -53,7 +24,7 @@ int main() {
     Configuracao config; // Cria um objeto de configuração com parâmetros padrão.
     GerenciadorDeDados gerenciador; // Cria um objeto para gerenciar o carregamento e acesso aos dados.
 
-    const std::string arquivoCache = "dados/input.bin";
+    const std::string arquivoCache = "dados/input.bin"; // Define o caminho para o arquivo de cache binário.
 
     // Tenta carregar os dados de um cache binário.
     if (!gerenciador.carregarDadosDeCacheBinario(arquivoCache)) {
@@ -99,10 +70,6 @@ int main() {
     std::chrono::duration<double> duracao_total = fim_total - inicio_total;
     std::cout << "\nSistema de recomendacao finalizado." << std::endl;
     std::cout << "Tempo total de execucao: " << duracao_total.count() << " segundos" << std::endl;
-
-    // Obtém e exibe o uso máximo de memória.
-    double memoriaMB = obterUsoMaximoMemoriaMB();
-    std::cout << "Memoria maxima utilizada: " << memoriaMB << " MB" << std::endl;
     
     return 0;
 }

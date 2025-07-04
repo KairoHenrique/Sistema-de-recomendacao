@@ -1,8 +1,10 @@
 #ifndef CALCULADOR_DE_SIMILARIDADE_HPP
 #define CALCULADOR_DE_SIMILARIDADE_HPP
+
 #include <vector>
 #include <utility>
-#include <cmath>
+#include <cmath> // Para std::sqrt
+
 // Classe responsável por calcular a similaridade entre usuários.
 class CalculadorDeSimilaridade {
 public:
@@ -22,7 +24,7 @@ public:
         float numerador = 0.0f; // Inicializa o numerador da fórmula do cosseno.
         size_t i = 0, j = 0;    // Índices para percorrer os vetores de avaliações.
 
-        // Percorre os vetores de avaliações de como em merge sort.
+        // Percorre os vetores de avaliações de forma otimizada (como em merge sort).
         while (i < u1.size() && j < u2.size()) {
             if (u1[i].first < u2[j].first) {
                 i++; // Avança no vetor do usuário 1 se o filme for menor.
@@ -41,6 +43,6 @@ public:
     }
 };
 
-#endif 
+#endif // CALCULADOR_DE_SIMILARIDADE_HPP
 
 

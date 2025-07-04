@@ -1,3 +1,5 @@
+MAKEFLAGS += -j$(nproc)
+
 CXX := g++
 CXXFLAGS := -Wall -Wextra -Werror -std=c++20 -O3 -march=native -flto -ffast-math -fno-exceptions -fno-rtti
 LDFLAGS := -lm -pthread -flto

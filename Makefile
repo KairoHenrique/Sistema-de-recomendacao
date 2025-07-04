@@ -17,7 +17,8 @@ SRC_FILES := \
 	main.cpp \
 	Preprocessador.cpp \
 	Recomendador.cpp \
-	Usuario.cpp
+	Usuario.cpp \
+	CalculadorDeSimilaridade.cpp
 
 SRC := $(addprefix $(SRC_DIR)/, $(SRC_FILES))
 

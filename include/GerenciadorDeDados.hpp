@@ -28,7 +28,7 @@ public:
     // Carrega dados de usuários e avaliações a partir de um arquivo de cache binário.
     // caminhoCache: Caminho para o arquivo de cache binário (e.g., input.bin).
     // Retorna true se o cache foi carregado com sucesso, false caso contrário.
-    bool carregarDadosDeCacheBinario(const std::string& caminhoCache);
+    void carregarDadosDeCacheBinario(const std::string& caminhoCache);
 
     // Carrega os nomes dos filmes a partir de um arquivo CSV.
     // caminhoMovies: Caminho para o arquivo CSV de filmes (e.g., movies.csv).

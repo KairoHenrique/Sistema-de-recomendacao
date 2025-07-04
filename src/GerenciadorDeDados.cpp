@@ -90,10 +90,10 @@ void GerenciadorDeDados::carregarNomesFilmes(const std::string& caminhoMovies) {
 // Carrega dados de usuários e avaliações a partir de um arquivo de cache binário.
 // caminhoCache: Caminho para o arquivo de cache binário.
 // Retorna true se o cache foi carregado com sucesso, false caso contrário.
-bool GerenciadorDeDados::carregarDadosDeCacheBinario(const std::string& caminhoCache) {
+void GerenciadorDeDados::carregarDadosDeCacheBinario(const std::string& caminhoCache) {
     std::ifstream in(caminhoCache, std::ios::binary); // Abre o arquivo em modo binário.
     if (!in) {
-        return false; // Cache não encontrado ou não pôde ser aberto.
+        std::cout << "  - Nao foi possivel abrir o arquivo de cache binario: " << caminhoCache << std::endl;
     }
 
     std::cout << "  - Lendo cache binario de " << caminhoCache << "..." << std::endl;
@@ -130,8 +130,7 @@ bool GerenciadorDeDados::carregarDadosDeCacheBinario(const std::string& caminhoC
         magnitudes[userId] = std::sqrt(mag_quadrada); // Calcula e armazena a magnitude.
         dadosUsuarios.emplace(userId, std::move(usuario)); // Adiciona o usuário ao mapa de dados.
     }
-    
-    return true;
+    std::cout << "  - Cache binario carregado com sucesso." << std::endl;
 }
 
 // Retorna uma referência constante ao objeto Usuario com o ID especificado.

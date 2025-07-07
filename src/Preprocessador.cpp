@@ -47,14 +47,14 @@ ContagemParcial Preprocessador::processarChunk(std::string_view chunk) {
     return contagem;
 }
 
-// Escreve os dados processados em um arquivo binário de cache.
-// arquivoCache: Caminho para o arquivo de cache binário de saída.
+// Escreve os dados processados em um arquivo input binário.
+// arquivoInput: Caminho para o arquivo input binário de saída.
 // dados: Mapa contendo os IDs dos usuários e suas avaliações.
-void Preprocessador::escreverCacheBinario(const std::string& arquivoCache, const std::unordered_map<int, std::vector<std::pair<int, float>>>& dados) {
-    std::cout << "  - Escrevendo cache binario em " << arquivoCache << "..." << std::endl;
-    std::ofstream out(arquivoCache, std::ios::binary); // Abre o arquivo em modo binário.
+void Preprocessador::escreverInputBinario(const std::string& arquivoInput, const std::unordered_map<int, std::vector<std::pair<int, float>>>& dados) {
+    std::cout << "  - Escrevendo input Binário em " << arquivoInput << "..." << std::endl;
+    std::ofstream out(arquivoInput, std::ios::binary); // Abre o arquivo em modo binário.
     if (!out) {
-        std::cerr << "Erro: Nao foi possivel criar o arquivo de cache binario." << std::endl;
+        std::cerr << "Erro: Nao foi possivel criar o arquivo input binario." << std::endl;
         return;
     }
 
@@ -157,8 +157,8 @@ void Preprocessador::gerarInput(const std::string& arquivoCSV, const std::string
         }
     }
 
-    // Escreve o cache binário final.
-    Preprocessador::escreverCacheBinario(arquivoSaida, finalData);
+    // Escreve o input binário final.
+    Preprocessador::escreverInputBinario(arquivoSaida, finalData);
     std::cout << "Pre-processamento (gerarInput) finalizado." << std::endl;
 }
 

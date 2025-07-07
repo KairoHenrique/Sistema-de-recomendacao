@@ -26,7 +26,7 @@ private:
     static ContagemParcial processarChunk(std::string_view chunk);
 
     // Escreve os dados processados em um arquivo binário de cache.
-    static void escreverCacheBinario(const std::string& arquivoCache, const std::unordered_map<int, std::vector<std::pair<int, float>>>& dados);
+    static void escreverInputBinario(const std::string& arquivoInput, const std::unordered_map<int, std::vector<std::pair<int, float>>>& dados);
 
 public:
     // Gera o arquivo de entrada processado (input.dat) a partir do CSV de avaliações.

@@ -50,7 +50,7 @@ ContagemParcial Preprocessador::processarChunk(std::string_view chunk) {
 // Escreve os dados processados em um arquivo input binário.
 // arquivoInput: Caminho para o arquivo input binário de saída.
 // dados: Mapa contendo os IDs dos usuários e suas avaliações.
-void Preprocessador::escreverInputBinario(const std::string& arquivoInput, const std::unordered_map<int, std::vector<std::pair<int, float>>>& dados) {
+void Preprocessador::escreverInputBin(const std::string& arquivoInput, const std::unordered_map<int, std::vector<std::pair<int, float>>>& dados) {
     std::cout << "  - Escrevendo input Binário em " << arquivoInput << "..." << std::endl;
     std::ofstream out(arquivoInput, std::ios::binary); // Abre o arquivo em modo binário.
     if (!out) {
@@ -158,7 +158,7 @@ void Preprocessador::gerarInput(const std::string& arquivoCSV, const std::string
     }
 
     // Escreve o input binário final.
-    Preprocessador::escreverInputBinario(arquivoSaida, finalData);
+    Preprocessador::escreverInputBin(arquivoSaida, finalData);
     std::cout << "Pre-processamento (gerarInput) finalizado." << std::endl;
 }
 

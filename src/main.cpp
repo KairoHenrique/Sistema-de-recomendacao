@@ -16,18 +16,17 @@ int main() {
     // Registra o tempo de início total da execução do programa.
     auto inicio_total = std::chrono::high_resolution_clock::now();
     
-    Configuracao config; // Cria um objeto de configuração com parâmetros padrão.
-    GerenciadorDeDados gerenciador; // Cria um objeto para gerenciar o carregamento e acesso aos dados.
+    Configuracao config;
+    GerenciadorDeDados gerenciador;
 
-    // Realiza o pré-processamento.
     auto inicio_pre = std::chrono::high_resolution_clock::now();
-    // Gera o arquivo input.bin a partir de ratings.csv.
+
+    // Gera o arquivo input.bin.
     Preprocessador::gerarInput("dados/ratings.csv", "dados/input.bin");
     auto fim_pre = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double> duracao_pre = fim_pre - inicio_pre;
     std::cout << "Tempo de Pre-processamento: " << duracao_pre.count() << " segundos" << std::endl;
 
-    // Carrega os dados do arquivo binário gerado.
     gerenciador.carregarDadosDeCacheBinario("dados/input.bin");
 
     // Carrega os nomes dos filmes.
@@ -43,9 +42,9 @@ int main() {
 
     // Inicia o processo de recomendação.
     auto inicio_rec = std::chrono::high_resolution_clock::now();
-    Recomendador recomendador(gerenciador, config); // Cria um objeto Recomendador.
+    Recomendador recomendador(gerenciador, config);
     int numThreads = std::thread::hardware_concurrency(); // Obtém o número de threads disponíveis.
-    if (numThreads == 0) numThreads = 4; // Define um valor padrão se não for possível determinar.
+    if (numThreads == 0) numThreads = 4;
     std::cout << "Iniciando recomendacoes com " << numThreads << " threads..." << std::endl;
     // Realiza as recomendações para os usuários e salva no arquivo de saída.
     recomendador.recomendarParaUsuarios("dados/explore.bin", "resultados/output.dat", numThreads);
@@ -53,7 +52,7 @@ int main() {
     std::chrono::duration<double> duracao_rec = fim_rec - inicio_rec;
     std::cout << "Tempo de Recomendacao: " << duracao_rec.count() << " segundos" << std::endl;
 
-    // Calcula e exibe o tempo total de execução.
+
     auto fim_total = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double> duracao_total = fim_total - inicio_total;
     std::cout << "\nSistema de recomendacao finalizado." << std::endl;

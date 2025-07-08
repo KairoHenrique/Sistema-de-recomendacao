@@ -8,18 +8,12 @@
 #include <iostream>
 #include <string_view>
 
-// Construtor da classe Recomendador.
 // Inicializa o recomendador com o gerenciador de dados e as configurações.
-// gerenciador: Referência ao objeto GerenciadorDeDados para acesso aos dados de usuários e filmes.
-// config: Referência ao objeto Configuracao com os parâmetros do sistema.
 Recomendador::Recomendador(GerenciadorDeDados& gerenciador, const Configuracao& config)
     : gerenciador(gerenciador), config(config) {}
 
 // Realiza a recomendação de filmes para um usuário específico.
-// usuarioId: ID do usuário para o qual as recomendações serão geradas.
-// outFile: Stream de saída para escrever as recomendações (e.g., para um arquivo).
 void Recomendador::recomendarParaUsuario(int usuarioId, std::ostream& outFile) {
-    // Obtém o perfil do usuário atual e sua magnitude (norma do vetor de avaliações).
     const Usuario& perfilAtual = gerenciador.getUsuario(usuarioId);
     float mag1 = gerenciador.getMagnitude(usuarioId);
 
@@ -30,7 +24,6 @@ void Recomendador::recomendarParaUsuario(int usuarioId, std::ostream& outFile) {
         filmesVistos.insert(filmeId);
     }
 
-    // Obtém todos os usuários do sistema.
     const auto& todosUsuarios = gerenciador.getTodosUsuarios();
     // Vetor para armazenar IDs de usuários candidatos a vizinhos, thread-local para evitar contenção.
     thread_local std::vector<int> candidatosIds;
@@ -132,9 +125,6 @@ void Recomendador::recomendarParaUsuario(int usuarioId, std::ostream& outFile) {
 }
 
 // Realiza a recomendação de filmes para múltiplos usuários em paralelo.
-// arquivoExploracao: Caminho para o arquivo contendo os IDs dos usuários a serem explorados.
-// arquivoSaida: Caminho para o arquivo onde as recomendações serão salvas.
-// numThreads: Número de threads a serem usadas para o processamento paralelo.
 void Recomendador::recomendarParaUsuarios(const std::string& arquivoExploracao, const std::string& arquivoSaida, int numThreads) {
     std::ifstream in(arquivoExploracao, std::ios::binary); // Abre o arquivo de exploração para leitura em modo binário.
     if (!in.is_open()) {
@@ -143,7 +133,7 @@ void Recomendador::recomendarParaUsuarios(const std::string& arquivoExploracao, 
     }
 
     std::vector<int> usuariosParaExplorar; // Vetor para armazenar os IDs dos usuários a serem processados.
-    int numUsuariosParaExplorar; // Número de usuários a serem explorados.
+    int numUsuariosParaExplorar; 
     // Lê o número de usuários do arquivo binário.
     in.read(reinterpret_cast<char*>(&numUsuariosParaExplorar), sizeof(numUsuariosParaExplorar));
     usuariosParaExplorar.resize(numUsuariosParaExplorar); // Redimensiona o vetor para o número correto de usuários.
@@ -151,7 +141,7 @@ void Recomendador::recomendarParaUsuarios(const std::string& arquivoExploracao, 
     in.read(reinterpret_cast<char*>(usuariosParaExplorar.data()), numUsuariosParaExplorar * sizeof(int));
     in.close();
     
-    std::ofstream out(arquivoSaida); // Abre o arquivo de saída para escrita.
+    std::ofstream out(arquivoSaida);
     if (!out.is_open()) {
         std::cerr << "Erro fatal: nao foi possivel criar arquivo de saida: " << arquivoSaida << std::endl;
         return;

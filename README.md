@@ -1,4 +1,4 @@
-<h1> README DO SISTEMA DE RECOMENDAÇÃO </h1>
+<h1> SISTEMA DE RECOMENDAÇÃO </h1>
 
 - **Alunos:** Kairo Henrique, Tauane Luísa, Igor Moreira, Maria Eduarda, Heitor Henrique.
 - **Professor:** Michel Pires da Silva  
@@ -218,5 +218,4 @@ qualidade das sugestões geradas.
 
 ---
  
-
-TOPICOS A FAZER
+# **Conclusão**

@@ -197,12 +197,8 @@ foram utilizadas bibliotecas de terceiros
   <summary><strong>Output esperado</strong></summary>
 
 ```
-
-129792 6669:Ikiru (1952) 52281:Grindhouse (2007) 46970:Talladega Nights: The Ballad of Ricky Bobby (2006) 4515:Imagine: John Lennon (1988) 51255:Hot Fuzz (2007) 1327:Amityville Horror, The (1979) 6461:Unforgiven, The (1960) 2226:Ring, The (1927) 2427:Thin Red Line, The (1998) 1298:Pink Floyd: The Wall (1982)
-58941 4034:Traffic (2000) 62:Mr. Holland's Opus (1995) 6953:21 Grams (2003) 4148:Hannibal (2001) 1693:Amistad (1997) 111781:Mission: Impossible - Rogue Nation (2015) 103306:Europa Report (2013) 101864:Oblivion (2013) 127098:Louis C.K.: Live at The Comedy Store (2015) 89904:The Artist (2011)
-129683 45517:Cars (2006) 48304:Apocalypto (2006) 40815:Harry Potter and the Goblet of Fire (2005) 45499:X-Men: The Last Stand (2006) 33794:Batman Begins (2005) 42738:Underworld: Evolution (2006) 26554:Quiet Earth, The (1985) 7001:Invasion of the Body Snatchers (1978) 7569:You Only Live Twice (1967) 54001:Harry Potter and the Order of the Phoenix (2007)
-62014 7981:Infernal Affairs (Mou gaan dou) (2002) 27846:Corporation, The (2003) 5319:Nine Queens (Nueve reinas) (2000) 4102:Eddie Murphy Raw (1987) 3100:River Runs Through It, A (1992) 159817:Planet Earth (2006) 1688:Anastasia (1997) 95873:Ruby Sparks (2012) 1354:Breaking the Waves (1996) 8968:After the Sunset (2004)
-125216 120478:The Salt of the Earth (2014) 128620:Victoria (2015) 61240:Let the Right One In (Låt den rätte komma in) (2008) 8516:Matter of Life and Death, A (Stairway to Heaven) (1946) 97923:Flight (2012) 8481:Northwest Passage (1940) 4338:Twelve O'Clock High (1949) 118696:The Hobbit: The Battle of the Five Armies (2014) 945:Top Hat (1935) 104879:Prisoners (2013)
+ID (usario)
+45024 123:Chungking Express (Chung Hing sam lam) (1994) 1411:Hamlet (1996) 860:Maybe, Maybe Not (Bewegte Mann, Der) (1994)
 
 
 ```

@@ -192,7 +192,10 @@ foram utilizadas bibliotecas de terceiros
   <summary><strong>Grafico de escalonamento do tempo de acordo com o número de usuários</strong></summary>
 <img src="imagem a ser utilizada.png"/>
 
+</details>
+
 ---
+
 <details> 
   <summary><strong>Output esperado</strong></summary>
 
@@ -200,9 +203,9 @@ foram utilizadas bibliotecas de terceiros
 'ID Usuário' 'ID Filme':'Nome Filme' 'ID Filme':'Nome Filme' 'ID Filme':'Nome Filme'
 45024 123:Chungking Express (Chung Hing sam lam) (1994) 1411:Hamlet (1996) 860:Maybe, Maybe Not (Bewegte Mann, Der) (1994)
 
-
 ```
 </details> 
+
 ---
 
 

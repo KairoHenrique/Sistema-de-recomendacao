@@ -1,4 +1,4 @@
-<h1> 📽️SISTEMA DE RECOMENDAÇÃO📽️ </h1>
+<h> 📽️SISTEMA DE RECOMENDAÇÃO📽️ </h
 
 - **Alunos:** Kairo Henrique, Tauane Luísa, Igor Moreira, Maria Eduarda, Heitor Henrique.
 - **Professor:** Michel Pires da Silva  
@@ -31,7 +31,7 @@ itens, gerando recomendações personalizadas.
 O sistema de recomendação implementa as seguintes funcionalidades:
 
 - **Pré-processamento de Dados**: Realiza a limpeza e organização dos dados
-brutos da base MovieLens 25M. Isso inclui a filtragem de usuários com
+brutos da base <a href ="https://www.kaggle.com/datasets/garymk/movielens-25m-dataset">MovieLens 25M</a>. Isso inclui a filtragem de usuários com
 poucas avaliações, filmes com poucas avaliações, remoção de duplicatas
 e a geração de um arquivo de entrada padronizado (input.bin) para
 otimização do carregamento
@@ -56,7 +56,7 @@ acelerar o cálculo de similaridade e a geração de recomendações.
 Para compilar e executar o sistema de recomendação, são necessários os
 seguintes requisitos:
 
-- **Sistema Operacional**: Linux Ubuntu 24.04 LTS (ou compatível).
+- **Sistema Operacional**: Debian GNU/Linux 12.7 (ou compatível).
 - **Compilador**: g++ versão 13 ou superior.
 - **Linguagens**: C e C++.
 - **Bibliotecas**: Exclusivo uso da biblioteca padrão da linguagem C++.

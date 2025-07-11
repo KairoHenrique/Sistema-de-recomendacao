@@ -21,8 +21,7 @@ de Minas Gerais (CEFET-MG)
 O objetivo principal deste trabalho é desenvolver um sistema de recomendação
 que, a partir de perfis de usuários e características de itens (filmes, neste caso),
 seja capaz de sugerir agrupamentos de elementos similares. O sistema deve ser
-capaz de calcular medidas de similaridade (como distância euclidiana,
-similaridade do cosseno ou Jaccard) para identificar afinidades entre usuários e
+capaz de calcular medidas de similaridade para identificar afinidades entre usuários e
 itens, gerando recomendações personalizadas.
 
 ---
@@ -68,6 +67,10 @@ movies.csv).
 
 ## **Estrutura de Dados e Metodologia**
 
+Segue a seguir um fluxograma representando o funcionamento da estrutura do programa
+
+**********Fluxograma
+
 O sistema é modularizado e organizado em classes, cada uma com
 responsabilidades bem definidas:
 
@@ -105,6 +108,13 @@ de pré-processamento, carregamento de dados e o processo de
 recomendação. Também mede e exibe os tempos de execução de cada
 etapa.
 
+
+---
+
+## **Otimizações**
+
+******************Graficos sobre as Versoes e falando sobre otimizacoes flags de otimizacao makefile
+
 ---
 
 ## **Fluxo de Execução**
@@ -127,15 +137,15 @@ para acelerar o processo de recomendação.
 
 ## **Ambiente de Teste**
 O projeto foi desenvolvido e testado no seguinte ambiente:
-- **Sistema Operacional**: Linux Ubuntu 24.04 LTS.
+- **Sistema Operacional**: Linux Debian GNU 12
+- **Hardware**: Processador Ryzen 7 5700x - 32GB de Memoria - SSD NVME
 - **Compilador**: g++ 13 ou superior.
 - **Linguagens**: C e C++.
-- **Base de Dados**: MovieLens 25M (disponível no Kaggle).
+- **Base de Dados**: MovieLens 25M Ratings e Movies (disponível no Kaggle).
 
 ## **Organização do Repositório**
 
-makefile  
-CopiarEditar  
+ 
 Sistema-de-recomendacao/  
 ├── src/ # Código fonte do projeto  
 │ ├── CalculadorDeSimilaridade.cpp  
@@ -154,10 +164,8 @@ Sistema-de-recomendacao/
 │ ├── Preprocessador.hpp  
 │ ├── Recomendador.hpp  
 │ └── Usuario.hpp  
-├── datasets/ # Diretório para os arquivos de entrada (ratings.csv,
-movies.csv)  
-├── resultados/ # Diretório para os arquivos de saída (output.dat)  
-├── build/ # Diretório para os arquivos compilados e executável  
+├── dados/ # Diretório para os arquivos de entrada (ratings.csv, movies.csv)  
+├── resultados/ # Diretório para os arquivos de saída (output.dat)    
 ├── Makefile # Arquivo para compilação e execução do projeto  
 ├── README.md # Este arquivo README  
 └── TrabalhoFinal.pdf # Documento com a especificação do trabalho
@@ -165,11 +173,23 @@ movies.csv)
 ---
 
 ## **Blibliotecas Utilizada**
-
+********** FALAR DE CADA UMA
 Este projeto utiliza exclusivamente a biblioteca padrão da linguagem C++
 (std::chrono, std::iostream, std::thread, std::string, std::vector, std::map,
 std::algorithm, std::fstream, std::sstream, std::set, std::tuple, std::numeric). Não
 foram utilizadas bibliotecas de terceiros
+
+---
+# **Resultados**
+******tempos com numeros recomendacoes diferente (grafico de escalonamento) e o resultado do outpout
+
+---
+
+
+## **implementadas descartadas**
+*****falar sobre utilizacoes implementadas descartadas como memory pool, Cuda (placa de video)
+
+---
 
 ## **Melhorias Futuras**
 Possíveis melhorias e funcionalidades a serem implementadas no futuro incluem:
@@ -198,14 +218,5 @@ qualidade das sugestões geradas.
 
 ---
  
-## **Créditos**
-Este trabalho foi desenvolvido com base nas diretrizes e requisitos da disciplina
-de Algoritmos e Estruturas de Dados I do CEFET-MG.
 
 TOPICOS A FAZER
-
-Graficos sobre as Versoes e falando sobre otimizacoes
-Fluxograma
-tempos com numeros recomendacoes diferente (grafico de escalonamento)
-falar sobre utilizacoes implementadas descartadas como memory pool, Cuda (placa de video)
-flags de otimizacao makefile

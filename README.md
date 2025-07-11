@@ -149,6 +149,7 @@ O projeto foi desenvolvido e testado no seguinte ambiente:
 
 ## **Organização do Repositório**
 
+```
  
 Sistema-de-recomendacao/  
 ├── src/ # Código fonte do projeto  
@@ -174,6 +175,7 @@ Sistema-de-recomendacao/
 ├── README.md # Este arquivo README  
 └── TrabalhoFinal.pdf # Documento com a especificação do trabalho
 
+```
 ---
 
 ## **Blibliotecas Utilizada**
@@ -194,7 +196,7 @@ foram utilizadas bibliotecas de terceiros
 <details> 
   <summary><strong>Output esperado</strong></summary>
 
-'''
+```
 
 129792 6669:Ikiru (1952) 52281:Grindhouse (2007) 46970:Talladega Nights: The Ballad of Ricky Bobby (2006) 4515:Imagine: John Lennon (1988) 51255:Hot Fuzz (2007) 1327:Amityville Horror, The (1979) 6461:Unforgiven, The (1960) 2226:Ring, The (1927) 2427:Thin Red Line, The (1998) 1298:Pink Floyd: The Wall (1982)
 58941 4034:Traffic (2000) 62:Mr. Holland's Opus (1995) 6953:21 Grams (2003) 4148:Hannibal (2001) 1693:Amistad (1997) 111781:Mission: Impossible - Rogue Nation (2015) 103306:Europa Report (2013) 101864:Oblivion (2013) 127098:Louis C.K.: Live at The Comedy Store (2015) 89904:The Artist (2011)
@@ -203,7 +205,7 @@ foram utilizadas bibliotecas de terceiros
 125216 120478:The Salt of the Earth (2014) 128620:Victoria (2015) 61240:Let the Right One In (Låt den rätte komma in) (2008) 8516:Matter of Life and Death, A (Stairway to Heaven) (1946) 97923:Flight (2012) 8481:Northwest Passage (1940) 4338:Twelve O'Clock High (1949) 118696:The Hobbit: The Battle of the Five Armies (2014) 945:Top Hat (1935) 104879:Prisoners (2013)
 
 
-'''
+```
 </details> 
 ---
 

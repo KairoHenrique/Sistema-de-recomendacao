@@ -16,8 +16,8 @@ public:
     // nUsuariosExplorar: Número de usuários para explorar (padrão: 5).
     Configuracao(
         int kVizinhos = 20,
-        int nRecomendacoes = 3,
-        int nUsuariosExplorar = 1
+        int nRecomendacoes = 10,
+        int nUsuariosExplorar = 50
     );
 };
 

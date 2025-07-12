@@ -182,13 +182,37 @@ Sistema-de-recomendacao/
 ```
 ---
 
-## **Blibliotecas Utilizada**
-********** FALAR DE CADA UMA
-Este projeto utiliza exclusivamente a biblioteca padrão da linguagem C++
-(std::chrono, std::iostream, std::thread, std::string, std::vector, std::map,
-std::algorithm, std::fstream, std::sstream, std::set, std::tuple, std::numeric). Não
-foram utilizadas bibliotecas de terceiros
+## **Bibliotecas Utilizadas**
 
+Este projeto foi construído utilizando exclusivamente recursos da **Biblioteca Padrão do C++**. Nenhuma biblioteca de terceiros foi necessária. 
+Abaixo estão as principais bibliotecas utilizadas e suas finalidades no projeto:
+
+### **Manipulação de Dados e Contêineres**
+* **`<vector>`**: A principal estrutura de dados do projeto. Armazena a lista de avaliações (pares de ID do filme e nota) para cada usuário.
+* **`<string>`** e **`<string_view>`**: Utilizadas para toda a manipulação de texto. `std::string` armazena dados que precisam de posse (como nomes de arquivos), enquanto `std::string_view` é uma otimização crucial usada para visualizar e processar "fatias" de strings sem criar cópias, sendo fundamental no parsing de alta performance dos arquivos CSV.
+* **`<unordered_map>`**: Estrutura de hash de alta performance, essencial para mapear os IDs de usuários e filmes aos seus objetos e dados correspondentes. Garante acesso em tempo médio constante O(1).
+* **`<unordered_set>`**: Usado para validações rápidas, como verificar os filmes que um usuário já assistiu ou filtrar usuários e filmes válidos durante o pré-processamento.
+* **`<utility>`**: Fornece o `std::pair`, utilizado para agrupar o ID de um filme e a nota dada pelo usuário em um único elemento dentro do vetor de avaliações.
+* **`<charconv>`**: (C++17) Acesso à função `std::from_chars`, uma forma moderna e extremamente rápida de converter sequências de caracteres para tipos numéricos, usada para otimizar o parsing do arquivo `ratings.csv`.
+
+### **Algoritmos e Funções Matemáticas**
+* **`<algorithm>`**: Fornece algoritmos essenciais e otimizados, como `std::sort`, `std::partial_sort` (para encontrar os K vizinhos e N recomendações de forma eficiente) e `std::shuffle`.
+* **`<cmath>`**: Utilizada para a função `std::sqrt`, necessária para calcular a magnitude (norma euclidiana) do vetor de avaliações de cada usuário.
+* **`<random>`**: Usada para gerar aleatoriedade de boa qualidade (`std::random_device`, `std::mt19937`) para o `std::shuffle`.
+
+### **Entrada/Saída (I/O)**
+* **`<iostream>`**: Para operações de entrada e saída no console (`std::cout`, `std::cerr`).
+* **`<fstream>`**: Essencial para a manipulação de arquivos (leitura de `.csv` e leitura/escrita de `.bin`).
+
+
+### **Programação Concorrente e Paralelismo**
+* **`<thread>`**: A base do paralelismo no projeto, usada para criar e gerenciar as threads que dividem o trabalho.
+* **`<mutex>`**: Garante a segurança na escrita concorrente no arquivo `output.dat` com `std::lock_guard`.
+* **`<future>`**: Utilizada com `std::async` para gerenciar de forma assíncrona o pré-processamento dos dados.
+* **`<atomic>`**: Fornece `std::atomic` para controlar o índice do próximo usuário a ser processado pelas threads de forma segura e sem a necessidade de um `mutex`.
+
+## **#Medição de Tempo**
+* **`<chrono>`**: Usada para medir com alta precisão o tempo de execução do sistema.
 ---
 # **Resultados**
 ******tempos com numeros recomendacoes diferente (grafico de escalonamento) e o resultado do outpout

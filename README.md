@@ -49,6 +49,40 @@ movies.csv).
 
 ---
 
+## **🚀 Clonando e Executando**
+
+1. Clone o repositório:
+
+```
+git clone https://github.com/KairoHenrique/Sistema-de-recomendacao.git
+```
+
+2. Depois, mova para a pasta clonada:
+
+```
+cd Sistema-de-recomendacao
+```
+
+3. Após isso, só compliar e rodar:
+
+```
+make clean
+make
+make run
+```
+
+4. A saída gerada pode ser encontrada em `resultados/output.dat`.
+
+> [!TIP]
+> Se quiser alterar alguma configuração da recomendação, pode alterar o arquivo `config.hpp`.
+ 
+> [!TIP]
+> Se quiser compilar e rodar com um único comando, pode fazer o seguinte: `make clean; make; make run`
+
+> [!IMPORTANT]
+> A velocidade de compilação vai depender do hardware, o `Makefile` desse projeto usa todos os threads disponíveis para compilar mais rápido.
+
+
 ## **Estrutura de Dados e Metodologia**
 
 Segue a seguir um fluxograma representando o funcionamento da estrutura do programa

@@ -235,8 +235,8 @@ Além dos algoritmos, a alta performance do sistema é garantida por um conjunto
 <details> 
   <summary><strong>Grafico de custo e tempo medio entre as versões</strong></summary>
  
- - **<p>Testes realizados com 5 usuarios e 10 recomendações e os resultados sao a media de 10 execucoes<br>**
- - **Escala de tempo esta (x8) para melhor visualizaçao</p>**
+ - **Testes realizados com 5 usuarios e 10 recomendações e os resultados sao a media de 10 execucoes**
+ - **Escala de tempo esta (x8) para melhor visualizaçao**
 
 
 <img src=".assets/Graficocustotempomedio.png" alt="Gráfico de Custo x Tempo Médio"/>

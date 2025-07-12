@@ -121,74 +121,30 @@ etapa.
 <img src="imagem a ser utilizada.png"/>
 
 </details> 
-******************Graficos sobre as Versoes e falando sobre otimizacoes flags de otimizacao makefile
+
 
 
 Além dos algoritmos, a alta performance do sistema é garantida por um conjunto de otimizações de baixo nível, focadas em extrair o máximo do hardware e do sistema operacional.
 
 ---
+### Otimização de Entrada:
 
-### **Otimizações de Entrada e Saída (I/O)**
+Para processar o massivo arquivo `ratings.csv`, o sistema utiliza um pipeline de duas etapas otimizadas, atacando os dois principais gargalos do processo: a leitura do disco (I/O) e o processamento do texto (CPU).
 
-A manipulação de arquivos é frequentemente um gargalo. Para mitigar isso, foram implementadas as seguintes estratégias:
+#### **Passo 1: Leitura Massiva do Disco (Otimização de I/O)**
+A primeira otimização foca em transferir os dados do disco para a memória RAM da forma mais rápida possível. Em vez de ler o arquivo linha por linha (o que exigiria milhares de chamadas de sistema), é utilizada a técnica de **Leitura em Bloco Único**:
+1. O tamanho total do arquivo é medido.
+2. Um buffer de memória (`std::string`) do tamanho exato é pré-alocado.
+3. O conteúdo inteiro do arquivo é lido do disco para este buffer com **uma única e massiva operação `read()`**.
 
-#### **Leitura de Arquivos em Bloco Único**
-Em vez de ler os arquivos de dados (`.csv` ou `.bin`) linha por linha, o que envolveria múltiplas chamadas de sistema custosas, o sistema adota uma leitura em bloco.
+* **O Ganho**: Minimiza a comunicação com o sistema operacional e o disco, que são operações inerentemente lentas.
 
-* **Como Funciona:**
-    1.  O arquivo é aberto e o ponteiro de leitura é movido para o final (`std::ios::ate`) para medir seu tamanho total com uma única chamada.
-    2.  Um buffer (`std::string`) é pré-alocado na memória com o tamanho exato do arquivo. Isso evita múltiplas realocações dinâmicas, que são lentas.
-    3.  O conteúdo inteiro do arquivo é lido para o buffer de memória com uma única operação `read()`.
+#### **Passo 2: Parsing em Memória (Otimização de CPU)**
+Uma vez que os gigabytes de texto estão na RAM, o desafio é convertê-los para números sem criar novos gargalos. É aqui que entra o **Parsing de Alta Performance**:
+* **`std::string_view`**: Em vez de criar uma `std::string` para cada linha e cada campo (o que geraria milhões de alocações de memória), `string_view` é usado para criar "visões" ou "ponteiros" leves sobre o buffer original. Isso permite analisar o texto **sem fazer nenhuma cópia**.
+* **`std::from_chars`**: Para a conversão de texto para número, esta é a rotina mais rápida do C++ padrão, superando com folga alternativas como `stoi` ou `stringstream` por não ter a sobrecarga de alocação de memória ou tratamento de exceções.
 
-* **O Ganho**: Esta técnica **minimiza a sobrecarga de comunicação com o sistema operacional** e elimina o custo de realocação de memória, resultando em um carregamento de arquivos drasticamente mais rápido.
-
-#### **Desvinculação dos Streams de I/O do C++**
-No início da função `main`, duas linhas preparam o ambiente de I/O para máxima velocidade em C++:
-
-* **`std::ios_base::sync_with_stdio(false);`**: Por padrão, os streams de I/O do C++ (`cin`, `cout`) são sincronizados com os streams do C (`printf`, `scanf`) por questões de compatibilidade. Desativar essa sincronização remove uma camada de sobrecarga significativa, tornando o `std::cout` muito mais rápido.
-* **`std::cin.tie(NULL);`**: Por padrão, `cout` está "amarrado" a `cin`, o que significa que antes de qualquer operação de leitura, o buffer de saída é automaticamente "descarregado" (flushed). Como nosso programa não tem entrada interativa, desamarrar os dois remove essa operação de flush desnecessária.
-
-* **O Ganho**: Acelera todas as operações de escrita no console, como a exibição de logs e tempos de execução, que, embora pareçam simples, podem somar um tempo considerável em programas que geram muita saída.
-
----
-
-### Parsing de CSV com `string_view` e `from_chars`
-
-* **A Estratégia**: Ler e converter o arquivo `ratings.csv` de texto para números é um grande gargalo. A abordagem foi evitar ao máximo a alocação de memória (cópias de `std::string`) e usar as rotinas de conversão mais rápidas disponíveis no C++.
-
-* **A Implementação (Pseudo-código)**:
-    <details>
-      <summary><strong>Clique para ver o pseudo-código</strong></summary>
-
-    ```cpp
-    // Esta é a função "worker" que cada thread de pré-processamento executa.
-    
-    ContagemParcial processarChunk(std::string_view chunk) {
-        // O "chunk" é uma visão do arquivo original, não uma cópia.
-        // Nenhuma memória nova é alocada para o texto.
-        ContagemParcial contagem;
-
-        while (!chunk.empty()) {
-            int userId, movieId; 
-            float rating;        
-            
-            // Encontra a próxima vírgula para delimitar o número.
-            auto p1 = chunk.find(",");
-
-            // Converte o trecho de texto para inteiro de forma ultra-rápida, sem alocações.
-            std::from_chars(chunk.data(), chunk.data() + p1, userId);
-            
-            // Avança o "view" para o próximo número, sem modificar a string original.
-            chunk.remove_prefix(p1 + 1);
-
-            // Repete o processo para movieId e rating...
-        }
-        return contagem;
-    }
-    ```
-    </details>
-
-* **O Ganho**: Esta abordagem é ordens de magnitude mais rápida que soluções mais tradicionais usando `std::string` e `std::stoi` ou `std::stringstream`, pois elimina quase toda a sobrecarga de alocação de memória e parsing de texto.
+* **O Ganho Total**: Ao combinar as duas técnicas, o processo de ter os dados do `.csv` disponíveis como números na memória é ordens de magnitude mais rápido do que uma abordagem ingênua.
 
 ---
 ### Cálculo de Similaridade com Vetores Ordenados

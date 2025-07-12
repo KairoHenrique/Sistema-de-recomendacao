@@ -211,9 +211,15 @@ Abaixo estão as principais bibliotecas utilizadas e suas finalidades no projeto
 * **`<future>`**: Utilizada com `std::async` para gerenciar de forma assíncrona o pré-processamento dos dados.
 * **`<atomic>`**: Fornece `std::atomic` para controlar o índice do próximo usuário a ser processado pelas threads de forma segura e sem a necessidade de um `mutex`.
 
-### **#Medição de Tempo**
+
+
+### **Medição de Tempo**
 * **`<chrono>`**: Usada para medir com alta precisão o tempo de execução do sistema.
+
+
 ---
+
+
 # **Resultados**
 ******tempos com numeros recomendacoes diferente (grafico de escalonamento) e o resultado do outpout
 <details> 

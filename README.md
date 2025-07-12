@@ -42,9 +42,9 @@ Para compilar e executar o sistema de recomendação, são necessários os segui
 > [!IMPORTANT] 
 > - **Sistema Operacional**: Debian GNU/Linux 12.11 (ou compatível).
 > - **Compilador**: g++ versão 13 ou superior.
-> **Linguagens**: C e C++.
-> **Bibliotecas**: Exclusivo uso da biblioteca padrão da linguagem C++.
-> **Base de Dados**: <a href ="https://www.kaggle.com/datasets/garymk/movielens-25m-dataset">MovieLens 25M</a> (especificamente o arquivo ratings.csv e
+> - **Linguagens**: C e C++.
+> - **Bibliotecas**: Exclusivo uso da biblioteca padrão da linguagem C++.
+> - **Base de Dados**: <a href ="https://www.kaggle.com/datasets/garymk/movielens-25m-dataset">MovieLens 25M</a> (especificamente o arquivo ratings.csv e
 movies.csv).
 
 ---

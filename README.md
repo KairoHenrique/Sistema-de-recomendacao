@@ -63,7 +63,7 @@ git clone https://github.com/KairoHenrique/Sistema-de-recomendacao.git
 cd Sistema-de-recomendacao
 ```
 
-3. Após isso, só compliar e rodar:
+3. Após isso, só compilar e rodar:
 
 ```
 make clean
@@ -184,7 +184,7 @@ similares utilizando o CalculadorDeSimilaridade. Em seguida, identifica filmes b
 ## 🧠 Análise Detalhada das Principais Funções
 Esta seção descreve as funções mais relevantes do sistema, explicando o fluxo de execução e a responsabilidade de cada componente.
 
-### Função: [`gerarInput()`](src/Preprocessador.cpp#L74-#L149)
+### Função: [`gerarInput()`](src/Preprocessador.cpp#L69-#L138)
 
 **Responsabilidade:** Transformar o arquivo .csv bruto em um cache binário (`input.bin`), filtrado, estruturado e otimizado para leitura de alta performance.
 
@@ -377,28 +377,28 @@ O `Makefile` do projeto está configurado para instruir o compilador `g++` a rea
 <details> 
   <summary><strong>Grafico de custo e tempo medio entre as versões</strong></summary>
  
- - **Testes realizados com 5 usuarios e 10 recomendações e os resultados sao a media de 10 execucoes**
- - **Escala de tempo esta (x8) para melhor visualizaçao**
+ - **Testes realizados com 5 usuários e 10 recomendações e os resultados sao a média de 10 execuções**
+ - **Escala de tempo esta (x8) para melhor visualização**
 
 
 <img src=".assets/Graficocustotempomedio.png" alt="Gráfico de Custo x Tempo Médio"/>
 
 </details> 
 
-Neste grafico foi apresentado custo e tempo medio entre as versões senda cada uma delas com essas implementações de otimizaçao:
+Neste grafico foi apresentado custo e tempo medio entre as versões sendo cada uma delas com essas implementações de otimização:
 
 
 ---
 #### 🕒 Versão 1.0.0:
 
-<p>Esta Versão base sem nenhuma otimizacao, apenas funcionamento do codigo<br>
+<p>Esta Versão base sem nenhuma otimização, apenas funcionamento do codigo<br>
 <strong>Tempo medio: 61.5377 segundos e Memoria maxima: 1073.41 MB</p></strong>
 
 ---
 
 #### 🕒 Versão 2.0.0:
 
-<p>Esta versão ja com otimizacao, foi a com maiores ganhos onde colocamos leituras de arquivos em c puro com finalidade de acelerar a leitura e escrita dos arquivos, modularizasão do codigo, utilização de threads do processador e flags do makefile para otimização <br>
+<p>Esta versão ja com otimização, foi a com maiores ganhos onde colocamos leituras de arquivos em c puro com finalidade de acelerar a leitura e escrita dos arquivos, modularição do codigo, utilização de threads do processador e flags do makefile para otimização <br>
 <strong>Tempo medio: 12.8664 segundos e Memoria maxima: 2742.44 MB</p></strong>
 
 ---
@@ -412,14 +412,14 @@ Neste grafico foi apresentado custo e tempo medio entre as versões senda cada u
 
 #### 🕒 Versão 4.0.0:
 
-<p>Esta versão colocamos `Otimização de Entrada`, `Distribuição de Trabalho com `std::atomic``, arquivos sairam de .dat para .bin para melhorar o tempo e custo de memoria e tambem onde foram efetuados testes com CUDA (utiliza GPU) que foi descontinuado pela complexidade, falta de portabalidade e piora de tempo<br>
+<p>Esta versão colocamos `Otimização de Entrada`, `Distribuição de Trabalho com `std::atomic``, arquivos sairam de .dat para .bin para melhorar o tempo e custo de memória e tambem onde foram efetuados testes com CUDA (utiliza GPU) que foi descontinuado pela complexidade, falta de portabilidade e piora de tempo<br>
 <strong>Tempo medio: 1.2982 segundos e Memoria maxima: 1222.74 MB</p></strong>
 
 ---
 
 #### 🕒 Versão 5.0.0:
 
-<p>Versão atual do nosso programa onde ela foi feita apenas melhorias e "limpeza" dos codigos, retirando funcões, classes e bibliotecas que nao estavam mais sendo utilizadas e tambem foi realizado melhora na estrutura do codigo como nos comentarios e na intedentação do codigo para melhor entendimento geral e melhor organização<br>
+<p>Versão atual do nosso programa onde ela foi feita apenas melhorias e "limpeza" dos codigos, retirando funções, classes e bibliotecas que nao estavam mais sendo utilizadas e tambem foi realizado melhora na estrutura do codigo como nos comentarios e na indentação do codigo para melhor entendimento geral e melhor organização<br>
 <strong>Tempo: 1.2641 segundos e Memoria maxima: 1215.30 MB</p></strong>
 
 
@@ -576,11 +576,11 @@ Durante o desenvolvimento, algumas técnicas de otimização avançada foram exp
 
 ### **Memory Pool**
 * **A Ideia**: Substituir o alocador de memória padrão do C++ por um *memory pool*. A teoria era que, ao alocar um grande bloco de memória de uma só vez e gerenciá-lo manualmente para os objetos `Usuario` e suas avaliações, poderíamos reduzir a sobrecarga de múltiplas chamadas ao sistema operacional e melhorar a localidade de cache.
-* **Motivo do Descarte**: O padrão de alocação deste projeto consiste em poucas e grandes alocações no início da execução para carregar os dados. Os alocadores padrão das bibliotecas C++ modernas (como o `glibc malloc`) já são extremamente eficientes para este cenário. Nos testes, o ganho de performance com o *memory pool* foi **irrisorio e inconsistente**, não justificando a complexidade de implementar, depurar e manter um gerenciador de memória customizado.
+* **Motivo do Descarte**: O padrão de alocação deste projeto consiste em poucas e grandes alocações no início da execução para carregar os dados. Os alocadores padrão das bibliotecas C++ modernas (como o `glibc malloc`) já são extremamente eficientes para este cenário. Nos testes, o ganho de performance com o *memory pool* foi **irrisório e inconsistente**, não justificando a complexidade de implementar, depurar e manter um gerenciador de memória customizado.
 
 ### **Computação em GPU com CUDA**
 * **A Ideia**: Portar o cálculo da similaridade de cosseno, que é a parte mais intensiva do ponto de vista computacional, para ser executado em paralelo na GPU utilizando a plataforma CUDA da NVIDIA.
-* **Motivo do Descarte**: Embora a GPU seja massivamente mais rápida para cálculos de produto escalar, o principal gargalo do sistema não é apenas a computação, mas também a **transferência de dados**. Para cada usuário sendo processado, seria necessário copiar os vetores de avaliação de milhares de outros usuários da memória RAM para a memória VRAM. O tempo gasto nessa transferência de dados **superou o ganho obtido com o processamento acelerado**. O resultado final foi um desempenho inferior à abordagem multi-thread na CPU, que opera diretamente nos dados já carregados na RAM. Além disso, a implementação adicionaria uma forte dependência do ecossistema NVIDIA, reduzindo a portabilidade do projeto e dificuldade em testes, além disso vimos que ela so seria superior com uma quantitade muito maior de dados
+* **Motivo do Descarte**: Embora a GPU seja massivamente mais rápida para cálculos de produto escalar, o principal gargalo do sistema não é apenas a computação, mas também a **transferência de dados**. Para cada usuário sendo processado, seria necessário copiar os vetores de avaliação de milhares de outros usuários da memória RAM para a memória VRAM. O tempo gasto nessa transferência de dados **superou o ganho obtido com o processamento acelerado**. O resultado final foi um desempenho inferior à abordagem multi-thread na CPU, que opera diretamente nos dados já carregados na RAM. Além disso, a implementação adicionaria uma forte dependência do ecossistema NVIDIA, reduzindo a portabilidade do projeto e dificuldade em testes, além disso vimos que ela so seria superior com uma quantidade muito maior de dados
 
 ---
 

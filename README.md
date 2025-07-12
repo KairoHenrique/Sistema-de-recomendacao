@@ -286,11 +286,12 @@ Segue a seguir um fluxograma representando o funcionamento da estrutura do progr
 <img src=".assets/Fluxograma.png" alt="Fluxograma"/>
 
 </details> 
-1. **Pré-processamento**: O Preprocessador lê ratings.csv e movies.csv, filtra os
-dados e gera input.bin (dados de usuários e avaliações) e explore.bin
-(usuários para os quais gerar recomendações).
+
+1. **Pré-processamento**: O Preprocessador lê ratings.csv e movies.csv, filtra os dados e gera input.bin (dados de usuários e avaliações) e explore.bin (usuários para os quais gerar recomendações).
+
 2. **Carregamento de Dados**: O GerenciadorDeDados carrega input.bin e
 movies.csv para a memória.
+
 3. **Recomendação**: O Recomendador itera sobre os usuários em explore.bin.
 - Para cada usuário, o CalculadorDeSimilaridade é usado para
 encontrar os K_VIZINHOS mais similares.

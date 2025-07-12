@@ -39,7 +39,8 @@ com gostos e padrões de avaliação semelhantes.
 
 Para compilar e executar o sistema de recomendação, são necessários os seguintes requisitos:
 
-- **Sistema Operacional**: Debian GNU/Linux 12.11 (ou compatível).
+> [!IMPORTANT] 
+> **Sistema Operacional**: Debian GNU/Linux 12.11 (ou compatível).
 - **Compilador**: g++ versão 13 ou superior.
 - **Linguagens**: C e C++.
 - **Bibliotecas**: Exclusivo uso da biblioteca padrão da linguagem C++.

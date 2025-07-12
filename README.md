@@ -407,7 +407,7 @@ Durante o desenvolvimento, algumas técnicas de otimização avançada foram exp
 
 ### **Memory Pool**
 * **A Ideia**: Substituir o alocador de memória padrão do C++ por um *memory pool*. A teoria era que, ao alocar um grande bloco de memória de uma só vez e gerenciá-lo manualmente para os objetos `Usuario` e suas avaliações, poderíamos reduzir a sobrecarga de múltiplas chamadas ao sistema operacional e melhorar a localidade de cache.
-* **Motivo do Descarte**: O padrão de alocação deste projeto consiste em poucas e grandes alocações no início da execução para carregar os dados. Os alocadores padrão das bibliotecas C++ modernas (como o `glibc malloc`) já são extremamente eficientes para este cenário. Nos testes, o ganho de performance com o *memory pool* foi **marginal e inconsistente**, não justificando a complexidade de implementar, depurar e manter um gerenciador de memória customizado.
+* **Motivo do Descarte**: O padrão de alocação deste projeto consiste em poucas e grandes alocações no início da execução para carregar os dados. Os alocadores padrão das bibliotecas C++ modernas (como o `glibc malloc`) já são extremamente eficientes para este cenário. Nos testes, o ganho de performance com o *memory pool* foi **irrisorio e inconsistente**, não justificando a complexidade de implementar, depurar e manter um gerenciador de memória customizado.
 
 ### **Computação em GPU com CUDA**
 * **A Ideia**: Portar o cálculo da similaridade de cosseno, que é a parte mais intensiva do ponto de vista computacional, para ser executado em paralelo na GPU utilizando a plataforma CUDA da NVIDIA.

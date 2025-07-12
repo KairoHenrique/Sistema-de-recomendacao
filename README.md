@@ -378,17 +378,8 @@ Abaixo estão as principais bibliotecas utilizadas e suas finalidades no projeto
 
 
 # **Resultados**
-******tempos com numeros recomendacoes diferente (grafico de escalonamento) e o resultado do outpout
-<details> 
-  <summary><strong>Grafico de escalonamento do tempo de acordo com o número de usuários</strong></summary>
-<img src="imagem a ser utilizada.png"/>
 
-</details>
-
----
-
-<details> 
-  <summary><strong> Exemplo de Output</strong></summary>
+## Exemplo de saida do output
 
 ```
 
@@ -401,9 +392,33 @@ Este Output foi gerado utilizando os seguintes valores N_RECOMENDACOES = 3 e N_U
 formato do output:'ID Usuário' 'ID Filme':'Nome Filme'
 ```
 
-</details> 
 
 ---
+
+## **Análise de Escalonamento do Tempo de Execução**
+
+Este gráfico mostra o comportamento do tempo de execução do programa de acordo com o número de usuários.
+<details> 
+  <summary><strong>Grafico de escalonamento do tempo de acordo com o número de usuários</strong></summary>
+<img src=".assets/GraficoEscalonamento.png" alt="Grafico de Escalonamento de tempo"/>
+
+
+</details>
+
+### Principais Observações
+
+- **De 5 para 1.000 usuários**  
+  O tempo aumentou de **1.76s para 3.80s**, um crescimento de **+116%**, mesmo com um aumento de **+19.900%** na quantidade de usuários indicando **alta eficiência no início**.
+
+- **De 1.000 para 10.000 usuários**  
+  O tempo subiu de **3.80s para 7.10s**, um crescimento de **+86.8%**, o que ainda representa um **bom escalonamento**.
+
+- **De 10.000 para 100.000 usuários**  
+  O tempo passou de **7.10s para 54.14s**, um crescimento de **+662%**, indicando que a **performance começa a degradar em grandes volumes** possivelmente por limitações de paralelismo, uso de disco ou consumo de memória.
+
+
+
+
 
 
 ## Implementações Descartadas

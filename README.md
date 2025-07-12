@@ -87,7 +87,7 @@ make run
 
 ### Abordagem Metodológica
 
-O desenvolvimento deste sistema de recomendação seguiu uma **metodologia iterativa e incremental**, baseada na aplicação sistemática de técnicas de otimização e na verificação contínua dos resultados obtidos[^1][^2]. A estratégia adotada foi de **identificar gargalos, aplicar técnicas específicas e medir o impacto**, seguindo princípios de desenvolvimento ágil adaptados para otimização de performance[^3][^4].
+O desenvolvimento deste sistema de recomendação seguiu uma **metodologia iterativa e incremental**, baseada na aplicação sistemática de técnicas de otimização e na verificação contínua dos resultados obtidos. A estratégia adotada foi de **identificar gargalos, aplicar técnicas específicas e medir o impacto**, seguindo princípios de desenvolvimento ágil adaptados para otimização de performance.
 
 ### Estrutura Metodológica
 
@@ -104,171 +104,171 @@ A metodologia foi organizada em **seis fases principais**, cada uma focada em as
 
 **Técnicas aplicadas:**
 
-- Padrão de design modular com separação de responsabilidades[^5][^6]
-- Análise de requisitos funcionais e não-funcionais[^1]
+- Padrão de design modular com separação de responsabilidades
+- Análise de requisitos funcionais e não-funcionais
 
 **Resultados obtidos:**
 
-- Arquitetura com classes especializadas (Usuario, Filme, Recomendador)[^5][^7]
-- Definição da estrutura de dados para ratings[^8][^9]
+- Arquitetura com classes especializadas (Usuario, Filme, Recomendador)
+- Definição da estrutura de dados para ratings
 
 
 #### Fase 2: Implementação do Algoritmo Core
 
 **Atividades principais:**
 
-- Implementação da similaridade de cosseno[^5][^10]
-- Desenvolvimento do filtro colaborativo baseado em usuários[^7][^11]
-- Criação da lógica de K-vizinhos mais próximos[^11]
-- Implementação da predição de ratings[^11]
+- Implementação da similaridade de cosseno
+- Desenvolvimento do filtro colaborativo baseado em usuários
+- Criação da lógica de K-vizinhos mais próximos
+- Implementação da predição de ratings
 
 **Técnicas aplicadas:**
 
-- **Similaridade de Cosseno** para medir similaridade entre usuários[^12][^13][^14]
-- **User-based Collaborative Filtering** como estratégia principal[^12][^15][^16]
-- **K-Nearest Neighbors (KNN)** para seleção de usuários similares[^17][^16]
-- **Weighted average** para predição de ratings[^11]
+- **Similaridade de Cosseno** para medir similaridade entre usuários
+- **User-based Collaborative Filtering** como estratégia principal
+- **K-Nearest Neighbors (KNN)** para seleção de usuários similares
+- **Weighted average** para predição de ratings
 
 **Resultados obtidos:**
 
-- Algoritmo de recomendação funcional baseado em filtragem colaborativa[^12][^16]
-- Sistema de cálculo de similaridade otimizado[^10][^13]
+- Algoritmo de recomendação funcional baseado em filtragem colaborativa
+- Sistema de cálculo de similaridade otimizado
 
 
 #### Fase 3: Otimização de Performance e Memória
 
 **Atividades principais:**
 
-- Otimização de estruturas de dados[^6][^18]
-- Implementação de técnicas de otimização de memória[^18][^9]
-- Melhoria do acesso aos dados[^6][^18]
-- Redução de overhead computacional[^19][^20]
+- Otimização de estruturas de dados
+- Implementação de técnicas de otimização de memória
+- Melhoria do acesso aos dados
+- Redução de overhead computacional
 
 **Técnicas aplicadas:**
 
-- **std::unordered_map** para acesso O(1) aos dados[^6][^18]
-- **std::vector** com pairs ordenados para busca eficiente[^8][^9]
-- **std::string_view** para evitar cópias desnecessárias[^18]
-- **Reserve de capacidade** em containers[^18][^9]
-- **Pré-computação de magnitudes** de vetores[^18][^11]
+- **std::unordered_map** para acesso O(1) aos dados
+- **std::vector** com pairs ordenados para busca eficiente
+- **std::string_view** para evitar cópias desnecessárias
+- **Reserve de capacidade** em containers
+- **Pré-computação de magnitudes** de vetores
 
 **Resultados obtidos:**
 
-- Redução significativa do uso de memória[^19][^21]
-- Melhoria na velocidade de acesso aos dados[^19][^22]
-- Cache locality otimizada[^19][^21]
+- Redução significativa do uso de memória
+- Melhoria na velocidade de acesso aos dados
+- Cache locality otimizada
 
 
 #### Fase 4: Paralelização e Processamento Concorrente
 
 **Atividades principais:**
 
-- Identificação de gargalos computacionais[^23][^11]
-- Implementação de multithreading[^23][^11]
-- Paralelização do pré-processamento[^24]
-- Sincronização de threads[^11]
+- Identificação de gargalos computacionais
+- Implementação de multithreading
+- Paralelização do pré-processamento
+- Sincronização de threads
 
 **Técnicas aplicadas:**
 
-- **std::thread** para processamento paralelo[^25][^26][^27]
-- **std::async** para processamento assíncrono de chunks[^24][^26]
-- **std::mutex** para sincronização[^11][^25][^28]
-- **std::atomic** para controle de índices[^11][^25]
-- **Hardware concurrency detection** para otimização automática[^23][^26]
+- **std::thread** para processamento paralelo
+- **std::async** para processamento assíncrono de chunks
+- **std::mutex** para sincronização
+- **std::atomic** para controle de índices
+- **Hardware concurrency detection** para otimização automática
 
 **Resultados obtidos:**
 
-- Processamento paralelo de recomendações[^11][^25]
-- Pré-processamento paralelo de dados[^24][^26]
-- Utilização otimizada de múltiplos cores[^23][^26][^29]
+- Processamento paralelo de recomendações
+- Pré-processamento paralelo de dados
+- Utilização otimizada de múltiplos cores
 
 
 #### Fase 5: Otimização de I/O e Formato de Dados
 
 **Atividades principais:**
 
-- Otimização de leitura de arquivos[^18][^24]
-- Implementação de formato binário[^18][^24]
-- Cache de dados processados[^18][^24]
-- Redução de operações de I/O[^18][^24]
+- Otimização de leitura de arquivos
+- Implementação de formato binário
+- Cache de dados processados
+- Redução de operações de I/O
 
 **Técnicas aplicadas:**
 
-- **Leitura de arquivo inteiro** em memória[^18]
-- **Formato binário** para cache de dados[^18][^24]
-- **Parsing otimizado** com std::string_view[^18]
-- **Eliminação de realocações** desnecessárias[^18][^24]
+- **Leitura de arquivo inteiro** em memória
+- **Formato binário** para cache de dados
+- **Parsing otimizado** com std::string_view
+- **Eliminação de realocações** desnecessárias
 
 **Resultados obtidos:**
 
-- Redução drástica no tempo de carregamento[^18][^24]
-- Formato compacto para armazenamento[^18][^24]
-- Minimização de operações de I/O[^18][^24]
+- Redução drástica no tempo de carregamento
+- Formato compacto para armazenamento
+- Minimização de operações de I/O
 
 
 #### Fase 6: Otimização Algorítmica e Filtragem
 
 **Atividades principais:**
 
-- Implementação de filtros de qualidade[^24]
-- Otimização da seleção de candidatos[^11]
-- Redução do espaço de busca[^11]
-- Melhoria da precisão das recomendações[^11]
+- Implementação de filtros de qualidade
+- Otimização da seleção de candidatos
+- Redução do espaço de busca
+- Melhoria da precisão das recomendações
 
 **Técnicas aplicadas:**
 
-- **Filtros de mínimo** (≥50 ratings por usuário/filme)[^24]
-- **Amostragem aleatória** para reduzir complexidade[^24][^11]
-- **Partial sort** para seleção dos K-melhores[^11]
-- **Shuffle** para distribuição uniforme[^24][^11]
+- **Filtros de mínimo** (≥50 ratings por usuário/filme)
+- **Amostragem aleatória** para reduzir complexidade
+- **Partial sort** para seleção dos K-melhores
+- **Shuffle** para distribuição uniforme
 
 **Resultados obtidos:**
 
-- Redução significativa do dataset[^24]
-- Melhoria na qualidade das recomendações[^11]
-- Complexidade computacional reduzida[^11]
+- Redução significativa do dataset
+- Melhoria na qualidade das recomendações
+- Complexidade computacional reduzida
 
 
 ### Critérios de Avaliação e Métricas
 
-Para cada técnica implementada, foram estabelecidos critérios de avaliação baseados em métricas quantitativas[^19][^22]:
+Para cada técnica implementada, foram estabelecidos critérios de avaliação baseados em métricas quantitativas:
 
 **Performance:**
 
-- Tempo de execução total[^23]
-- Throughput de recomendações por segundo[^11]
-- Speedup obtido com paralelização[^26][^29]
+- Tempo de execução total
+- Throughput de recomendações por segundo
+- Speedup obtido com paralelização
 
 **Uso de Memória:**
 
-- Consumo de RAM[^18][^19]
-- Cache efficiency e locality[^19][^21]
-- Overhead de estruturas de dados[^18]
+- Consumo de RAM
+- Cache efficiency e locality
+- Overhead de estruturas de dados
 
 **Escalabilidade:**
 
-- Comportamento com diferentes volumes de dados[^24][^11]
-- Paralelização eficiente[^26][^30][^31]
-- Utilização de recursos disponíveis[^23][^26]
+- Comportamento com diferentes volumes de dados
+- Paralelização eficiente
+- Utilização de recursos disponíveis
 
 **Qualidade:**
 
-- Precisão das recomendações geradas[^11]
-- Cobertura do sistema[^11]
-- Diversidade das sugestões[^11]
+- Precisão das recomendações geradas
+- Cobertura do sistema
+- Diversidade das sugestões
 
 
 ### Processo de Otimização Iterativo
 
-O processo seguiu um ciclo de **melhoria contínua**[^2][^3]:
+O processo seguiu um ciclo de **melhoria contínua**:
 
-1. **Medição**: Profiling do código para identificar gargalos[^19][^22]
-2. **Análise**: Identificação das técnicas mais adequadas[^19][^20]
-3. **Implementação**: Aplicação das técnicas selecionadas[^19][^22]
-4. **Verificação**: Medição do impacto das otimizações[^19][^22]
-5. **Iteração**: Repetição do processo para novas otimizações[^2][^3]
+1. **Medição**: Profiling do código para identificar gargalos
+2. **Análise**: Identificação das técnicas mais adequadas
+3. **Implementação**: Aplicação das técnicas selecionadas
+4. **Verificação**: Medição do impacto das otimizações
+5. **Iteração**: Repetição do processo para novas otimizações
 
-Esta abordagem metodológica permitiu aplicar **técnicas de otimização de forma sistemática** e **verificar empiricamente os resultados**, garantindo que cada modificação trouxesse benefícios mensuráveis ao sistema de recomendação desenvolvido[^19][^22][^21].
+Esta abordagem metodológica permitiu aplicar **técnicas de otimização de forma sistemática** e **verificar empiricamente os resultados**, garantindo que cada modificação trouxesse benefícios mensuráveis ao sistema de recomendação desenvolvido.
 
 ## **Estrutura de Dados**
 

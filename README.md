@@ -229,9 +229,8 @@ O `Makefile` do projeto está configurado para instruir o compilador `g++` a rea
 * **`-ffast-math`**: Relaxa algumas regras estritas de precisão de ponto flutuante do padrão IEEE 754. Isso dá ao compilador a liberdade de fazer otimizações matemáticas mais agressivas, como reassociar operações, o que é especialmente útil em laços computacionais intensos como os do cálculo de similaridade.
 
 ---
-Além dos algoritmos, a alta performance do sistema é garantida por um conjunto de otimizações de baixo nível, focadas em extrair o máximo do hardware e do sistema operacional.
 
-- Grafico comparativo entre as versões do codigo:
+### Grafico comparativo entre as versões do codigo:
 <details> 
   <summary><strong>Grafico de custo e tempo medio entre as versões</strong></summary>
  
@@ -245,6 +244,8 @@ Além dos algoritmos, a alta performance do sistema é garantida por um conjunto
 
 Neste grafico foi apresentado custo e tempo medio entre as versões senda cada uma delas com essas implementações de otimizaçao:
 
+
+---
 #### Versão 1.0.0:
 
 <p>Esta Versão base sem nenhuma otimizacao, apenas funcionamento do codigo<br>
@@ -339,7 +340,7 @@ Sistema-de-recomendacao/
 ```
 ---
 
-## **Bibliotecas Utilizadas**
+# **Bibliotecas Utilizadas**
 
 Este projeto foi construído utilizando exclusivamente recursos da **Biblioteca Padrão do C++**. Nenhuma biblioteca de terceiros foi necessária. 
 Abaixo estão as principais bibliotecas utilizadas e suas finalidades no projeto:
@@ -415,10 +416,6 @@ Este gráfico mostra o comportamento do tempo de execução do programa de acord
 
 - **De 10.000 para 100.000 usuários**  
   O tempo passou de **7.10s para 54.14s**, um crescimento de **+662%**, indicando que a **performance começa a degradar em grandes volumes** possivelmente por limitações de paralelismo, uso de disco ou consumo de memória.
-
-
-
-
 
 
 ## Implementações Descartadas

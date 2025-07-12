@@ -69,7 +69,11 @@ movies.csv).
 
 Segue a seguir um fluxograma representando o funcionamento da estrutura do programa
 
-**********Fluxograma
+<details> 
+  <summary><strong>Fluxograma</strong></summary>
+<img src="Fluxograma.png"/>
+
+</details> 
 
 O sistema é modularizado e organizado em classes, cada uma com
 responsabilidades bem definidas:

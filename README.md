@@ -160,10 +160,10 @@ Depois de cada mudança, medimos o impacto. Avaliamos:
 
 Tudo foi feito em ciclos curtos. Medimos, analisamos, otimizamos e testamos novamente. Essa forma de trabalhar garantiu que o sistema melhorasse sempre com base em dados concretos, sem depender de suposições. Foi assim que chegamos a um sistema funcional, rápido e bem estruturado.
 
+---
 
 ## 🎲 **Estrutura de Dados**
 
---- 
 ### O sistema é modularizado e organizado em classes, cada uma com responsabilidades bem definidas:
 
 - **[Configuracao.hpp](include/Configuracao.hpp)/[Configuracao.cpp](src/Configuracao.cpp)**: Gerencia os parâmetros de configuração do sistema, como o número de vizinhos (K_VIZINHOS), o número de recomendações a serem geradas (N_RECOMENDACOES) e o número de usuários a serem explorados (N_USUARIOS_EXPLORAR).
@@ -186,9 +186,9 @@ Esta seção descreve as funções mais relevantes do sistema, explicando o flux
 
 ### Função: [`gerarInput()`](src/Preprocessador.cpp#L74-#L149)
 
-- **Responsabilidade:** Transformar o arquivo .csv bruto em um cache binário (`input.bin`), filtrado, estruturado e otimizado para leitura de alta performance.
+**Responsabilidade:** Transformar o arquivo .csv bruto em um cache binário (`input.bin`), filtrado, estruturado e otimizado para leitura de alta performance.
 
-- **Passo a Passo da Lógica:**
+**Passo a Passo da Lógica:**
 
 - **Leitura em Bloco:**
 A função inicia realizando a leitura completa do arquivo .csv para uma única `std::string` em memória. Essa abordagem é uma otimização de I/O que evita múltiplas leituras do disco.
@@ -209,9 +209,9 @@ Os dados brutos são percorridos novamente. Apenas as avaliações consideradas 
 A função escreverInputBin grava o mapa final de forma compacta e estruturada no arquivo `input.bin`.
 
 ### Função: [`calcularSimilaridadeCosseno()`](src/CalculadorDeSimilaridade.cpp#L4-L27)
-Responsabilidade: Implementar a métrica de Similaridade de Cosseno para medir o grau de afinidade entre dois usuários com base em suas avaliações.
+**Responsabilidade:** Implementar a métrica de Similaridade de Cosseno para medir o grau de afinidade entre dois usuários com base em suas avaliações.
 
-- **Passo a Passo da Lógica:**
+ **Passo a Passo da Lógica:**
 
 - **Verificação Inicial:**
 A função verifica se a magnitude de algum vetor de avaliações é igual a zero, evitando divisão por zero.
@@ -229,7 +229,7 @@ Quando um filme comum é identificado, as notas são multiplicadas e somadas ao 
 O valor acumulado no numerador é dividido pelo produto das magnitudes dos vetores, retornando o valor da Similaridade de Cosseno.
 
 ### Função: [`recomendarParaUsuario()`](src/Recomendador.cpp#L16-L114)
-Responsabilidade: Controlar o processo de recomendação, utilizando os dados de entrada e os cálculos de similaridade para gerar uma lista personalizada de filmes para cada usuário.
+**Responsabilidade:** Controlar o processo de recomendação, utilizando os dados de entrada e os cálculos de similaridade para gerar uma lista personalizada de filmes para cada usuário.
 
 **Passo a Passo da Lógica:**
 

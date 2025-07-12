@@ -41,10 +41,10 @@ Para compilar e executar o sistema de recomendação, são necessários os segui
 
 > [!IMPORTANT] 
 > **Sistema Operacional**: Debian GNU/Linux 12.11 (ou compatível).
-- **Compilador**: g++ versão 13 ou superior.
-- **Linguagens**: C e C++.
-- **Bibliotecas**: Exclusivo uso da biblioteca padrão da linguagem C++.
-- **Base de Dados**: <a href ="https://www.kaggle.com/datasets/garymk/movielens-25m-dataset">MovieLens 25M</a> (especificamente o arquivo ratings.csv e
+> **Compilador**: g++ versão 13 ou superior.
+> **Linguagens**: C e C++.
+> **Bibliotecas**: Exclusivo uso da biblioteca padrão da linguagem C++.
+> **Base de Dados**: <a href ="https://www.kaggle.com/datasets/garymk/movielens-25m-dataset">MovieLens 25M</a> (especificamente o arquivo ratings.csv e
 movies.csv).
 
 ---
@@ -69,7 +69,7 @@ magnitude do vetor de avaliações para otimização do cálculo de similaridade
 - **Preprocessador.hpp/.cpp**: Responsável pelo pré-processamento dos dados. Lê o arquivo ratings.csv, filtra usuários e filmes conforme os critérios
 definidos (mínimo de 50 avaliações para usuários e filmes), remove duplicatas e gera arquivos binários (input.bin e explore.bin) para carregamento eficiente dos dados.
 - **GerenciadorDeDados.hpp/.cpp**: Encarregado de carregar e gerenciar os dados de usuários e filmes. Carrega os dados pré-processados de input.bin e os nomes dos filmes de movies.csv, disponibilizando-os para o restante do sistema.
-- **CalculadorDeSimilaridade.hpp/.cpp**: Implementa o algoritmo para calcular a similaridade entre dois usuários. A métrica utilizada é asimilaridade de cosseno, que mede o ângulo entre os vetores de avaliação dos usuários. A implementação é otimizada para eficiência.
+- **CalculadorDeSimilaridade.hpp/.cpp**: Implementa o algoritmo para calcular a similaridade entre dois usuários. A métrica utilizada é a similaridade de cosseno, que mede o ângulo entre os vetores de avaliação dos usuários. A implementação é otimizada para eficiência.
 - **Recomendador.hpp/.cpp**: O coração do sistema de recomendação. Para cada usuário no arquivo explore.bin, ele busca os K_VIZINHOS mais
 similares utilizando o CalculadorDeSimilaridade. Em seguida, identifica filmes bem avaliados por esses vizinhos que o usuário-alvo ainda não viu e gera as N_RECOMENDACOES finais, salvando-as no arquivo output.dat. O processo de recomendação é paralelizado usando múltiplas threads para melhorar a performance.
 - **main.cpp**: Orquestra o fluxo principal do programa, chamando as funções de pré-processamento, carregamento de dados e o processo de recomendação. Também mede e exibe os tempos de execução de cada etapa.
@@ -264,18 +264,18 @@ para acelerar o processo de recomendação.
 
 ## **Ambiente de Teste**
 O projeto foi desenvolvido e testado no seguinte ambiente:
-- **Sistema Operacional**: Linux Debian GNU 12
+- **Sistema Operacional**: Debian GNU/Linux 12.11
 - **Hardware**: Processador Ryzen 7 5700x - 32GB de Memoria - SSD NVME
 - **Compilador**: g++ 13 ou superior.
 - **Linguagens**: C e C++.
-- **Base de Dados**: <a href ="https://www.kaggle.com/datasets/garymk/movielens-25m-dataset">MovieLens 25M</a> Ratings e Movies (disponível no Kaggle).
+- **Base de Dados**: <a href ="https://www.kaggle.com/datasets/garymk/movielens-25m-dataset">MovieLens 25M</a> Ratings e Movies.
 
 ## **Organização do Repositório**
 
 ```
 
 Sistema-de-recomendacao/  
-├── src/ # Código fonte do projeto  
+├── src/                             # Código fonte do projeto  
 │ ├── CalculadorDeSimilaridade.cpp  
 │ ├── Configuracao.cpp  
 │ ├── Filme.cpp  
@@ -284,7 +284,7 @@ Sistema-de-recomendacao/
 │ ├── Preprocessador.cpp  
 │ ├── Recomendador.cpp  
 │ └── Usuario.cpp  
-├── include/ # Arquivos de cabeçalho (.hpp)  
+├── include/                         # Arquivos de cabeçalho (.hpp)  
 │ ├── CalculadorDeSimilaridade.hpp  
 │ ├── Configuracao.hpp  
 │ ├── Filme.hpp  
@@ -292,12 +292,12 @@ Sistema-de-recomendacao/
 │ ├── Preprocessador.hpp  
 │ ├── Recomendador.hpp  
 │ └── Usuario.hpp  
-├── dados/ # Diretório para os arquivos de entrada (ratings.csv, movies.csv)  
-├── resultados/ # Diretório para os arquivos de saída (output.dat)    
-├── Makefile # Arquivo para compilação e execução do projeto  
-├── README.md # Este arquivo README
-├── .assets/ # Arquivos de imagem para este arquivo README
-└── TrabalhoFinal.pdf # Documento com a especificação do trabalho
+├── dados/                           # Diretório para os arquivos de entrada (ratings.csv, movies.csv)  
+├── resultados/                      # Diretório para os arquivos de saída (output.dat)    
+├── Makefile                         # Arquivo para compilação e execução do projeto  
+├── README.md                        # Este arquivo README
+├── .assets/                         # Arquivos de imagem para este arquivo README
+└── TrabalhoFinal.pdf                # Documento com a especificação do trabalho
 
 ```
 ---
@@ -351,9 +351,10 @@ Abaixo estão as principais bibliotecas utilizadas e suas finalidades no projeto
 ```
 
 Este Output foi gerado utilizando os seguintes valores N_RECOMENDACOES = 3 e N_USUARIOS_EXPLORAR = 1 
-```
-formato do output:'ID Usuário' 'ID Filme':'Nome Filme'
-```
+
+> [!NOTE]
+> - Formato do output: `'ID Usuário' 'ID Filme':'Nome Filme'` .
+
 
 
 ---

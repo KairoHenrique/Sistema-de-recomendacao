@@ -116,20 +116,57 @@ etapa.
 ---
 
 ## **Otimizações**
+- Grafico comparativo entre as versões do codigo:
 <details> 
   <summary><strong>Grafico de custo e tempo medio entre as versões</strong></summary>
 <img src="imagem a ser utilizada.png"/>
+
+Neste grafico foi apresentamos as versões senda cada uma delas com essas implementações de otimizaçao:
+
+#### Versão 1.0.0:
+
+Esta Versão base sem nenhuma otimizacao, apenas funcionamento do codigo
+tempo:xxxx e memoria:xxxxx
+
+---
+
+#### Versão 2.0.0:
+
+Esta versão ja com otimizacao, colocamos leituras de arquivos em c puro com finalidade de acelerar a leitura e escrita dos arquivos, modularizasão do codigo e flags do makefile para otimização 
+tempo: xxxx e memoria: xxxxx
+
+---
+
+#### Versão 3.0.0:
+
+Esta versão, foi utilizado `Cálculo de Similaridade com Vetores Ordenados` e `Seleção de "Top K" com (std::partial_sort)`, nesta versão tambem estava implementado o `Memory Pool` que foi descontinuado nas futuras versões
+tempo: xxxx e memoria: xxxxx
+
+---
+
+#### Versão 4.0.0:
+
+Esta versão foi a com maiores ganhos onde colocamos `Otimização de Entrada`, `Distribuição de Trabalho com `std::atomic``, arquivos sairam de .dat para .bin para melhorar o tempo e custo de memoria e tambem onde foram efetuados testes com CUDA (utiliza GPU) que foi descontinuado pela complexidade e falta de portabalidade
+tempo: xxxx e memoria: xxxxx
+
+---
+
+#### Versão 5.0.0:
+
+Versão atual do nosso programa onde ela foi feita apenas melhorias e "limpeza" dos codigos, retirando funcões, classes e bibliotecas que nao estavam mais sendo utilizadas e tambem foi realizado melhora na estrutura do codigo como nos comentarios e na intedentação do codigo para melhor entendimento geral e melhor organização.
+tempo: xxxx e memoria: xxxxx
+
+---
 
 </details> 
 
 
 
-Além dos algoritmos, a alta performance do sistema é garantida por um conjunto de otimizações de baixo nível, focadas em extrair o máximo do hardware e do sistema operacional.
 
 ---
 ### Otimização de Entrada:
 
-Para processar o massivo arquivo `ratings.csv`, o sistema utiliza um pipeline de duas etapas otimizadas, atacando os dois principais gargalos do processo: a leitura do disco (I/O) e o processamento do texto (CPU).
+Para processar o massivo arquivo `ratings.csv`, o sistema utiliza duas etapas otimizadas, atacando os dois principais gargalos do processo: a leitura do disco (I/O) e o processamento do texto (CPU).
 
 #### **Passo 1: Leitura Massiva do Disco (Otimização de I/O)**
 A primeira otimização foca em transferir os dados do disco para a memória RAM da forma mais rápida possível. Em vez de ler o arquivo linha por linha (o que exigiria milhares de chamadas de sistema), é utilizada a técnica de **Leitura em Bloco Único**:
@@ -239,7 +276,9 @@ O `Makefile` do projeto está configurado para instruir o compilador `g++` a rea
 * **`-ffast-math`**: Relaxa algumas regras estritas de precisão de ponto flutuante do padrão IEEE 754. Isso dá ao compilador a liberdade de fazer otimizações matemáticas mais agressivas, como reassociar operações, o que é especialmente útil em laços computacionais intensos como os do cálculo de similaridade.
 
 ---
+Além dos algoritmos, a alta performance do sistema é garantida por um conjunto de otimizações de baixo nível, focadas em extrair o máximo do hardware e do sistema operacional.
 
+---
 ## **Fluxo de Execução**
 1. **Pré-processamento**: O Preprocessador lê ratings.csv e movies.csv, filtra os
 dados e gera input.bin (dados de usuários e avaliações) e explore.bin

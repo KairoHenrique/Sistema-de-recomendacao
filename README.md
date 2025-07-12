@@ -186,72 +186,72 @@ Esta seção descreve as funções mais relevantes do sistema, explicando o flux
 
 ### Função: [`gerarInput()`](src/Preprocessador.cpp#L74-#L149)
 
-**Responsabilidade:** Transformar o arquivo .csv bruto em um cache binário (`input.bin`), filtrado, estruturado e otimizado para leitura de alta performance.
+- **Responsabilidade:** Transformar o arquivo .csv bruto em um cache binário (`input.bin`), filtrado, estruturado e otimizado para leitura de alta performance.
 
-Passo a Passo da Lógica:
+- **Passo a Passo da Lógica:**
 
-Leitura em Bloco:
+- **Leitura em Bloco:**
 A função inicia realizando a leitura completa do arquivo .csv para uma única `std::string` em memória. Essa abordagem é uma otimização de I/O que evita múltiplas leituras do disco.
 
-Paralelismo:
+- **Paralelismo:**
 A lógica divide o conteúdo em blocos (chunks) e utiliza `std::async` para processá-los paralelamente, lançando uma thread para cada núcleo de CPU disponível.
 
-Agregação:
+- **Agregação:**
 O sistema aguarda a finalização de todas as threads e consolida os resultados parciais em uma única estrutura de dados principal.
 
-Filtragem:
+- **Filtragem:**
 Um laço percorre as contagens de avaliações e cria um `std::unordered_set` com os IDs de usuários e filmes que possuem pelo menos 50 avaliações.
 
-Construção do Mapa Final:
+- **Construção do Mapa Final:**
 Os dados brutos são percorridos novamente. Apenas as avaliações consideradas válidas (com base nos conjuntos anteriores) são adicionadas ao mapa final, agrupadas por usuário.
 
-Escrita Binária:
+- **Escrita Binária:**
 A função escreverInputBin grava o mapa final de forma compacta e estruturada no arquivo `input.bin`.
 
 ### Função: [`calcularSimilaridadeCosseno()`](src/CalculadorDeSimilaridade.cpp#L4-L27)
 Responsabilidade: Implementar a métrica de Similaridade de Cosseno para medir o grau de afinidade entre dois usuários com base em suas avaliações.
 
-Passo a Passo da Lógica:
+- **Passo a Passo da Lógica:**
 
-Verificação Inicial:
+- **Verificação Inicial:**
 A função verifica se a magnitude de algum vetor de avaliações é igual a zero, evitando divisão por zero.
 
-Laço Principal:
+- **Laço Principal:**
 Um while percorre simultaneamente as listas de avaliações dos dois usuários, utilizando dois índices (i e j) até o final de uma das listas.
 
-Avanço Otimizado:
+- **Avanço Otimizado:**
 Como as listas estão ordenadas por ID de filme, o índice da lista com o menor ID é incrementado, garantindo que todas as correspondências possíveis sejam verificadas.
 
-Cálculo do Produto Escalar:
+- **Cálculo do Produto Escalar:**
 Quando um filme comum é identificado, as notas são multiplicadas e somadas ao numerador da fórmula de similaridade.
 
-Resultado Final:
+- **Resultado Final:**
 O valor acumulado no numerador é dividido pelo produto das magnitudes dos vetores, retornando o valor da Similaridade de Cosseno.
 
 ### Função: [`recomendarParaUsuario()`](src/Recomendador.cpp#L16-L114)
 Responsabilidade: Controlar o processo de recomendação, utilizando os dados de entrada e os cálculos de similaridade para gerar uma lista personalizada de filmes para cada usuário.
 
-Passo a Passo da Lógica:
+**Passo a Passo da Lógica:**
 
-Filmes Já Avaliados:
+- **Filmes Já Avaliados:**
 Um `std::unordered_set` armazena os filmes já assistidos pelo usuário. A função `.find()` garante busca rápida e eficiente (tempo O(1)).
 
-Amostragem Aleatória:
+- **Amostragem Aleatória:**
 Para reduzir o custo computacional, uma amostra aleatória da base é gerada com `std::shuffle`, limitando a comparação a um subconjunto de usuários.
 
-Seleção dos Vizinhos:
+- **Seleção dos Vizinhos:**
 `std::partial_sort` identifica os K vizinhos mais similares de forma eficiente, sem necessidade de ordenação completa.
 
-Acúmulo de Notas:
+- **Acúmulo de Notas:**
 Para cada filme avaliado pelos vizinhos e ainda não visto pelo usuário-alvo, a nota é multiplicada pela similaridade e acumulada em um mapa.
 
-Cálculo da Nota Prevista:
+- **Cálculo da Nota Prevista:**
 Após o acúmulo, é feita a média ponderada das notas para prever a avaliação do usuário para cada filme candidato.
 
-Seleção das Recomendações:
+- **Seleção das Recomendações:**
 `std::partial_sort` é novamente utilizado para obter os N filmes com maiores notas previstas, evitando ordenar a lista completa.
 
-Escrita Segura no Arquivo:
+- **Escrita Segura no Arquivo:**
 `std::lock_guard` é empregado para garantir que apenas uma thread escreva no arquivo de saída por vez, evitando concorrência e corrupção dos dados.
 
 ---
@@ -595,11 +595,8 @@ Possíveis melhorias e funcionalidades a serem implementadas no futuro incluem:
 - Avaliação de Recomendações: Implementar métricas de avaliação de recomendação (precisão, recall, F1-score) para quantificar a qualidade das sugestões geradas.
 
 ---
- 
-# 📫 **Conclusão**
 
-
-## Análise Assintótica
+## 🤖 Análise Assintótica
 
 O sistema de recomendação de filmes foi desenvolvido com uma arquitetura modular, clara e eficiente. Cada parte, desde a leitura dos dados até a geração das recomendações, foi pensada para lidar com grandes volumes de informação. Para entender melhor o desempenho, especialmente com muitos usuários e filmes, é importante analisar a complexidade das operações principais.
 
@@ -627,7 +624,7 @@ Se forem recomendados filmes para `P` usuários, a complexidade total é aproxim
 
 **O(P * (N * U + K * F))**
 
-### Conclusão
+# 📫 **Conclusão**
 
 O sistema é eficiente para volumes moderados de dados. No entanto, conforme a base de usuários e filmes cresce, a fase de busca por vizinhos se torna o principal gargalo.  
 No pior cenário, a complexidade por recomendação pode chegar a **O(N_total * N * U)**, sendo `N_total` o número de usuários que receberão recomendações.

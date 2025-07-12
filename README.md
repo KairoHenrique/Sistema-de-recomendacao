@@ -49,7 +49,7 @@ movies.csv).
 
 ---
 
-## **🚀 Clonando e Executando**
+## **🔄 Clonando e Executando**
 
 1. Clone o repositório:
 
@@ -276,21 +276,21 @@ Esta abordagem metodológica permitiu aplicar **técnicas de otimização de for
 ### O sistema é modularizado e organizado em classes, cada uma com responsabilidades bem definidas:
 
 - **[Configuracao.hpp](include/Configuracao.hpp)/[Configuracao.cpp](src/Configuracao.cpp)**: Gerencia os parâmetros de configuração do sistema, como o número de vizinhos (K_VIZINHOS), o número de recomendações a serem geradas (N_RECOMENDACOES) e o número de usuários a serem explorados (N_USUARIOS_EXPLORAR).
-- **Filme.hpp/.cpp**: Representa um filme, armazenando seu ID e, potencialmente, outras informações relevantes.
-- **Usuario.hpp/.cpp**: Representa um usuário, contendo seu ID e um vetor de pares (ID do filme, nota) para suas avaliações. Também armazena a
+- **[Filme.hpp](include/Filme.hpp)/[Filme.cpp](src/Filme.cpp)**: Representa um filme, armazenando seu ID e, potencialmente, outras informações relevantes.
+- **[Usuario.hpp](include/Usuario.hpp)/[Usuario.cpp](src/Usuario.cpp)**: Representa um usuário, contendo seu ID e um vetor de pares (ID do filme, nota) para suas avaliações. Também armazena a
 magnitude do vetor de avaliações para otimização do cálculo de similaridade.
-- **Preprocessador.hpp/.cpp**: Responsável pelo pré-processamento dos dados. Lê o arquivo ratings.csv, filtra usuários e filmes conforme os critérios
+- **[Processador.hpp](include/Processador.hpp)/[Processador.cpp](src/Processador.cpp)**: Responsável pelo pré-processamento dos dados. Lê o arquivo ratings.csv, filtra usuários e filmes conforme os critérios
 definidos (mínimo de 50 avaliações para usuários e filmes), remove duplicatas e gera arquivos binários (input.bin e explore.bin) para carregamento eficiente dos dados.
-- **GerenciadorDeDados.hpp/.cpp**: Encarregado de carregar e gerenciar os dados de usuários e filmes. Carrega os dados pré-processados de input.bin e os nomes dos filmes de movies.csv, disponibilizando-os para o restante do sistema.
-- **CalculadorDeSimilaridade.hpp/.cpp**: Implementa o algoritmo para calcular a similaridade entre dois usuários. A métrica utilizada é a similaridade de cosseno, que mede o ângulo entre os vetores de avaliação dos usuários. A implementação é otimizada para eficiência.
-- **Recomendador.hpp/.cpp**: O coração do sistema de recomendação. Para cada usuário no arquivo explore.bin, ele busca os K_VIZINHOS mais
+- **[GerenciadorDeDados.hpp](include/GerenciadorDeDados.hpp)/[GerenciadorDeDados.cpp](src/GerenciadorDeDados.cpp)**: Encarregado de carregar e gerenciar os dados de usuários e filmes. Carrega os dados pré-processados de input.bin e os nomes dos filmes de movies.csv, disponibilizando-os para o restante do sistema.
+- **[CalculadorDeSimilaridade.hpp](include/CalculadorDeSimilaridade.hpp)/[CalculadorDeSimilaridade.cpp](src/CalculadorDeSimilaridade.cpp)**: Implementa o algoritmo para calcular a similaridade entre dois usuários. A métrica utilizada é a similaridade de cosseno, que mede o ângulo entre os vetores de avaliação dos usuários. A implementação é otimizada para eficiência.
+- **[Recomendador.hpp](include/Recomendador.hpp)/[Recomendador.cpp](src/Recomendador.cpp)**: O coração do sistema de recomendação. Para cada usuário no arquivo explore.bin, ele busca os K_VIZINHOS mais
 similares utilizando o CalculadorDeSimilaridade. Em seguida, identifica filmes bem avaliados por esses vizinhos que o usuário-alvo ainda não viu e gera as N_RECOMENDACOES finais, salvando-as no arquivo output.dat. O processo de recomendação é paralelizado usando múltiplas threads para melhorar a performance.
-- **main.cpp**: Orquestra o fluxo principal do programa, chamando as funções de pré-processamento, carregamento de dados e o processo de recomendação. Também mede e exibe os tempos de execução de cada etapa.
+- **[main.cpp](src/main.cpp)**: Orquestra o fluxo principal do programa, chamando as funções de pré-processamento, carregamento de dados e o processo de recomendação. Também mede e exibe os tempos de execução de cada etapa.
 
 
 ---
 
-## **Otimizações**
+## ✅**Otimizações**
 
 ### Otimização de Entrada:
 
@@ -421,35 +421,35 @@ Neste grafico foi apresentado custo e tempo medio entre as versões senda cada u
 
 
 ---
-#### Versão 1.0.0:
+#### 🕒 Versão 1.0.0:
 
 <p>Esta Versão base sem nenhuma otimizacao, apenas funcionamento do codigo<br>
 <strong>Tempo medio: 61.5377 segundos e Memoria maxima: 1073.41 MB</p></strong>
 
 ---
 
-#### Versão 2.0.0:
+#### 🕒 Versão 2.0.0:
 
 <p>Esta versão ja com otimizacao, foi a com maiores ganhos onde colocamos leituras de arquivos em c puro com finalidade de acelerar a leitura e escrita dos arquivos, modularizasão do codigo, utilização de threads do processador e flags do makefile para otimização <br>
 <strong>Tempo medio: 12.8664 segundos e Memoria maxima: 2742.44 MB</p></strong>
 
 ---
 
-#### Versão 3.0.0:
+#### 🕒 Versão 3.0.0:
 
 <p>Esta versão, foi utilizado `Cálculo de Similaridade com Vetores Ordenados` e `Seleção de "Top K" com (std::partial_sort)`, nesta versão tambem estava implementado o `Memory Pool` que foi descontinuado nas futuras versões<br>
 <strong>Tempo medio: 10.3921 segundos e Memoria maxima: 1620.12 MB</p></strong>
 
 ---
 
-#### Versão 4.0.0:
+#### 🕒 Versão 4.0.0:
 
 <p>Esta versão colocamos `Otimização de Entrada`, `Distribuição de Trabalho com `std::atomic``, arquivos sairam de .dat para .bin para melhorar o tempo e custo de memoria e tambem onde foram efetuados testes com CUDA (utiliza GPU) que foi descontinuado pela complexidade, falta de portabalidade e piora de tempo<br>
 <strong>Tempo medio: 1.2982 segundos e Memoria maxima: 1222.74 MB</p></strong>
 
 ---
 
-#### Versão 5.0.0:
+#### 🕒 Versão 5.0.0:
 
 <p>Versão atual do nosso programa onde ela foi feita apenas melhorias e "limpeza" dos codigos, retirando funcões, classes e bibliotecas que nao estavam mais sendo utilizadas e tambem foi realizado melhora na estrutura do codigo como nos comentarios e na intedentação do codigo para melhor entendimento geral e melhor organização<br>
 <strong>Tempo: 1.2641 segundos e Memoria maxima: 1215.30 MB</p></strong>

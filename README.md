@@ -243,36 +243,35 @@ Neste grafico foi apresentamos as versões senda cada uma delas com essas implem
 #### Versão 1.0.0:
 
 <p>Esta Versão base sem nenhuma otimizacao, apenas funcionamento do codigo<br>
-Tempo: xxxx e Memoria: xxxxx</p>
+<strong>Tempo: xxxx e Memoria: xxxxx</p></strong>
 
 ---
 
 #### Versão 2.0.0:
 
 <p>Esta versão ja com otimizacao, colocamos leituras de arquivos em c puro com finalidade de acelerar a leitura e escrita dos arquivos, modularizasão do codigo e flags do makefile para otimização <br>
-Tempo: xxxx e Memoria: xxxxx</p>
+<strong>Tempo: xxxx e Memoria: xxxxx</p></strong>
 
 ---
 
 #### Versão 3.0.0:
 
 <p>Esta versão, foi utilizado `Cálculo de Similaridade com Vetores Ordenados` e `Seleção de "Top K" com (std::partial_sort)`, nesta versão tambem estava implementado o `Memory Pool` que foi descontinuado nas futuras versões<br>
-Tempo: xxxx e Memoria: xxxxx</p>
+<strong>Tempo: xxxx e Memoria: xxxxx</p></strong>
 
 ---
 
 #### Versão 4.0.0:
 
 <p>Esta versão foi a com maiores ganhos onde colocamos `Otimização de Entrada`, `Distribuição de Trabalho com `std::atomic``, arquivos sairam de .dat para .bin para melhorar o tempo e custo de memoria e tambem onde foram efetuados testes com CUDA (utiliza GPU) que foi descontinuado pela complexidade e falta de portabalidade<br>
-Tempo: xxxx e Memoria: xxxxx</p>
+<strong>Tempo: xxxx e Memoria: xxxxx</p></strong>
 
 ---
 
 #### Versão 5.0.0:
 
 <p>Versão atual do nosso programa onde ela foi feita apenas melhorias e "limpeza" dos codigos, retirando funcões, classes e bibliotecas que nao estavam mais sendo utilizadas e tambem foi realizado melhora na estrutura do codigo como nos comentarios e na intedentação do codigo para melhor entendimento geral e melhor organização.<br>
-Tempo: xxxx e Memoria: xxxxx</p>
-
+<strong>Tempo: xxxx e Memoria: xxxxx</p></strong>
 
 
 ---
@@ -328,7 +327,8 @@ Sistema-de-recomendacao/
 ├── dados/ # Diretório para os arquivos de entrada (ratings.csv, movies.csv)  
 ├── resultados/ # Diretório para os arquivos de saída (output.dat)    
 ├── Makefile # Arquivo para compilação e execução do projeto  
-├── README.md # Este arquivo README  
+├── README.md # Este arquivo README
+├── .assets/ # Arquivos de imagem para este arquivo README
 └── TrabalhoFinal.pdf # Documento com a especificação do trabalho
 
 ```

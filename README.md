@@ -1,4 +1,4 @@
-<h> 📽️SISTEMA DE RECOMENDAÇÃO📽️ </h
+<h> 📽️SISTEMA DE RECOMENDAÇÃO📽️ </h>
 
 - **Alunos:** Kairo Henrique, Tauane Luísa, Igor Moreira, Maria Eduarda, Heitor Henrique.
 - **Professor:** Michel Pires da Silva  
@@ -113,7 +113,7 @@ etapa.
 
 ## **Otimizações**
 <details> 
-  <summary><strong>Grafico de custo e tmepo medio entre as versões</strong></summary>
+  <summary><strong>Grafico de custo e tempo medio entre as versões</strong></summary>
 <img src="imagem a ser utilizada.png"/>
 
 </details> 
@@ -197,13 +197,15 @@ foram utilizadas bibliotecas de terceiros
 ---
 
 <details> 
-  <summary><strong>Output esperado</strong></summary>
+  <summary><strong> Exemplo de Output</strong></summary>
 
 ```
 'ID Usuário' 'ID Filme':'Nome Filme' 'ID Filme':'Nome Filme' 'ID Filme':'Nome Filme'
 45024 123:Chungking Express (Chung Hing sam lam) (1994) 1411:Hamlet (1996) 860:Maybe, Maybe Not (Bewegte Mann, Der) (1994)
 
 ```
+
+Este Output foi gerado utilizando os seguintes valores N_RECOMENDACOES = 3 e N_USUARIOS_EXPLORAR = 1 com intuito de ser apenas um exemplo
 </details> 
 
 ---

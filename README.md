@@ -206,9 +206,11 @@ foram utilizadas bibliotecas de terceiros
 ```
 
 Este Output foi gerado utilizando os seguintes valores N_RECOMENDACOES = 3 e N_USUARIOS_EXPLORAR = 1, 
-formato do output: 'ID Usuário' 'ID Filme':'Nome Filme' 'ID Filme':'Nome Filme' 'ID Filme':'Nome Filme'
+```
+Formato do output: 
+'ID Usuário' 'ID Filme':'Nome Filme' 'ID Filme':'Nome Filme' 'ID Filme':'Nome Filme'
 </details> 
-
+```
 ---
 
 

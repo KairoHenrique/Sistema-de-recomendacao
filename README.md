@@ -1,4 +1,6 @@
-<h> 📽️SISTEMA DE RECOMENDAÇÃO📽️ </h>
+<h1 style="text-align: center; font-size: 30px;">📽️ SISTEMA DE RECOMENDAÇÃO 📽️</h1>
+
+---
 
 - **Alunos:** Kairo Henrique, Tauane Luísa, Igor Moreira, Maria Eduarda, Heitor Henrique.
 - **Professor:** Michel Pires da Silva  

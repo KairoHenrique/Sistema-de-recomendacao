@@ -127,25 +127,25 @@ A primeira otimização foca em transferir os dados do disco para a memória RAM
 
 #### **Passo 2: Parsing em Memória (Otimização de CPU)**
 Uma vez que os gigabytes de texto estão na RAM, o desafio é convertê-los para números sem criar novos gargalos. É aqui que entra o **Parsing de Alta Performance**:
-* **`std::string_view`**: Em vez de criar uma `std::string` para cada linha e cada campo (o que geraria milhões de alocações de memória), `string_view` é usado para criar "visões" ou "ponteiros" leves sobre o buffer original. Isso permite analisar o texto **sem fazer nenhuma cópia**.
+- **`std::string_view`**: Em vez de criar uma `std::string` para cada linha e cada campo (o que geraria milhões de alocações de memória), `string_view` é usado para criar "visões" ou "ponteiros" leves sobre o buffer original. Isso permite analisar o texto **sem fazer nenhuma cópia**.
 * **`std::from_chars`**: Para a conversão de texto para número, esta é a rotina mais rápida do C++ padrão, superando com folga alternativas como `stoi` ou `stringstream` por não ter a sobrecarga de alocação de memória ou tratamento de exceções.
 
-* **O Ganho Total**: Ao combinar as duas técnicas, o processo de ter os dados do `.csv` disponíveis como números na memória é ordens de magnitude mais rápido do que uma abordagem ingênua.
+- **O Ganho Total**: Ao combinar as duas técnicas, o processo de ter os dados do `.csv` disponíveis como números na memória é ordens de magnitude mais rápido do que uma abordagem ingênua.
 
 ---
 ### Cálculo de Similaridade com Vetores Ordenados
 
-* **A Estratégia**: Para calcular a similaridade de cosseno, é preciso encontrar os filmes que dois usuários avaliaram em comum. Uma busca ingênua seria muito lenta (quadrática). A otimização consiste em ordenar a lista de avaliações de cada usuário por ID de filme e depois usar um algoritmo de "merge" para encontrar os filmes em comum.
+- **A Estratégia**: Para calcular a similaridade de cosseno, é preciso encontrar os filmes que dois usuários avaliaram em comum. Uma busca ingênua seria muito lenta (quadrática). A otimização consiste em ordenar a lista de avaliações de cada usuário por ID de filme e depois usar um algoritmo de "merge" para encontrar os filmes em comum.
 
 * **A Implementação**: O código real desta função já é o exemplo perfeito (fornecido anteriormente). O `while` com dois ponteiros (`i` e `j`) que avançam simultaneamente é a materialização desta estratégia.
 
-* **O Ganho**: Transforma uma operação de complexidade O(N*M) em O(N+M), onde N e M são os números de avaliações dos dois usuários. Para usuários com muitas avaliações, a diferença é gigantesca.
+- **O Ganho**: Transforma uma operação de complexidade O(N*M) em O(N+M), onde N e M são os números de avaliações dos dois usuários. Para usuários com muitas avaliações, a diferença é gigantesca.
 
 ---
 
 ### Seleção de "Top K" com `std::partial_sort`
 
-* **A Estratégia**: Durante a recomendação, precisamos encontrar os "K vizinhos mais similares" e as "N melhores recomendações". Ordenar a lista inteira de vizinhos ou de filmes candidatos para depois pegar os primeiros é um desperdício. `std::partial_sort` resolve isso.
+- **A Estratégia**: Durante a recomendação, precisamos encontrar os "K vizinhos mais similares" e as "N melhores recomendações". Ordenar a lista inteira de vizinhos ou de filmes candidatos para depois pegar os primeiros é um desperdício. `std::partial_sort` resolve isso.
 
 * **A Implementação (Pseudo-código)**:
     <details>
@@ -172,13 +172,13 @@ Uma vez que os gigabytes de texto estão na RAM, o desafio é convertê-los para
     ```
     </details>
 
-* **O Ganho**: `std::partial_sort` tem complexidade aproximadamente linear (O(N)), enquanto um `std::sort` completo tem complexidade O(N log N). Em vetores grandes, a economia de tempo é substancial.
+- **O Ganho**: `std::partial_sort` tem complexidade aproximadamente linear (O(N)), enquanto um `std::sort` completo tem complexidade O(N log N). Em vetores grandes, a economia de tempo é substancial.
 
 ---
 
 ### Distribuição de Trabalho com `std::atomic`
 
-* **A Estratégia**: Em um sistema multi-thread, é preciso distribuir o trabalho (neste caso, os usuários para os quais se deve gerar recomendações) entre as threads. Usar um `mutex` para que cada thread pegue um novo usuário da lista funciona, mas pode gerar contenção. Uma abordagem mais moderna e de maior performance é usar uma variável atômica.
+- **A Estratégia**: Em um sistema multi-thread, é preciso distribuir o trabalho (neste caso, os usuários para os quais se deve gerar recomendações) entre as threads. Usar um `mutex` para que cada thread pegue um novo usuário da lista funciona, mas pode gerar contenção. Uma abordagem mais moderna e de maior performance é usar uma variável atômica.
 
 * **A Implementação (Pseudo-código)**:
     <details>
@@ -208,7 +208,7 @@ Uma vez que os gigabytes de texto estão na RAM, o desafio é convertê-los para
     ```
     </details>
 
-* **O Ganho**: `std::atomic` permite que as threads peguem seu próximo item de trabalho sem pausas (locks), evitando gargalos de contenção e permitindo que as threads passem quase 100% do tempo executando o trabalho útil, o que melhora a escalabilidade com o número de cores do processador.
+- **O Ganho**: `std::atomic` permite que as threads peguem seu próximo item de trabalho sem pausas (locks), evitando gargalos de contenção e permitindo que as threads passem quase 100% do tempo executando o trabalho útil, o que melhora a escalabilidade com o número de cores do processador.
 
 ---
 
@@ -216,11 +216,11 @@ Uma vez que os gigabytes de texto estão na RAM, o desafio é convertê-los para
 
 O `Makefile` do projeto está configurado para instruir o compilador `g++` a realizar otimizações agressivas, transformando o código C++ em um código de máquina altamente eficiente.
 
-* **`-O3`**: É o nível de otimização mais agressivo. Ele habilita um vasto conjunto de técnicas, como *loop unrolling* (desenrolamento de laços), *inlining* de funções e reordenação de instruções para melhor aproveitar o pipeline do processador.
+- **`-O3`**: É o nível de otimização mais agressivo. Ele habilita um vasto conjunto de técnicas, como *loop unrolling* (desenrolamento de laços), *inlining* de funções e reordenação de instruções para melhor aproveitar o pipeline do processador.
 
 * **`-march=native`**: Esta flag é crucial para performance. Ela instrui o compilador a gerar código otimizado especificamente para a arquitetura da CPU da máquina onde a compilação está ocorrendo. Isso permite o uso de conjuntos de instruções mais modernos e rápidos (como **AVX** e **FMA**), que não seriam usados em um binário genérico e podem acelerar massivamente os cálculos de ponto flutuante.
 
-* **`-flto` (Link-Time Optimization)**: Uma otimização poderosa que ocorre na fase final de linkagem. Ela permite que o compilador analise e otimize o programa **como um todo**, enxergando as interações entre todos os diferentes arquivos de código-fonte, em vez de otimizar cada um isoladamente. Isso possibilita otimizações mais profundas.
+- **`-flto` (Link-Time Optimization)**: Uma otimização poderosa que ocorre na fase final de linkagem. Ela permite que o compilador analise e otimize o programa **como um todo**, enxergando as interações entre todos os diferentes arquivos de código-fonte, em vez de otimizar cada um isoladamente. Isso possibilita otimizações mais profundas.
 
 * **`-ffast-math`**: Relaxa algumas regras estritas de precisão de ponto flutuante do padrão IEEE 754. Isso dá ao compilador a liberdade de fazer otimizações matemáticas mais agressivas, como reassociar operações, o que é especialmente útil em laços computacionais intensos como os do cálculo de similaridade.
 
@@ -279,6 +279,13 @@ Neste grafico foi apresentado custo e tempo medio entre as versões senda cada u
 ---
 
 ## **Fluxo de Execução**
+Segue a seguir um fluxograma representando o funcionamento da estrutura do programa
+
+<details> 
+  <summary><strong>Fluxograma</strong></summary>
+<img src=".assets/Fluxograma.png" alt="Fluxograma"/>
+
+</details> 
 1. **Pré-processamento**: O Preprocessador lê ratings.csv e movies.csv, filtra os
 dados e gera input.bin (dados de usuários e avaliações) e explore.bin
 (usuários para os quais gerar recomendações).

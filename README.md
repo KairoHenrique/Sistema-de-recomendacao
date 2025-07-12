@@ -123,6 +123,47 @@ etapa.
 </details> 
 ******************Graficos sobre as Versoes e falando sobre otimizacoes flags de otimizacao makefile
 
+
+Além dos algoritmos, a alta performance do sistema é garantida por um conjunto de otimizações de baixo nível, focadas em extrair o máximo do hardware e do sistema operacional.
+
+---
+
+### **Otimizações de Entrada e Saída (I/O)**
+
+A manipulação de arquivos é frequentemente um gargalo. Para mitigar isso, foram implementadas as seguintes estratégias:
+
+#### **Leitura de Arquivos em Bloco Único**
+Em vez de ler os arquivos de dados (`.csv` ou `.bin`) linha por linha, o que envolveria múltiplas chamadas de sistema custosas, o sistema adota uma leitura em bloco.
+
+* **Como Funciona:**
+    1.  O arquivo é aberto e o ponteiro de leitura é movido para o final (`std::ios::ate`) para medir seu tamanho total com uma única chamada.
+    2.  Um buffer (`std::string`) é pré-alocado na memória com o tamanho exato do arquivo. Isso evita múltiplas realocações dinâmicas, que são lentas.
+    3.  O conteúdo inteiro do arquivo é lido para o buffer de memória com uma única operação `read()`.
+
+* **O Ganho**: Esta técnica **minimiza a sobrecarga de comunicação com o sistema operacional** e elimina o custo de realocação de memória, resultando em um carregamento de arquivos drasticamente mais rápido.
+
+#### **Desvinculação dos Streams de I/O do C++**
+No início da função `main`, duas linhas preparam o ambiente de I/O para máxima velocidade em C++:
+
+* **`std::ios_base::sync_with_stdio(false);`**: Por padrão, os streams de I/O do C++ (`cin`, `cout`) são sincronizados com os streams do C (`printf`, `scanf`) por questões de compatibilidade. Desativar essa sincronização remove uma camada de sobrecarga significativa, tornando o `std::cout` muito mais rápido.
+* **`std::cin.tie(NULL);`**: Por padrão, `cout` está "amarrado" a `cin`, o que significa que antes de qualquer operação de leitura, o buffer de saída é automaticamente "descarregado" (flushed). Como nosso programa não tem entrada interativa, desamarrar os dois remove essa operação de flush desnecessária.
+
+* **O Ganho**: Acelera todas as operações de escrita no console, como a exibição de logs e tempos de execução, que, embora pareçam simples, podem somar um tempo considerável em programas que geram muita saída.
+
+---
+
+### **Otimizações de Compilação (Flags)**
+
+O `Makefile` do projeto está configurado para instruir o compilador `g++` a realizar otimizações agressivas, transformando o código C++ em um código de máquina altamente eficiente.
+
+* **`-O3`**: É o nível de otimização mais agressivo. Ele habilita um vasto conjunto de técnicas, como *loop unrolling* (desenrolamento de laços), *inlining* de funções e reordenação de instruções para melhor aproveitar o pipeline do processador.
+
+* **`-march=native`**: Esta flag é crucial para performance. Ela instrui o compilador a gerar código otimizado especificamente para a arquitetura da CPU da máquina onde a compilação está ocorrendo. Isso permite o uso de conjuntos de instruções mais modernos e rápidos (como **AVX** e **FMA**), que não seriam usados em um binário genérico e podem acelerar massivamente os cálculos de ponto flutuante.
+
+* **`-flto` (Link-Time Optimization)**: Uma otimização poderosa que ocorre na fase final de linkagem. Ela permite que o compilador analise e otimize o programa **como um todo**, enxergando as interações entre todos os diferentes arquivos de código-fonte, em vez de otimizar cada um isoladamente. Isso possibilita otimizações mais profundas.
+
+* **`-ffast-math`**: Relaxa algumas regras estritas de precisão de ponto flutuante do padrão IEEE 754. Isso dá ao compilador a liberdade de fazer otimizações matemáticas mais agressivas, como reassociar operações, o que é especialmente útil em laços computacionais intensos como os do cálculo de similaridade.
+
 ---
 
 ## **Fluxo de Execução**

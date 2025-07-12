@@ -1,4 +1,5 @@
-<h1 style="text-align: center; font-size: 30px;">📽️ SISTEMA DE RECOMENDAÇÃO 📽️</h1>
+<h1 align="center">📽️ SISTEMA DE RECOMENDAÇÃO 📽️</h1>
+
 
 ---
 

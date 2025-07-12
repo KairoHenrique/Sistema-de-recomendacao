@@ -249,8 +249,17 @@ formato do output:'ID Usuário' 'ID Filme':'Nome Filme'
 ---
 
 
-## **implementadas descartadas**
-*****falar sobre utilizacoes implementadas descartadas como memory pool, Cuda (placa de video)
+## Implementações Descartadas
+
+Durante o desenvolvimento, algumas técnicas de otimização avançada foram exploradas. No entanto, elas foram descartadas por não apresentarem um ganho de desempenho significativo que justificasse o aumento na complexidade do código ou por introduzirem novos gargalos. As principais foram:
+
+### **Memory Pool**
+* **A Ideia**: Substituir o alocador de memória padrão do C++ por um *memory pool*. A teoria era que, ao alocar um grande bloco de memória de uma só vez e gerenciá-lo manualmente para os objetos `Usuario` e suas avaliações, poderíamos reduzir a sobrecarga de múltiplas chamadas ao sistema operacional e melhorar a localidade de cache.
+* **Motivo do Descarte**: O padrão de alocação deste projeto consiste em poucas e grandes alocações no início da execução para carregar os dados. Os alocadores padrão das bibliotecas C++ modernas (como o `glibc malloc`) já são extremamente eficientes para este cenário. Nos testes, o ganho de performance com o *memory pool* foi **marginal e inconsistente**, não justificando a complexidade de implementar, depurar e manter um gerenciador de memória customizado.
+
+### **Computação em GPU com CUDA**
+* **A Ideia**: Portar o cálculo da similaridade de cosseno, que é a parte mais intensiva do ponto de vista computacional, para ser executado em paralelo na GPU utilizando a plataforma CUDA da NVIDIA.
+* **Motivo do Descarte**: Embora a GPU seja massivamente mais rápida para cálculos de produto escalar, o principal gargalo do sistema não é apenas a computação, mas também a **transferência de dados**. Para cada usuário sendo processado, seria necessário copiar os vetores de avaliação de milhares de outros usuários da memória RAM para a memória VRAM. O tempo gasto nessa transferência de dados **superou o ganho obtido com o processamento acelerado**. O resultado final foi um desempenho inferior à abordagem multi-thread na CPU, que opera diretamente nos dados já carregados na RAM. Além disso, a implementação adicionaria uma forte dependência do ecossistema NVIDIA, reduzindo a portabilidade do projeto e dificuldade em testes, além disso vimos que ela so seria superior com uma quantitade muito maior de dados
 
 ---
 
@@ -282,3 +291,6 @@ qualidade das sugestões geradas.
 ---
  
 # **Conclusão**
+
+
+falar sobre analise assintotica e concluir

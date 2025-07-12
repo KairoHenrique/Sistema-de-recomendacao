@@ -128,11 +128,11 @@ dados e gera input.bin (dados de usuários e avaliações) e explore.bin
 2. **Carregamento de Dados**: O GerenciadorDeDados carrega input.bin e
 movies.csv para a memória.
 3. **Recomendação**: O Recomendador itera sobre os usuários em explore.bin.
-o Para cada usuário, o CalculadorDeSimilaridade é usado para
+- Para cada usuário, o CalculadorDeSimilaridade é usado para
 encontrar os K_VIZINHOS mais similares.
-o Filmes não avaliados pelo usuário-alvo, mas bem avaliados pelos
+- Filmes não avaliados pelo usuário-alvo, mas bem avaliados pelos
 vizinhos, são identificados.
-o As N_RECOMENDACOES são geradas e escritas em output.dat.
+- As N_RECOMENDACOES são geradas e escritas em output.dat.
 4. **Otimização**: O sistema utiliza std::ios_base::sync_with_stdio(false) e
 std::cin.tie(NULL) para otimização de I/O, e paralelização com std::thread
 para acelerar o processo de recomendação.
@@ -242,7 +242,7 @@ usuário já gostou, em vez de apenas basear-se em usuários similares.
 - Atualização Dinâmica da Base de Dados: Permitir que a base de dados de
 avaliações seja atualizada dinamicamente, sem a necessidade de um préprocessamento completo a cada nova avaliação.
 - Avaliação de Recomendações: Implementar métricas de avaliação de
-recomendação (e.g., precisão, recall, F1-score) para quantificar a
+recomendação (precisão, recall, F1-score) para quantificar a
 qualidade das sugestões geradas.
 
 ---

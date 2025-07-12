@@ -77,10 +77,8 @@ void GerenciadorDeDados::carregarNomesFilmes(const std::string& caminhoMovies) {
 void GerenciadorDeDados::carregarDadosDeCacheBinario(const std::string& caminhoCache) {
     std::ifstream in(caminhoCache, std::ios::binary); // Abre o arquivo em modo binário.
     if (!in) {
-        std::cout << "  - Nao foi possivel abrir o arquivo de cache binario: " << caminhoCache << std::endl;
+        std::cout << "  - Nao foi possivel abrir o arquivo binario: " << caminhoCache << std::endl;
     }
-
-    std::cout << "  - Lendo cache binario de " << caminhoCache << "..." << std::endl;
 
     size_t numUsuarios; 
     // Lê o número de usuários do arquivo e depois reserva espaço para eles.
@@ -111,7 +109,6 @@ void GerenciadorDeDados::carregarDadosDeCacheBinario(const std::string& caminhoC
         magnitudes[userId] = std::sqrt(mag_quadrada); // Calcula e armazena a magnitude.
         dadosUsuarios.emplace(userId, std::move(usuario)); // Adiciona o usuário ao mapa de dados.
     }
-    std::cout << "  - Input carregado com sucesso." << std::endl;
 }
 
 // Retorna uma referência constante ao objeto Usuario com o ID especificado.

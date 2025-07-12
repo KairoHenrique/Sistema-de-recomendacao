@@ -46,7 +46,6 @@ ContagemParcial Preprocessador::processarChunk(std::string_view chunk) {
 
 // Escreve os dados processados em um arquivo input binário.
 void Preprocessador::escreverInputBin(const std::string& arquivoInput, const std::unordered_map<int, std::vector<std::pair<int, float>>>& dados) {
-    std::cout << "  - Escrevendo input Binário em " << arquivoInput << "..." << std::endl;
     std::ofstream out(arquivoInput, std::ios::binary);
     if (!out) {
         std::cerr << "Erro: Nao foi possivel criar o arquivo input binario." << std::endl;
@@ -73,12 +72,10 @@ void Preprocessador::escreverInputBin(const std::string& arquivoInput, const std
 
 // Gera o arquivo de entrada processado a partir do CSV de avaliações.
 void Preprocessador::gerarInput(const std::string& arquivoCSV, const std::string& arquivoSaida) {
-    std::cout << "Iniciando pre-processamento PARALELO (gerarInput)..." << std::endl;
     
     std::string conteudo = GerenciadorDeDados().lerArquivoInteiro(arquivoCSV);
     
     const unsigned int numThreads = std::thread::hardware_concurrency(); // Obtém o número de threads.
-    std::cout << "  - Usando " << numThreads << " threads para o processamento." << std::endl;
     std::vector<std::future<ContagemParcial>> futuros; // Vetor para armazenar os resultados das threads.
     
     size_t chunkSize = conteudo.size() / numThreads;
@@ -100,7 +97,6 @@ void Preprocessador::gerarInput(const std::string& arquivoCSV, const std::string
         if (inicio >= conteudo.size()) break;
     }
 
-    std::cout << "  - Agregando resultados dos threads..." << std::endl;
     std::unordered_map<int, int> filmesCounts;
     std::unordered_map<int, int> usuariosCounts;
     std::vector<std::tuple<int, int, float>> todasAvaliacoesBrutas;
@@ -119,7 +115,6 @@ void Preprocessador::gerarInput(const std::string& arquivoCSV, const std::string
                                      std::make_move_iterator(parcial.avaliacoesBrutas.end()));
     }
 
-    std::cout << "  - Criando filtros de filmes e usuarios validos..." << std::endl;
     std::unordered_set<int> validMovies; 
     validMovies.reserve(filmesCounts.size());
     for (const auto& [filmeId, count] : filmesCounts) {
@@ -135,7 +130,6 @@ void Preprocessador::gerarInput(const std::string& arquivoCSV, const std::string
     filmesCounts.clear();
     usuariosCounts.clear();
 
-    std::cout << "  - Agrupando dados validos a partir das avaliacoes brutas..." << std::endl;
     std::unordered_map<int, std::vector<std::pair<int, float>>> finalData; // Dados finais agrupados por usuário.
     finalData.reserve(validUsers.size());
     
@@ -152,12 +146,10 @@ void Preprocessador::gerarInput(const std::string& arquivoCSV, const std::string
 
     // Escreve o input binário final.
     Preprocessador::escreverInputBin(arquivoSaida, finalData);
-    std::cout << "Pre-processamento (gerarInput) finalizado." << std::endl;
 }
 
 // Gera o arquivo de usuários para exploração (explore.bin) em formato binário.
 void Preprocessador::gerarExplore(GerenciadorDeDados& gerenciador, const std::string& exploreBin, int quantidade) {
-    std::cout << "Gerando arquivo de exploracao a partir dos dados em memoria..." << std::endl;
     
     const auto& todosUsuarios = gerenciador.getTodosUsuarios();
     if (todosUsuarios.empty()) {
@@ -189,7 +181,6 @@ void Preprocessador::gerarExplore(GerenciadorDeDados& gerenciador, const std::st
     for (int i = 0; i < limite; ++i) {
         out.write(reinterpret_cast<const char*>(&userIds[i]), sizeof(userIds[i]));
     }
-    std::cout << "Arquivo de exploracao gerado." << std::endl;
 }
 
 

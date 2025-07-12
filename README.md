@@ -60,7 +60,7 @@ seguintes requisitos:
 - **Compilador**: g++ versão 13 ou superior.
 - **Linguagens**: C e C++.
 - **Bibliotecas**: Exclusivo uso da biblioteca padrão da linguagem C++.
-- **Base de Dados**: MovieLens 25M (especificamente o arquivo ratings.csv e
+- **Base de Dados**: <a href ="https://www.kaggle.com/datasets/garymk/movielens-25m-dataset">MovieLens 25M</a> (especificamente o arquivo ratings.csv e
 movies.csv).
 
 ---
@@ -71,12 +71,12 @@ Segue a seguir um fluxograma representando o funcionamento da estrutura do progr
 
 <details> 
   <summary><strong>Fluxograma</strong></summary>
-<img src="Fluxograma.png"/>
+<img src=".assets/Fluxograma.png" alt="Fluxograma"/>
 
 </details> 
 
-O sistema é modularizado e organizado em classes, cada uma com
-responsabilidades bem definidas:
+--- 
+### O sistema é modularizado e organizado em classes, cada uma com responsabilidades bem definidas:
 
 - **Configuracao.hpp/.cpp**: Gerencia os parâmetros de configuração do
 sistema, como o número de vizinhos (K_VIZINHOS), o número de
@@ -234,44 +234,49 @@ Além dos algoritmos, a alta performance do sistema é garantida por um conjunto
 - Grafico comparativo entre as versões do codigo:
 <details> 
   <summary><strong>Grafico de custo e tempo medio entre as versões</strong></summary>
-<img src="imagem a ser utilizada.png"/>
+ 
+ - **<p>Testes realizados com 5 usuarios e 10 recomendações e os resultados sao a media de 10 execucoes<br>**
+ - **Escala de tempo esta (x8) para melhor visualizaçao</p>**
+
+
+<img src=".assets/Graficocustotempomedio.png" alt="Gráfico de Custo x Tempo Médio"/>
 
 </details> 
 
-Neste grafico foi apresentamos as versões senda cada uma delas com essas implementações de otimizaçao:
+Neste grafico foi apresentado custo e tempo medio entre as versões senda cada uma delas com essas implementações de otimizaçao:
 
 #### Versão 1.0.0:
 
 <p>Esta Versão base sem nenhuma otimizacao, apenas funcionamento do codigo<br>
-<strong>Tempo: xxxx e Memoria: xxxxx</p></strong>
+<strong>Tempo medio: 61.5377 segundos e Memoria maxima: 1073.41 MB</p></strong>
 
 ---
 
 #### Versão 2.0.0:
 
-<p>Esta versão ja com otimizacao, colocamos leituras de arquivos em c puro com finalidade de acelerar a leitura e escrita dos arquivos, modularizasão do codigo e flags do makefile para otimização <br>
-<strong>Tempo: xxxx e Memoria: xxxxx</p></strong>
+<p>Esta versão ja com otimizacao, foi a com maiores ganhos onde colocamos leituras de arquivos em c puro com finalidade de acelerar a leitura e escrita dos arquivos, modularizasão do codigo, utilização de threads do processador e flags do makefile para otimização <br>
+<strong>Tempo medio: 12.8664 segundos e Memoria maxima: 2742.44 MB</p></strong>
 
 ---
 
 #### Versão 3.0.0:
 
 <p>Esta versão, foi utilizado `Cálculo de Similaridade com Vetores Ordenados` e `Seleção de "Top K" com (std::partial_sort)`, nesta versão tambem estava implementado o `Memory Pool` que foi descontinuado nas futuras versões<br>
-<strong>Tempo: xxxx e Memoria: xxxxx</p></strong>
+<strong>Tempo medio: 10.3921 segundos e Memoria maxima: 1620.12 MB</p></strong>
 
 ---
 
 #### Versão 4.0.0:
 
-<p>Esta versão foi a com maiores ganhos onde colocamos `Otimização de Entrada`, `Distribuição de Trabalho com `std::atomic``, arquivos sairam de .dat para .bin para melhorar o tempo e custo de memoria e tambem onde foram efetuados testes com CUDA (utiliza GPU) que foi descontinuado pela complexidade e falta de portabalidade<br>
-<strong>Tempo: xxxx e Memoria: xxxxx</p></strong>
+<p>Esta versão colocamos `Otimização de Entrada`, `Distribuição de Trabalho com `std::atomic``, arquivos sairam de .dat para .bin para melhorar o tempo e custo de memoria e tambem onde foram efetuados testes com CUDA (utiliza GPU) que foi descontinuado pela complexidade, falta de portabalidade e piora de tempo<br>
+<strong>Tempo medio: 1.2982 segundos e Memoria maxima: 1222.74 MB</p></strong>
 
 ---
 
 #### Versão 5.0.0:
 
-<p>Versão atual do nosso programa onde ela foi feita apenas melhorias e "limpeza" dos codigos, retirando funcões, classes e bibliotecas que nao estavam mais sendo utilizadas e tambem foi realizado melhora na estrutura do codigo como nos comentarios e na intedentação do codigo para melhor entendimento geral e melhor organização.<br>
-<strong>Tempo: xxxx e Memoria: xxxxx</p></strong>
+<p>Versão atual do nosso programa onde ela foi feita apenas melhorias e "limpeza" dos codigos, retirando funcões, classes e bibliotecas que nao estavam mais sendo utilizadas e tambem foi realizado melhora na estrutura do codigo como nos comentarios e na intedentação do codigo para melhor entendimento geral e melhor organização<br>
+<strong>Tempo: 1.2641 segundos e Memoria maxima: 1215.30 MB</p></strong>
 
 
 ---
@@ -300,7 +305,7 @@ O projeto foi desenvolvido e testado no seguinte ambiente:
 - **Hardware**: Processador Ryzen 7 5700x - 32GB de Memoria - SSD NVME
 - **Compilador**: g++ 13 ou superior.
 - **Linguagens**: C e C++.
-- **Base de Dados**: MovieLens 25M Ratings e Movies (disponível no Kaggle).
+- **Base de Dados**: <a href ="https://www.kaggle.com/datasets/garymk/movielens-25m-dataset">MovieLens 25M</a> Ratings e Movies (disponível no Kaggle).
 
 ## **Organização do Repositório**
 
@@ -445,4 +450,4 @@ qualidade das sugestões geradas.
 # **Conclusão**
 
 
-falar sobre analise assintotica e concluir
+*********************falar sobre analise assintotica e concluir

@@ -62,8 +62,9 @@ git clone https://github.com/KairoHenrique/Sistema-de-recomendacao.git
 ```
 cd Sistema-de-recomendacao
 ```
+3. Na pasta `dados`, adicione os arquivos `ratings.csv` e `movies.csv`, os quais podem ser encontrados em <a href ="https://www.kaggle.com/datasets/garymk/movielens-25m-dataset">MovieLens 25M</a>.
 
-3. Após isso, só compilar e rodar:
+4. Após isso, só compilar e rodar:
 
 ```
 make clean
@@ -368,7 +369,7 @@ O `Makefile` do projeto está configurado para instruir o compilador `g++` a rea
 - **`-flto` (Link-Time Optimization)**: Uma otimização poderosa que ocorre na fase final de linkagem. Ela permite que o compilador analise e otimize o programa **como um todo**, enxergando as interações entre todos os diferentes arquivos de código-fonte, em vez de otimizar cada um isoladamente. Isso possibilita otimizações mais profundas.
 
 * **`-ffast-math`**: Relaxa algumas regras estritas de precisão de ponto flutuante do padrão IEEE 754. Isso dá ao compilador a liberdade de fazer otimizações matemáticas mais agressivas, como reassociar operações, o que é especialmente útil em laços computacionais intensos como os do cálculo de similaridade.
-* 
+  
 * **`-j$(nproc)`**: Utiliza todos os núcleos disponíveis do processador para compilar em paralelo. `nproc` retorna o número de núcleos de CPU disponíveis, e `-j` instrui o `make` a executar múltiplos jobs simultaneamente. Isso acelera significativamente a compilação em máquinas multicore, especialmente útil em projetos grandes ou com múltiplos arquivos fonte.
 
 ---

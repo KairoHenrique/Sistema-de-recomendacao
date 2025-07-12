@@ -242,36 +242,36 @@ Neste grafico foi apresentamos as versões senda cada uma delas com essas implem
 
 #### Versão 1.0.0:
 
-Esta Versão base sem nenhuma otimizacao, apenas funcionamento do codigo
-tempo:xxxx e memoria:xxxxx
+<p>Esta Versão base sem nenhuma otimizacao, apenas funcionamento do codigo<br>
+Tempo: xxxx e Memoria: xxxxx</p>
 
 ---
 
 #### Versão 2.0.0:
 
 <p>Esta versão ja com otimizacao, colocamos leituras de arquivos em c puro com finalidade de acelerar a leitura e escrita dos arquivos, modularizasão do codigo e flags do makefile para otimização <br>
-tempo: xxxx e memoria: xxxxx</p>
+Tempo: xxxx e Memoria: xxxxx</p>
 
 ---
 
 #### Versão 3.0.0:
 
-Esta versão, foi utilizado `Cálculo de Similaridade com Vetores Ordenados` e `Seleção de "Top K" com (std::partial_sort)`, nesta versão tambem estava implementado o `Memory Pool` que foi descontinuado nas futuras versões
-tempo: xxxx e memoria: xxxxx
+<p>Esta versão, foi utilizado `Cálculo de Similaridade com Vetores Ordenados` e `Seleção de "Top K" com (std::partial_sort)`, nesta versão tambem estava implementado o `Memory Pool` que foi descontinuado nas futuras versões<br>
+Tempo: xxxx e Memoria: xxxxx</p>
 
 ---
 
 #### Versão 4.0.0:
 
-Esta versão foi a com maiores ganhos onde colocamos `Otimização de Entrada`, `Distribuição de Trabalho com `std::atomic``, arquivos sairam de .dat para .bin para melhorar o tempo e custo de memoria e tambem onde foram efetuados testes com CUDA (utiliza GPU) que foi descontinuado pela complexidade e falta de portabalidade
-tempo: xxxx e memoria: xxxxx
+<p>Esta versão foi a com maiores ganhos onde colocamos `Otimização de Entrada`, `Distribuição de Trabalho com `std::atomic``, arquivos sairam de .dat para .bin para melhorar o tempo e custo de memoria e tambem onde foram efetuados testes com CUDA (utiliza GPU) que foi descontinuado pela complexidade e falta de portabalidade<br>
+Tempo: xxxx e Memoria: xxxxx</p>
 
 ---
 
 #### Versão 5.0.0:
 
-Versão atual do nosso programa onde ela foi feita apenas melhorias e "limpeza" dos codigos, retirando funcões, classes e bibliotecas que nao estavam mais sendo utilizadas e tambem foi realizado melhora na estrutura do codigo como nos comentarios e na intedentação do codigo para melhor entendimento geral e melhor organização.
-tempo: xxxx e memoria: xxxxx
+<p>Versão atual do nosso programa onde ela foi feita apenas melhorias e "limpeza" dos codigos, retirando funcões, classes e bibliotecas que nao estavam mais sendo utilizadas e tambem foi realizado melhora na estrutura do codigo como nos comentarios e na intedentação do codigo para melhor entendimento geral e melhor organização.<br>
+Tempo: xxxx e Memoria: xxxxx</p>
 
 
 

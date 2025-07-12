@@ -275,7 +275,7 @@ Esta abordagem metodológica permitiu aplicar **técnicas de otimização de for
 --- 
 ### O sistema é modularizado e organizado em classes, cada uma com responsabilidades bem definidas:
 
-- **Configuracao.hpp/.cpp**: Gerencia os parâmetros de configuração do sistema, como o número de vizinhos (K_VIZINHOS), o número de recomendações a serem geradas (N_RECOMENDACOES) e o número de usuários a serem explorados (N_USUARIOS_EXPLORAR).
+- **[Configuracao.hpp](include/Configuracao.hpp)/[Configuracao.cpp](src/Configuracao.cpp)**: Gerencia os parâmetros de configuração do sistema, como o número de vizinhos (K_VIZINHOS), o número de recomendações a serem geradas (N_RECOMENDACOES) e o número de usuários a serem explorados (N_USUARIOS_EXPLORAR).
 - **Filme.hpp/.cpp**: Representa um filme, armazenando seu ID e, potencialmente, outras informações relevantes.
 - **Usuario.hpp/.cpp**: Representa um usuário, contendo seu ID e um vetor de pares (ID do filme, nota) para suas avaliações. Também armazena a
 magnitude do vetor de avaliações para otimização do cálculo de similaridade.

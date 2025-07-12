@@ -285,13 +285,13 @@ Segue a seguir um fluxograma representando o funcionamento da estrutura do progr
 movies.csv para a memória.
 
 3. **Recomendação**: O Recomendador itera sobre os usuários em explore.bin.
-   - Para cada usuário, o CalculadorDeSimilaridade é usado para
-encontrar os K_VIZINHOS mais similares.
+   - Para cada usuário, o `CalculadorDeSimilaridade` é usado para
+encontrar os `K_VIZINHOS` mais similares.
    - Filmes não avaliados pelo usuário-alvo, mas bem avaliados pelos
 vizinhos, são identificados.
-   - As N_RECOMENDACOES são geradas e escritas em output.dat.
-4. **Otimização**: O sistema utiliza std::ios_base::sync_with_stdio(false) e
-std::cin.tie(NULL) para otimização de I/O, e paralelização com std::thread
+   - As `N_RECOMENDACOES` são geradas e escritas em `output.dat`.
+4. **Otimização**: O sistema utiliza `std::ios_base::sync_with_stdio(false)` e
+`std::cin.tie(NULL)` para otimização de I/O, e paralelização com `std::thread`
 para acelerar o processo de recomendação.
 
 ---

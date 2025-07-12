@@ -8,15 +8,17 @@
 #include <utility>
 
 std::string GerenciadorDeDados::lerArquivoInteiro(const std::string& caminho) {
-    std::ifstream arquivo(caminho, std::ios::binary | std::ios::ate); // abre o arquivo em bin e move o ponteiro para o final.
+    // Abre o arquivo em modo binário e move o ponteiro para o final.
+    std::ifstream arquivo(caminho, std::ios::binary | std::ios::ate);
     if (!arquivo) {
         std::cerr << "Erro fatal: nao foi possivel abrir o arquivo: " << caminho << std::endl;
         exit(1);
     }
-    std::streamsize tamanho = arquivo.tellg(); // tamanho do arquivo
+    std::streamsize tamanho = arquivo.tellg();
     arquivo.seekg(0, std::ios::beg); // Volta o ponteiro para o início do arquivo.
-    std::string buffer(tamanho, '\0');  // Buffer com o tamanho do arquvivo
-    if (!arquivo.read(buffer.data(), tamanho)) { // Move o conteúdo do arquivo para o buffer.
+    std::string buffer(tamanho, '\0');  // Buffer com o tamanho do arquivo
+    // Lê o conteúdo do arquivo para o buffer
+    if (!arquivo.read(buffer.data(), tamanho)) {
         std::cerr << "Erro fatal: nao foi possivel ler o arquivo: " << caminho << std::endl;
         exit(1);
     }
@@ -46,8 +48,8 @@ void GerenciadorDeDados::carregarNomesFilmes(const std::string& caminhoMovies) {
         // Encontra o final da linha atual.
         auto fim_linha = sv_filmes.find('\n');
         std::string_view linha = sv_filmes.substr(0, fim_linha);
-        // Remove a linha processada da string_view principal.
-        sv_filmes.remove_prefix(fim_linha != std::string_view::npos ? fim_linha + 1 : sv_filmes.size()); // Explicar essa linha
+        // Remove a linha processada; se for a última, remove tudo (evita overflow)
+        sv_filmes.remove_prefix(fim_linha != std::string_view::npos ? fim_linha + 1 : sv_filmes.size());
 
         // Encontra a primeira vírgula para separar o ID do filme.
         auto virgula1 = linha.find(',');
@@ -75,26 +77,26 @@ void GerenciadorDeDados::carregarNomesFilmes(const std::string& caminhoMovies) {
 }
 
 void GerenciadorDeDados::carregarDadosDeCacheBinario(const std::string& caminhoCache) {
-    std::ifstream in(caminhoCache, std::ios::binary); // Abre o arquivo em modo binário.
+    std::ifstream in(caminhoCache, std::ios::binary);
     if (!in) {
         std::cout << "  - Nao foi possivel abrir o arquivo binario: " << caminhoCache << std::endl;
     }
 
-    size_t numUsuarios; 
-    // Lê o número de usuários do arquivo e depois reserva espaço para eles.
+    size_t numUsuarios;
+    // Lê e reserva espaço para os usuários
     in.read(reinterpret_cast<char*>(&numUsuarios), sizeof(numUsuarios));
     dadosUsuarios.reserve(numUsuarios);
 
     // Loop para ler os dados de cada usuário.
     for (size_t i = 0; i < numUsuarios; ++i) {
         int userId;
-        in.read(reinterpret_cast<char*>(&userId), sizeof(userId)); // Lê o ID do usuário.
+        in.read(reinterpret_cast<char*>(&userId), sizeof(userId));
 
         Usuario usuario(userId);
         float mag_quadrada = 0.0f;
 
         size_t numAvaliacoes;
-        in.read(reinterpret_cast<char*>(&numAvaliacoes), sizeof(numAvaliacoes)); // Lê o número de avaliações.
+        in.read(reinterpret_cast<char*>(&numAvaliacoes), sizeof(numAvaliacoes));
         
         // Lê todas as avaliações do usuário de uma vez.
         std::vector<std::pair<int, float>> avaliacoes(numAvaliacoes);
@@ -106,12 +108,11 @@ void GerenciadorDeDados::carregarDadosDeCacheBinario(const std::string& caminhoC
         }
 
         usuario.finalizarEOrdenarAvaliacoes();
-        magnitudes[userId] = std::sqrt(mag_quadrada); // Calcula e armazena a magnitude.
-        dadosUsuarios.emplace(userId, std::move(usuario)); // Adiciona o usuário ao mapa de dados.
+        magnitudes[userId] = std::sqrt(mag_quadrada);
+        dadosUsuarios.emplace(userId, std::move(usuario));
     }
 }
 
-// Retorna uma referência constante ao objeto Usuario com o ID especificado.
 const Usuario& GerenciadorDeDados::getUsuario(int usuarioId) const {
     return dadosUsuarios.at(usuarioId);
 }
@@ -131,5 +132,3 @@ const std::unordered_map<int, Usuario>& GerenciadorDeDados::getTodosUsuarios() c
 float GerenciadorDeDados::getMagnitude(int usuarioId) const {
     return magnitudes.at(usuarioId);
 }
-
-

@@ -1,7 +1,7 @@
 #ifndef CONFIGURACAO_HPP
 #define CONFIGURACAO_HPP
 
-// Armazena os parâmetros de configuração para o sistema
+// Parâmetros de configuração do sistema
 class Configuracao {
 public:
     int K_VIZINHOS;          // Número de vizinhos a serem considerados para a recomendação.

@@ -152,6 +152,124 @@ No início da função `main`, duas linhas preparam o ambiente de I/O para máxi
 
 ---
 
+### Parsing de CSV com `string_view` e `from_chars`
+
+* **A Estratégia**: Ler e converter o arquivo `ratings.csv` de texto para números é um grande gargalo. A abordagem foi evitar ao máximo a alocação de memória (cópias de `std::string`) e usar as rotinas de conversão mais rápidas disponíveis no C++.
+
+* **A Implementação (Pseudo-código)**:
+    <details>
+      <summary><strong>Clique para ver o pseudo-código</strong></summary>
+
+    ```cpp
+    // Esta é a função "worker" que cada thread de pré-processamento executa.
+    
+    ContagemParcial processarChunk(std::string_view chunk) {
+        // O "chunk" é uma visão do arquivo original, não uma cópia.
+        // Nenhuma memória nova é alocada para o texto.
+        ContagemParcial contagem;
+
+        while (!chunk.empty()) {
+            int userId, movieId; 
+            float rating;        
+            
+            // Encontra a próxima vírgula para delimitar o número.
+            auto p1 = chunk.find(",");
+
+            // Converte o trecho de texto para inteiro de forma ultra-rápida, sem alocações.
+            std::from_chars(chunk.data(), chunk.data() + p1, userId);
+            
+            // Avança o "view" para o próximo número, sem modificar a string original.
+            chunk.remove_prefix(p1 + 1);
+
+            // Repete o processo para movieId e rating...
+        }
+        return contagem;
+    }
+    ```
+    </details>
+
+* **O Ganho**: Esta abordagem é ordens de magnitude mais rápida que soluções mais tradicionais usando `std::string` e `std::stoi` ou `std::stringstream`, pois elimina quase toda a sobrecarga de alocação de memória e parsing de texto.
+
+---
+### Cálculo de Similaridade com Vetores Ordenados
+
+* **A Estratégia**: Para calcular a similaridade de cosseno, é preciso encontrar os filmes que dois usuários avaliaram em comum. Uma busca ingênua seria muito lenta (quadrática). A otimização consiste em ordenar a lista de avaliações de cada usuário por ID de filme e depois usar um algoritmo de "merge" para encontrar os filmes em comum.
+
+* **A Implementação**: O código real desta função já é o exemplo perfeito (fornecido anteriormente). O `while` com dois ponteiros (`i` e `j`) que avançam simultaneamente é a materialização desta estratégia.
+
+* **O Ganho**: Transforma uma operação de complexidade O(N*M) em O(N+M), onde N e M são os números de avaliações dos dois usuários. Para usuários com muitas avaliações, a diferença é gigantesca.
+
+---
+
+### Seleção de "Top K" com `std::partial_sort`
+
+* **A Estratégia**: Durante a recomendação, precisamos encontrar os "K vizinhos mais similares" e as "N melhores recomendações". Ordenar a lista inteira de vizinhos ou de filmes candidatos para depois pegar os primeiros é um desperdício. `std::partial_sort` resolve isso.
+
+* **A Implementação (Pseudo-código)**:
+    <details>
+      <summary><strong>Clique para ver o pseudo-código</strong></summary>
+
+    ```cpp
+    // Dentro da função de recomendação...
+
+    // Exemplo: Encontrar os K vizinhos mais similares
+    std::vector<pair<int, float>> similares; // Vetor com MILHARES de similaridades calculadas.
+    int k_count = std::min(K_VIZINHOS, (int)similares.size());
+
+    // Esta função REARRANJA o vetor de forma que os 'k_count' maiores elementos
+    // fiquem nas primeiras posições. O resto do vetor fica em ordem indefinida.
+    std::partial_sort(
+        similares.begin(),
+        similares.begin() + k_count, // Onde a parte ordenada termina.
+        similares.end(),
+        [](const auto& a, const auto& b) { return a.second > b.second; } // Ordenar do maior para o menor.
+    );
+
+    // Agora, os K melhores estão convenientemente nas primeiras posições,
+    // sem o custo de ordenar o vetor inteiro.
+    ```
+    </details>
+
+* **O Ganho**: `std::partial_sort` tem complexidade aproximadamente linear (O(N)), enquanto um `std::sort` completo tem complexidade O(N log N). Em vetores grandes, a economia de tempo é substancial.
+
+---
+
+### Distribuição de Trabalho com `std::atomic`
+
+* **A Estratégia**: Em um sistema multi-thread, é preciso distribuir o trabalho (neste caso, os usuários para os quais se deve gerar recomendações) entre as threads. Usar um `mutex` para que cada thread pegue um novo usuário da lista funciona, mas pode gerar contenção. Uma abordagem mais moderna e de maior performance é usar uma variável atômica.
+
+* **A Implementação (Pseudo-código)**:
+    <details>
+      <summary><strong>Clique para ver o pseudo-código</strong></summary>
+    
+    ```cpp
+    // Dentro da função que orquestra as threads...
+
+    // Um único índice atômico, compartilhado por todas as threads.
+    std::atomic<size_t> next_index(0);
+    std::vector<int> usuariosParaProcessar = ...;
+
+    // Lógica que cada thread executa em loop:
+    while (true) {
+        // fetch_add incrementa a variável e retorna o valor ANTERIOR.
+        // Esta operação é atômica (indivisível) e geralmente lock-free.
+        size_t idx = next_index.fetch_add(1, std::memory_order_relaxed);
+
+        // Se o índice que a thread pegou já passou do fim da lista, não há mais trabalho.
+        if (idx >= usuariosParaProcessar.size()) {
+            break; 
+        }
+
+        // Se não, a thread é responsável por processar este usuário.
+        recomendarParaUsuario(usuariosParaProcessar[idx], ...);
+    }
+    ```
+    </details>
+
+* **O Ganho**: `std::atomic` permite que as threads peguem seu próximo item de trabalho sem pausas (locks), evitando gargalos de contenção e permitindo que as threads passem quase 100% do tempo executando o trabalho útil, o que melhora a escalabilidade com o número de cores do processador.
+
+---
+
 ### **Otimizações de Compilação (Flags)**
 
 O `Makefile` do projeto está configurado para instruir o compilador `g++` a realizar otimizações agressivas, transformando o código C++ em um código de máquina altamente eficiente.

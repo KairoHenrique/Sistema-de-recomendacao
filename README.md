@@ -249,8 +249,8 @@ tempo:xxxx e memoria:xxxxx
 
 #### Versão 2.0.0:
 
-Esta versão ja com otimizacao, colocamos leituras de arquivos em c puro com finalidade de acelerar a leitura e escrita dos arquivos, modularizasão do codigo e flags do makefile para otimização 
-tempo: xxxx e memoria: xxxxx
+<p>Esta versão ja com otimizacao, colocamos leituras de arquivos em c puro com finalidade de acelerar a leitura e escrita dos arquivos, modularizasão do codigo e flags do makefile para otimização <br>
+tempo: xxxx e memoria: xxxxx</p>
 
 ---
 

@@ -11,21 +11,13 @@
 
 ## **Introdução**
 
-Este projeto consiste no desenvolvimento de um sistema de recomendação capaz
-de sugerir agrupamentos de elementos similares a partir de perfis de usuários e
-características de itens. O trabalho foi desenvolvido como parte da disciplina de
-Algoritmos e Estruturas de Dados I, no Centro Federal de Educação Tecnológica
-de Minas Gerais (CEFET-MG)
+Este projeto consiste no desenvolvimento de um sistema de recomendação capaz de sugerir agrupamentos de elementos similares a partir de perfis de usuários e características de itens. O trabalho foi desenvolvido como parte da disciplina de Algoritmos e Estruturas de Dados I, no Centro Federal de Educação Tecnológica de Minas Gerais (CEFET-MG) - Campus Divinópolis.
 
 ---
 
 ## **Problema Proposto**
 
-O objetivo principal deste trabalho é desenvolver um sistema de recomendação
-que, a partir de perfis de usuários e características de itens (filmes, neste caso),
-seja capaz de sugerir agrupamentos de elementos similares. O sistema deve ser
-capaz de calcular medidas de similaridade para identificar afinidades entre usuários e
-itens, gerando recomendações personalizadas.
+O objetivo principal deste trabalho é desenvolver um sistema de recomendação que, a partir de perfis de usuários e características de itens (filmes, neste caso), seja capaz de sugerir agrupamentos de elementos similares. O sistema deve ser capaz de calcular medidas de similaridade para identificar afinidades entre usuários e itens, gerando recomendações personalizadas.
 
 ---
 
@@ -33,33 +25,21 @@ itens, gerando recomendações personalizadas.
 
 O sistema de recomendação implementa as seguintes funcionalidades:
 
-- **Pré-processamento de Dados**: Realiza a limpeza e organização dos dados
-brutos da base <a href ="https://www.kaggle.com/datasets/garymk/movielens-25m-dataset">MovieLens 25M</a>. Isso inclui a filtragem de usuários com
-poucas avaliações, filmes com poucas avaliações, remoção de duplicatas
-e a geração de um arquivo de entrada padronizado (input.bin) para
-otimização do carregamento
-- **Carregamento e Gerenciamento de Dados**: Eficientemente carrega e
-gerencia os dados de usuários, filmes e suas avaliações a partir de arquivos
+- **Pré-processamento de Dados**: Realiza a limpeza e organização dos dados brutos da base <a href ="https://www.kaggle.com/datasets/garymk/movielens-25m-dataset">MovieLens 25M</a>. Isso inclui a filtragem de usuários com poucas avaliações, filmes com poucas avaliações, remoção de duplicatas
+e a geração de um arquivo de entrada padronizado (input.bin) para otimização do carregamento
+- **Carregamento e Gerenciamento de Dados**: Eficientemente carrega e gerencia os dados de usuários, filmes e suas avaliações a partir de arquivos
 binários, otimizando o acesso para o processo de recomendação.
-- **Cálculo de Similaridade**: Calcula a similaridade entre usuários utilizando
-a métrica de similaridade de cosseno. Isso permite identificar usuários
+- **Cálculo de Similaridade**: Calcula a similaridade entre usuários utilizando a métrica de similaridade de cosseno. Isso permite identificar usuários
 com gostos e padrões de avaliação semelhantes.
-- **Geração de Recomendações**: Com base nos usuários mais similares, o
-sistema identifica filmes que o usuário-alvo ainda não avaliou, mas que
-foram bem avaliados pelos seus vizinhos mais próximos. As
-recomendações são então geradas e salvas em um arquivo de saída
-(output.dat).
-- **Suporte a Múltiplas Threads**: O processo de recomendação é otimizado
-para utilizar múltiplas threads, aproveitando o hardware disponível para
-acelerar o cálculo de similaridade e a geração de recomendações.
+- **Geração de Recomendações**: Com base nos usuários mais similares, o sistema identifica filmes que o usuário-alvo ainda não avaliou, mas que foram bem avaliados pelos seus vizinhos mais próximos. As recomendações são então geradas e salvas em um arquivo de saída (output.bin).
+- **Suporte a Múltiplas Threads**: O processo de recomendação é otimizado para utilizar múltiplas threads, aproveitando o hardware disponível para acelerar o cálculo de similaridade e a geração de recomendações.
 ---
 
 ## **Requisitos Técnicos**
 
-Para compilar e executar o sistema de recomendação, são necessários os
-seguintes requisitos:
+Para compilar e executar o sistema de recomendação, são necessários os seguintes requisitos:
 
-- **Sistema Operacional**: Debian GNU/Linux 12.7 (ou compatível).
+- **Sistema Operacional**: Debian GNU/Linux 12.11 (ou compatível).
 - **Compilador**: g++ versão 13 ou superior.
 - **Linguagens**: C e C++.
 - **Bibliotecas**: Exclusivo uso da biblioteca padrão da linguagem C++.
@@ -81,39 +61,17 @@ Segue a seguir um fluxograma representando o funcionamento da estrutura do progr
 --- 
 ### O sistema é modularizado e organizado em classes, cada uma com responsabilidades bem definidas:
 
-- **Configuracao.hpp/.cpp**: Gerencia os parâmetros de configuração do
-sistema, como o número de vizinhos (K_VIZINHOS), o número de
-recomendações a serem geradas (N_RECOMENDACOES) e o número de
-usuários a serem explorados (N_USUARIOS_EXPLORAR).
-- **Filme.hpp/.cpp**: Representa um filme, armazenando seu ID e,
-potencialmente, outras informações relevantes.
-- **Usuario.hpp/.cpp**: Representa um usuário, contendo seu ID e um vetor de
-pares (ID do filme, nota) para suas avaliações. Também armazena a
-magnitude do vetor de avaliações para otimização do cálculo de
-similaridade.
-- **Preprocessador.hpp/.cpp**: Responsável pelo pré-processamento dos
-dados. Lê o arquivo ratings.csv, filtra usuários e filmes conforme os critérios
-definidos (mínimo de 50 avaliações para usuários e filmes), remove
-duplicatas e gera arquivos binários (input.bin e explore.bin) para
-carregamento eficiente dos dados.
-- **GerenciadorDeDados.hpp/.cpp**: Encarregado de carregar e gerenciar os
-dados de usuários e filmes. Carrega os dados pré-processados de input.bin
-e os nomes dos filmes de movies.csv, disponibilizando-os para o restante
-do sistema.
-- **CalculadorDeSimilaridade.hpp/.cpp**: Implementa o algoritmo para
-calcular a similaridade entre dois usuários. A métrica utilizada é asimilaridade de cosseno, que mede o ângulo entre os vetores de avaliação
-dos usuários. A implementação é otimizada para eficiência.
-- **Recomendador.hpp/.cpp**: O coração do sistema de recomendação. Para
-cada usuário no arquivo explore.bin, ele busca os K_VIZINHOS mais
-similares utilizando o CalculadorDeSimilaridade. Em seguida, identifica
-filmes bem avaliados por esses vizinhos que o usuário-alvo ainda não viu e
-gera as N_RECOMENDACOES finais, salvando-as no arquivo output.dat. O
-processo de recomendação é paralelizado usando múltiplas threads para
-melhorar a performance.
-- **main.cpp**: Orquestra o fluxo principal do programa, chamando as funções
-de pré-processamento, carregamento de dados e o processo de
-recomendação. Também mede e exibe os tempos de execução de cada
-etapa.
+- **Configuracao.hpp/.cpp**: Gerencia os parâmetros de configuração do sistema, como o número de vizinhos (K_VIZINHOS), o número de recomendações a serem geradas (N_RECOMENDACOES) e o número de usuários a serem explorados (N_USUARIOS_EXPLORAR).
+- **Filme.hpp/.cpp**: Representa um filme, armazenando seu ID e, potencialmente, outras informações relevantes.
+- **Usuario.hpp/.cpp**: Representa um usuário, contendo seu ID e um vetor de pares (ID do filme, nota) para suas avaliações. Também armazena a
+magnitude do vetor de avaliações para otimização do cálculo de similaridade.
+- **Preprocessador.hpp/.cpp**: Responsável pelo pré-processamento dos dados. Lê o arquivo ratings.csv, filtra usuários e filmes conforme os critérios
+definidos (mínimo de 50 avaliações para usuários e filmes), remove duplicatas e gera arquivos binários (input.bin e explore.bin) para carregamento eficiente dos dados.
+- **GerenciadorDeDados.hpp/.cpp**: Encarregado de carregar e gerenciar os dados de usuários e filmes. Carrega os dados pré-processados de input.bin e os nomes dos filmes de movies.csv, disponibilizando-os para o restante do sistema.
+- **CalculadorDeSimilaridade.hpp/.cpp**: Implementa o algoritmo para calcular a similaridade entre dois usuários. A métrica utilizada é asimilaridade de cosseno, que mede o ângulo entre os vetores de avaliação dos usuários. A implementação é otimizada para eficiência.
+- **Recomendador.hpp/.cpp**: O coração do sistema de recomendação. Para cada usuário no arquivo explore.bin, ele busca os K_VIZINHOS mais
+similares utilizando o CalculadorDeSimilaridade. Em seguida, identifica filmes bem avaliados por esses vizinhos que o usuário-alvo ainda não viu e gera as N_RECOMENDACOES finais, salvando-as no arquivo output.dat. O processo de recomendação é paralelizado usando múltiplas threads para melhorar a performance.
+- **main.cpp**: Orquestra o fluxo principal do programa, chamando as funções de pré-processamento, carregamento de dados e o processo de recomendação. Também mede e exibe os tempos de execução de cada etapa.
 
 
 ---
@@ -437,28 +395,13 @@ Durante o desenvolvimento, algumas técnicas de otimização avançada foram exp
 
 ## **Melhorias Futuras**
 Possíveis melhorias e funcionalidades a serem implementadas no futuro incluem:
-- Implementação de Outras Métricas de Similaridade: Adicionar suporte para
-outras métricas de similaridade, como Distância Euclidiana ou
-Similaridade de Jaccard, permitindo a comparação de desempenho entre
-elas.
-- Otimização de Memória: Explorar estruturas de dados mais eficientes ou
-técnicas de compressão para reduzir o consumo de memória,
-especialmente para bases de dados maiores.
-- Interface de Usuário: Desenvolver uma interface gráfica (GUI) ou uma
-interface de linha de comando mais interativa para facilitar a interação com
-o sistema.
-- Persistência de Recomendações: Implementar um mecanismo para
-persistir as recomendações geradas em um banco de dados ou outro
-formato, permitindo o acesso posterior sem a necessidade de reexecutar o
-processo completo.
-- Recomendações Baseadas em Itens: Adicionar um módulo de
-recomendação baseado em itens, que sugere filmes similares aos que o
-usuário já gostou, em vez de apenas basear-se em usuários similares.
-- Atualização Dinâmica da Base de Dados: Permitir que a base de dados de
-avaliações seja atualizada dinamicamente, sem a necessidade de um préprocessamento completo a cada nova avaliação.
-- Avaliação de Recomendações: Implementar métricas de avaliação de
-recomendação (precisão, recall, F1-score) para quantificar a
-qualidade das sugestões geradas.
+- Implementação de Outras Métricas de Similaridade: Adicionar suporte para outras métricas de similaridade, como Distância Euclidiana ou Similaridade de Jaccard, permitindo a comparação de desempenho entre elas.
+- Otimização de Memória: Explorar estruturas de dados mais eficientes ou técnicas de compressão para reduzir o consumo de memória, especialmente para bases de dados maiores.
+- Interface de Usuário: Desenvolver uma interface gráfica (GUI) ou uma interface de linha de comando mais interativa para facilitar a interação com o sistema.
+- Persistência de Recomendações: Implementar um mecanismo para persistir as recomendações geradas em um banco de dados ou outro formato, permitindo o acesso posterior sem a necessidade de reexecutar o processo completo.
+- Recomendações Baseadas em Itens: Adicionar um módulo de recomendação baseado em itens, que sugere filmes similares aos que o usuário já gostou, em vez de apenas basear-se em usuários similares.
+- Atualização Dinâmica da Base de Dados: Permitir que a base de dados de avaliações seja atualizada dinamicamente, sem a necessidade de um préprocessamento completo a cada nova avaliação.
+- Avaliação de Recomendações: Implementar métricas de avaliação de recomendação (precisão, recall, F1-score) para quantificar a qualidade das sugestões geradas.
 
 ---
  

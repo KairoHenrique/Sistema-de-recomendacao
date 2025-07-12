@@ -9,19 +9,19 @@
 
 ---
 
-## **Introdução**
+## 📖 **Introdução**
 
 Este projeto consiste no desenvolvimento de um sistema de recomendação capaz de sugerir agrupamentos de elementos similares a partir de perfis de usuários e características de itens. O trabalho foi desenvolvido como parte da disciplina de Algoritmos e Estruturas de Dados I, no Centro Federal de Educação Tecnológica de Minas Gerais (CEFET-MG) - Campus Divinópolis.
 
 ---
 
-## **Problema Proposto**
+## 🎯 **Problema Proposto**
 
 O objetivo principal deste trabalho é desenvolver um sistema de recomendação que, a partir de perfis de usuários e características de itens (filmes, neste caso), seja capaz de sugerir agrupamentos de elementos similares. O sistema deve ser capaz de calcular medidas de similaridade para identificar afinidades entre usuários e itens, gerando recomendações personalizadas.
 
 ---
 
-## **Funcionalidades**
+## ⚙️ **Funcionalidades**
 
 O sistema de recomendação implementa as seguintes funcionalidades:
 
@@ -35,7 +35,7 @@ com gostos e padrões de avaliação semelhantes.
 - **Suporte a Múltiplas Threads**: O processo de recomendação é otimizado para utilizar múltiplas threads, aproveitando o hardware disponível para acelerar o cálculo de similaridade e a geração de recomendações.
 ---
 
-## **Requisitos Técnicos**
+## 🪛 **Requisitos Técnicos**
 
 Para compilar e executar o sistema de recomendação, são necessários os seguintes requisitos:
 
@@ -49,7 +49,7 @@ movies.csv).
 
 ---
 
-## **🔄 Clonando e Executando**
+## 🔄 **Clonando e Executando**
 
 1. Clone o repositório:
 
@@ -83,194 +83,85 @@ make run
 > A velocidade de compilação vai depender do hardware, o `Makefile` desse projeto usa todos os threads disponíveis para compilar mais rápido.
 
 
-## Metodologia de Desenvolvimento para Sistema de Recomendação
+## 🚪 Metodologia
 
 ### Abordagem Metodológica
 
-O desenvolvimento deste sistema de recomendação seguiu uma **metodologia iterativa e incremental**, baseada na aplicação sistemática de técnicas de otimização e na verificação contínua dos resultados obtidos. A estratégia adotada foi de **identificar gargalos, aplicar técnicas específicas e medir o impacto**, seguindo princípios de desenvolvimento ágil adaptados para otimização de performance.
+O desenvolvimento do sistema de recomendação foi feito passo a passo, com foco claro em aprender e melhorar a cada etapa. Em vez de tentar otimizar tudo de uma vez, seguimos um processo bem prático: identificamos onde o sistema estava lento ou usando muita memória, aplicamos melhorias e avaliamos o impacto. Esse ciclo se repetiu várias vezes, o que nos permitiu construir algo eficiente sem abrir mão da clareza e da organização.
 
-### Estrutura Metodológica
+### Como organizamos o trabalho
 
-A metodologia foi organizada em **seis fases principais**, cada uma focada em aspectos específicos de otimização:
+Dividimos todo o processo em seis fases. Cada uma teve um objetivo específico e ajudou a guiar as decisões de implementação e otimização.
 
-#### Fase 1: Análise do Problema e Definição da Arquitetura
+#### Fase 1: Entendendo o problema e planejando a arquitetura
 
-**Atividades principais:**
+Começamos definindo os requisitos: o que o sistema precisava fazer e como os dados seriam utilizados. Com isso, montamos a estrutura do sistema usando módulos bem separados, o que ajudou muito durante o desenvolvimento e a manutenção.
 
-- Identificação dos requisitos do sistema de recomendação
-- Escolha do algoritmo de filtragem colaborativa
-- Definição da arquitetura modular do sistema
-- Análise dos dados de entrada (ratings de filmes)
+- Criamos classes separadas para representar usuários, filmes, recomendações e dados.
+- Analisamos o formato dos dados de entrada para pensar nas melhores estruturas.
 
-**Técnicas aplicadas:**
+#### Fase 2: Construindo o algoritmo de recomendação
 
-- Padrão de design modular com separação de responsabilidades
-- Análise de requisitos funcionais e não-funcionais
+A parte central do sistema foi a recomendação em si. Implementamos a similaridade de cosseno para comparar usuários e usamos a média ponderada para prever notas.
 
-**Resultados obtidos:**
+- Usamos K-vizinhos mais próximos para selecionar usuários parecidos.
+- A recomendação foi baseada no comportamento dos vizinhos mais semelhantes.
+- Com isso, o sistema passou a gerar sugestões com base no perfil do usuário.
 
-- Arquitetura com classes especializadas (Usuario, Filme, Recomendador)
-- Definição da estrutura de dados para ratings
+Fizemos um teste com um arquivo de entrada CSV modificado e analisamos as recomendações geradas, garantindo a congruência das recomendações baseadas nos usuários.
 
+#### Fase 3: Melhorando o uso de memória e desempenho
 
-#### Fase 2: Implementação do Algoritmo Core
+Com o algoritmo funcionando, começamos a perceber que alguns pontos precisavam ser otimizados para lidar melhor com grandes volumes de dados.
 
-**Atividades principais:**
+- Passamos a usar estruturas como `unordered_map` para acesso rápido.
+- Reduzimos alocações desnecessárias e evitamos cópias de strings.
+- Pré-calculamos informações que seriam reutilizadas, como magnitudes.
 
-- Implementação da similaridade de cosseno
-- Desenvolvimento do filtro colaborativo baseado em usuários
-- Criação da lógica de K-vizinhos mais próximos
-- Implementação da predição de ratings
+Essas mudanças deixaram o sistema mais leve e rápido.
 
-**Técnicas aplicadas:**
+#### Fase 4: Usando múltiplas threads para acelerar o processamento
 
-- **Similaridade de Cosseno** para medir similaridade entre usuários
-- **User-based Collaborative Filtering** como estratégia principal
-- **K-Nearest Neighbors (KNN)** para seleção de usuários similares
-- **Weighted average** para predição de ratings
+Como o tempo total ainda era alto, especialmente com muitos usuários, decidimos paralelizar o sistema. Com isso, diferentes partes do trabalho passaram a ser feitas ao mesmo tempo, aproveitando melhor o processador.
 
-**Resultados obtidos:**
+- Usamos `std::thread` e `std::async` para dividir tarefas.
+- Utilizamos `mutex` e variáveis atômicas para garantir que tudo fosse feito com segurança.
+- A quantidade de threads foi ajustada automaticamente com base no hardware da máquina.
 
-- Algoritmo de recomendação funcional baseado em filtragem colaborativa
-- Sistema de cálculo de similaridade otimizado
+O ganho de performance foi visível, especialmente na etapa de recomendação.
 
+#### Fase 5: Tornando a leitura e escrita de dados mais eficiente
 
-#### Fase 3: Otimização de Performance e Memória
+Outro gargalo estava na entrada e saída de dados. A leitura linha a linha e o uso de arquivos texto estava custando caro. Optamos por armazenar os dados em formato binário e ler tudo de uma vez para a memória.
 
-**Atividades principais:**
+- Isso reduziu muito o tempo de carregamento.
+- O uso de `string_view` também ajudou, evitando cópias desnecessárias durante o parsing.
 
-- Otimização de estruturas de dados
-- Implementação de técnicas de otimização de memória
-- Melhoria do acesso aos dados
-- Redução de overhead computacional
+No fim, o sistema passou a ser muito mais ágil para carregar e salvar informações.
 
-**Técnicas aplicadas:**
+#### Fase 6: Ajustes finais e filtragem dos dados
 
-- **std::unordered_map** para acesso O(1) aos dados
-- **std::vector** com pairs ordenados para busca eficiente
-- **std::string_view** para evitar cópias desnecessárias
-- **Reserve de capacidade** em containers
-- **Pré-computação de magnitudes** de vetores
+Na última fase, focamos em filtrar e organizar melhor os dados. Removemos usuários e filmes com poucas avaliações e reduzimos a quantidade de dados usados em tempo real.
 
-**Resultados obtidos:**
+- Isso já era requisito para esse trabalho, mas foi implementado apenas nessa fase. Isso melhorou a qualidade das recomendações.
+- Também reduziu bastante a carga computacional do sistema.
+- Técnicas como `partial_sort` e amostragem aleatória ajudaram a manter tudo rápido.
 
-- Redução significativa do uso de memória
-- Melhoria na velocidade de acesso aos dados
-- Cache locality otimizada
+### Como avaliamos as melhorias
 
+Depois de cada mudança, medimos o impacto. Avaliamos:
 
-#### Fase 4: Paralelização e Processamento Concorrente
+- Tempo total de execução
+- Uso de memória
+- Escalabilidade com grandes volumes de dados
+- Qualidade das recomendações (mais coerentes e variadas)
 
-**Atividades principais:**
+### Um processo de melhoria contínua
 
-- Identificação de gargalos computacionais
-- Implementação de multithreading
-- Paralelização do pré-processamento
-- Sincronização de threads
+Tudo foi feito em ciclos curtos. Medimos, analisamos, otimizamos e testamos novamente. Essa forma de trabalhar garantiu que o sistema melhorasse sempre com base em dados concretos, sem depender de suposições. Foi assim que chegamos a um sistema funcional, rápido e bem estruturado.
 
-**Técnicas aplicadas:**
 
-- **std::thread** para processamento paralelo
-- **std::async** para processamento assíncrono de chunks
-- **std::mutex** para sincronização
-- **std::atomic** para controle de índices
-- **Hardware concurrency detection** para otimização automática
-
-**Resultados obtidos:**
-
-- Processamento paralelo de recomendações
-- Pré-processamento paralelo de dados
-- Utilização otimizada de múltiplos cores
-
-
-#### Fase 5: Otimização de I/O e Formato de Dados
-
-**Atividades principais:**
-
-- Otimização de leitura de arquivos
-- Implementação de formato binário
-- Cache de dados processados
-- Redução de operações de I/O
-
-**Técnicas aplicadas:**
-
-- **Leitura de arquivo inteiro** em memória
-- **Formato binário** para cache de dados
-- **Parsing otimizado** com std::string_view
-- **Eliminação de realocações** desnecessárias
-
-**Resultados obtidos:**
-
-- Redução drástica no tempo de carregamento
-- Formato compacto para armazenamento
-- Minimização de operações de I/O
-
-
-#### Fase 6: Otimização Algorítmica e Filtragem
-
-**Atividades principais:**
-
-- Implementação de filtros de qualidade
-- Otimização da seleção de candidatos
-- Redução do espaço de busca
-- Melhoria da precisão das recomendações
-
-**Técnicas aplicadas:**
-
-- **Filtros de mínimo** (≥50 ratings por usuário/filme)
-- **Amostragem aleatória** para reduzir complexidade
-- **Partial sort** para seleção dos K-melhores
-- **Shuffle** para distribuição uniforme
-
-**Resultados obtidos:**
-
-- Redução significativa do dataset
-- Melhoria na qualidade das recomendações
-- Complexidade computacional reduzida
-
-
-### Critérios de Avaliação e Métricas
-
-Para cada técnica implementada, foram estabelecidos critérios de avaliação baseados em métricas quantitativas:
-
-**Performance:**
-
-- Tempo de execução total
-- Throughput de recomendações por segundo
-- Speedup obtido com paralelização
-
-**Uso de Memória:**
-
-- Consumo de RAM
-- Cache efficiency e locality
-- Overhead de estruturas de dados
-
-**Escalabilidade:**
-
-- Comportamento com diferentes volumes de dados
-- Paralelização eficiente
-- Utilização de recursos disponíveis
-
-**Qualidade:**
-
-- Precisão das recomendações geradas
-- Cobertura do sistema
-- Diversidade das sugestões
-
-
-### Processo de Otimização Iterativo
-
-O processo seguiu um ciclo de **melhoria contínua**:
-
-1. **Medição**: Profiling do código para identificar gargalos
-2. **Análise**: Identificação das técnicas mais adequadas
-3. **Implementação**: Aplicação das técnicas selecionadas
-4. **Verificação**: Medição do impacto das otimizações
-5. **Iteração**: Repetição do processo para novas otimizações
-
-Esta abordagem metodológica permitiu aplicar **técnicas de otimização de forma sistemática** e **verificar empiricamente os resultados**, garantindo que cada modificação trouxesse benefícios mensuráveis ao sistema de recomendação desenvolvido.
-
-## **Estrutura de Dados**
+## 🎲 **Estrutura de Dados**
 
 --- 
 ### O sistema é modularizado e organizado em classes, cada uma com responsabilidades bem definidas:
@@ -290,7 +181,82 @@ similares utilizando o CalculadorDeSimilaridade. Em seguida, identifica filmes b
 
 ---
 
-## ✅**Otimizações**
+## 🧠 Análise Detalhada das Principais Funções
+Esta seção descreve as funções mais relevantes do sistema, explicando o fluxo de execução e a responsabilidade de cada componente.
+
+### Função: [`gerarInput()`](src/Preprocessador.cpp#L74-#L149)
+
+**Responsabilidade:** Transformar o arquivo .csv bruto em um cache binário (`input.bin`), filtrado, estruturado e otimizado para leitura de alta performance.
+
+Passo a Passo da Lógica:
+
+Leitura em Bloco:
+A função inicia realizando a leitura completa do arquivo .csv para uma única `std::string` em memória. Essa abordagem é uma otimização de I/O que evita múltiplas leituras do disco.
+
+Paralelismo:
+A lógica divide o conteúdo em blocos (chunks) e utiliza `std::async` para processá-los paralelamente, lançando uma thread para cada núcleo de CPU disponível.
+
+Agregação:
+O sistema aguarda a finalização de todas as threads e consolida os resultados parciais em uma única estrutura de dados principal.
+
+Filtragem:
+Um laço percorre as contagens de avaliações e cria um `std::unordered_set` com os IDs de usuários e filmes que possuem pelo menos 50 avaliações.
+
+Construção do Mapa Final:
+Os dados brutos são percorridos novamente. Apenas as avaliações consideradas válidas (com base nos conjuntos anteriores) são adicionadas ao mapa final, agrupadas por usuário.
+
+Escrita Binária:
+A função escreverInputBin grava o mapa final de forma compacta e estruturada no arquivo `input.bin`.
+
+### Função: [`calcularSimilaridadeCosseno()`](src/CalculadorDeSimilaridade.cpp#L4-L27)
+Responsabilidade: Implementar a métrica de Similaridade de Cosseno para medir o grau de afinidade entre dois usuários com base em suas avaliações.
+
+Passo a Passo da Lógica:
+
+Verificação Inicial:
+A função verifica se a magnitude de algum vetor de avaliações é igual a zero, evitando divisão por zero.
+
+Laço Principal:
+Um while percorre simultaneamente as listas de avaliações dos dois usuários, utilizando dois índices (i e j) até o final de uma das listas.
+
+Avanço Otimizado:
+Como as listas estão ordenadas por ID de filme, o índice da lista com o menor ID é incrementado, garantindo que todas as correspondências possíveis sejam verificadas.
+
+Cálculo do Produto Escalar:
+Quando um filme comum é identificado, as notas são multiplicadas e somadas ao numerador da fórmula de similaridade.
+
+Resultado Final:
+O valor acumulado no numerador é dividido pelo produto das magnitudes dos vetores, retornando o valor da Similaridade de Cosseno.
+
+### Função: [`recomendarParaUsuario()`](src/Recomendador.cpp#L16-L114)
+Responsabilidade: Controlar o processo de recomendação, utilizando os dados de entrada e os cálculos de similaridade para gerar uma lista personalizada de filmes para cada usuário.
+
+Passo a Passo da Lógica:
+
+Filmes Já Avaliados:
+Um `std::unordered_set` armazena os filmes já assistidos pelo usuário. A função `.find()` garante busca rápida e eficiente (tempo O(1)).
+
+Amostragem Aleatória:
+Para reduzir o custo computacional, uma amostra aleatória da base é gerada com `std::shuffle`, limitando a comparação a um subconjunto de usuários.
+
+Seleção dos Vizinhos:
+`std::partial_sort` identifica os K vizinhos mais similares de forma eficiente, sem necessidade de ordenação completa.
+
+Acúmulo de Notas:
+Para cada filme avaliado pelos vizinhos e ainda não visto pelo usuário-alvo, a nota é multiplicada pela similaridade e acumulada em um mapa.
+
+Cálculo da Nota Prevista:
+Após o acúmulo, é feita a média ponderada das notas para prever a avaliação do usuário para cada filme candidato.
+
+Seleção das Recomendações:
+`std::partial_sort` é novamente utilizado para obter os N filmes com maiores notas previstas, evitando ordenar a lista completa.
+
+Escrita Segura no Arquivo:
+`std::lock_guard` é empregado para garantir que apenas uma thread escreva no arquivo de saída por vez, evitando concorrência e corrupção dos dados.
+
+---
+
+## 📈 **Otimizações**
 
 ### Otimização de Entrada:
 
@@ -391,7 +357,7 @@ Uma vez que os gigabytes de texto estão na RAM, o desafio é convertê-los para
 
 ---
 
-### **Otimizações de Compilação (Flags)**
+### 🚩 **Otimizações de Compilação (Flags)**
 
 O `Makefile` do projeto está configurado para instruir o compilador `g++` a realizar otimizações agressivas, transformando o código C++ em um código de máquina altamente eficiente.
 
@@ -402,10 +368,12 @@ O `Makefile` do projeto está configurado para instruir o compilador `g++` a rea
 - **`-flto` (Link-Time Optimization)**: Uma otimização poderosa que ocorre na fase final de linkagem. Ela permite que o compilador analise e otimize o programa **como um todo**, enxergando as interações entre todos os diferentes arquivos de código-fonte, em vez de otimizar cada um isoladamente. Isso possibilita otimizações mais profundas.
 
 * **`-ffast-math`**: Relaxa algumas regras estritas de precisão de ponto flutuante do padrão IEEE 754. Isso dá ao compilador a liberdade de fazer otimizações matemáticas mais agressivas, como reassociar operações, o que é especialmente útil em laços computacionais intensos como os do cálculo de similaridade.
+* 
+* **`-j$(nproc)`**: Utiliza todos os núcleos disponíveis do processador para compilar em paralelo. `nproc` retorna o número de núcleos de CPU disponíveis, e `-j` instrui o `make` a executar múltiplos jobs simultaneamente. Isso acelera significativamente a compilação em máquinas multicore, especialmente útil em projetos grandes ou com múltiplos arquivos fonte.
 
 ---
 
-### Grafico comparativo entre as versões do codigo:
+### 📦 Grafico comparativo entre as versões do codigo:
 <details> 
   <summary><strong>Grafico de custo e tempo medio entre as versões</strong></summary>
  
@@ -457,7 +425,7 @@ Neste grafico foi apresentado custo e tempo medio entre as versões senda cada u
 
 ---
 
-## **Fluxo de Execução**
+## 🔀 **Fluxo de Execução**
 Segue a seguir um fluxograma representando o funcionamento da estrutura do programa
 
 <details> 
@@ -483,7 +451,7 @@ para acelerar o processo de recomendação.
 
 ---
 
-## **Ambiente de Teste**
+## 🌳 **Ambiente de Teste**
 O projeto foi desenvolvido e testado no seguinte ambiente:
 - **Sistema Operacional**: Debian GNU/Linux 12.11
 - **Hardware**: Processador Ryzen 7 5700x - 32GB de Memoria - SSD NVME
@@ -491,7 +459,7 @@ O projeto foi desenvolvido e testado no seguinte ambiente:
 - **Linguagens**: C e C++.
 - **Base de Dados**: <a href ="https://www.kaggle.com/datasets/garymk/movielens-25m-dataset">MovieLens 25M</a> Ratings e Movies.
 
-## **Organização do Repositório**
+## 🗂️ **Organização do Repositório**
 
 ```
 
@@ -523,7 +491,7 @@ Sistema-de-recomendacao/
 ```
 ---
 
-# **Bibliotecas Utilizadas**
+# 📚 **Bibliotecas Utilizadas**
 
 Este projeto foi construído utilizando exclusivamente recursos da **Biblioteca Padrão do C++**. Nenhuma biblioteca de terceiros foi necessária. 
 Abaixo estão as principais bibliotecas utilizadas e suas finalidades no projeto:
@@ -561,7 +529,7 @@ Abaixo estão as principais bibliotecas utilizadas e suas finalidades no projeto
 ---
 
 
-# **Resultados**
+# 🧾 **Resultados**
 
 ## Exemplo de saida do output
 
@@ -580,7 +548,7 @@ Este Output foi gerado utilizando os seguintes valores `N_RECOMENDACOES = 3` e `
 
 ---
 
-## **Análise de Escalonamento do Tempo de Execução**
+## 📉 **Análise de Escalonamento do Tempo de Execução**
 
 Este gráfico mostra o comportamento do tempo de execução do programa de acordo com o número de usuários.
 <details> 
@@ -602,7 +570,7 @@ Este gráfico mostra o comportamento do tempo de execução do programa de acord
   O tempo passou de **7.10s para 54.14s**, um crescimento de **+662%**, indicando que a **performance começa a degradar em grandes volumes** possivelmente por limitações de paralelismo, uso de disco ou consumo de memória.
 
 
-## Implementações Descartadas
+## 🚮 Implementações Descartadas
 
 Durante o desenvolvimento, algumas técnicas de otimização avançada foram exploradas. No entanto, elas foram descartadas por não apresentarem um ganho de desempenho significativo que justificasse o aumento na complexidade do código ou por introduzirem novos gargalos. As principais foram:
 
@@ -616,7 +584,7 @@ Durante o desenvolvimento, algumas técnicas de otimização avançada foram exp
 
 ---
 
-## **Melhorias Futuras**
+## ⏳ **Melhorias Futuras**
 Possíveis melhorias e funcionalidades a serem implementadas no futuro incluem:
 - Implementação de Outras Métricas de Similaridade: Adicionar suporte para outras métricas de similaridade, como Distância Euclidiana ou Similaridade de Jaccard, permitindo a comparação de desempenho entre elas.
 - Otimização de Memória: Explorar estruturas de dados mais eficientes ou técnicas de compressão para reduzir o consumo de memória, especialmente para bases de dados maiores.
@@ -628,7 +596,40 @@ Possíveis melhorias e funcionalidades a serem implementadas no futuro incluem:
 
 ---
  
-# **Conclusão**
+# 📫 **Conclusão**
 
 
-*********************falar sobre analise assintotica e concluir
+## Análise Assintótica
+
+O sistema de recomendação de filmes foi desenvolvido com uma arquitetura modular, clara e eficiente. Cada parte, desde a leitura dos dados até a geração das recomendações, foi pensada para lidar com grandes volumes de informação. Para entender melhor o desempenho, especialmente com muitos usuários e filmes, é importante analisar a complexidade das operações principais.
+
+### Análise das Principais Operações
+
+#### Similaridade entre usuários
+
+A função que calcula a similaridade de cosseno compara os filmes avaliados por dois usuários. Como os dados são ordenados por ID de filme, a comparação pode ser feita de forma eficiente, com complexidade média de **O(U)**, onde `U` é o número de avaliações por usuário. Em casos extremos, o custo ainda é linear, mas mais intenso.
+
+#### Carregamento de dados
+
+A leitura dos arquivos binários (`input.bin` e `movies.csv`) e o armazenamento em estruturas como `unordered_map` permite acesso rápido (**O(1)** em média). O carregamento completo dos dados tem custo **O(D)**, onde `D` representa o número total de avaliações no sistema.
+
+#### Pré-processamento
+
+Durante o pré-processamento (`gerarInput`, `gerarExplore`), o sistema divide o arquivo CSV em partes e processa com múltiplas threads. A complexidade ainda é **O(D)**, proporcional ao tamanho dos dados, mas o paralelismo reduz o tempo de execução na prática.
+
+#### Geração de recomendações
+
+Essa etapa é a mais custosa do sistema. Para cada usuário:
+- O sistema calcula a similaridade com até `N` outros usuários (ou uma amostra), com custo aproximado de **O(N * U)**.
+- Em seguida, seleciona os `K` vizinhos mais similares e estima notas preditas para filmes não assistidos, com custo **O(K * F)**, onde `F` é a média de avaliações por vizinho.
+
+Se forem recomendados filmes para `P` usuários, a complexidade total é aproximadamente:
+
+**O(P * (N * U + K * F))**
+
+### Conclusão
+
+O sistema é eficiente para volumes moderados de dados. No entanto, conforme a base de usuários e filmes cresce, a fase de busca por vizinhos se torna o principal gargalo.  
+No pior cenário, a complexidade por recomendação pode chegar a **O(N_total * N * U)**, sendo `N_total` o número de usuários que receberão recomendações.
+
+Futuramente, para escalar o sistema, podem ser necessárias técnicas como pré-filtragem de candidatos, uso de índices otimizados ou abordagens baseadas em aprendizado de máquina.

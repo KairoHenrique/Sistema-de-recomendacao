@@ -236,6 +236,8 @@ Além dos algoritmos, a alta performance do sistema é garantida por um conjunto
   <summary><strong>Grafico de custo e tempo medio entre as versões</strong></summary>
 <img src="imagem a ser utilizada.png"/>
 
+</details> 
+
 Neste grafico foi apresentamos as versões senda cada uma delas com essas implementações de otimizaçao:
 
 #### Versão 1.0.0:
@@ -271,13 +273,10 @@ tempo: xxxx e memoria: xxxxx
 Versão atual do nosso programa onde ela foi feita apenas melhorias e "limpeza" dos codigos, retirando funcões, classes e bibliotecas que nao estavam mais sendo utilizadas e tambem foi realizado melhora na estrutura do codigo como nos comentarios e na intedentação do codigo para melhor entendimento geral e melhor organização.
 tempo: xxxx e memoria: xxxxx
 
----
-
-</details> 
-
 
 
 ---
+
 ## **Fluxo de Execução**
 1. **Pré-processamento**: O Preprocessador lê ratings.csv e movies.csv, filtra os
 dados e gera input.bin (dados de usuários e avaliações) e explore.bin
